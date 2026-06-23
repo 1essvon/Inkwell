@@ -2,9 +2,13 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QPushButton
-from app.ui.dialogs.add_book_dialog import AddBookDialog
+from PySide6.QtWidgets import QListWidgetItem
+from PySide6.QtWidgets import QPushButton
 
+from app.ui.dialogs.add_book_dialog import AddBookDialog
+from app.ui.book_detail_view import BookDetailView
 from app.services.book_service import BookService
+from app.ui.dialogs.edit_book_dialog import EditBookDialog
 
 
 class LibraryView(QWidget):
@@ -21,6 +25,15 @@ class LibraryView(QWidget):
 
         self.layout.addWidget(self.add_book_button)
 
+        self.selected_book = None
+
+        self.edit_button = QPushButton("Edit Book")
+        self.edit_button.clicked.connect(
+            self.open_edit_dialog
+        )
+
+        self.layout.addWidget(self.edit_button)
+
         self.book_list = QListWidget()
 
         self.layout.addWidget(self.book_list)
@@ -29,16 +42,65 @@ class LibraryView(QWidget):
 
         self.load_books()
 
+        self.detail_view = BookDetailView()
+
+        self.layout.addWidget(self.detail_view)
+
+        self.book_list.itemClicked.connect(
+            self.show_book_details
+)
+
     def load_books(self):
         books = BookService.get_all_books()
 
         self.book_list.clear()
 
+        
+
         for book in books:
-            self.book_list.addItem(book.title)
+            item = QListWidgetItem(book.title)
+
+            item.setData(
+                1,
+                book.id
+            )
+
+            self.book_list.addItem(item)
 
     def open_add_book_dialog(self):
         dialog = AddBookDialog()
 
         if dialog.exec():
             self.load_books()
+
+    def show_book_details(self, item):
+        book_id = item.data(1)
+
+        book = BookService.get_book(book_id)
+
+        if book:
+            self.selected_book = book
+            self.detail_view.display_book(book)
+
+    def open_edit_dialog(self):
+
+        if not self.selected_book:
+            return
+
+        dialog = EditBookDialog(
+            self.selected_book
+        )
+
+        if dialog.exec():
+
+            self.load_books()
+
+            refreshed_book = BookService.get_book(
+                self.selected_book.id
+            )
+
+            self.selected_book = refreshed_book
+
+            self.detail_view.display_book(
+                refreshed_book
+            )

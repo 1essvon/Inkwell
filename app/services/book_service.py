@@ -30,3 +30,36 @@ class BookService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def get_book(book_id: int):
+        session = SessionLocal()
+
+        try:
+            return session.get(Book, book_id)
+        finally:
+            session.close()
+
+    @staticmethod
+    def update_book(
+        book_id: int,
+        title: str,
+        author: str
+    ):
+        session = SessionLocal()
+
+        try:
+            book = session.get(Book, book_id)
+
+            if not book:
+                return None
+
+            book.title = title
+            book.author = author
+
+            session.commit()
+
+            return book
+
+        finally:
+            session.close()
