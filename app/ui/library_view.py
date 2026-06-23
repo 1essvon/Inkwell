@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QListWidgetItem
 from PySide6.QtWidgets import QPushButton
+from PySide6.QtWidgets import QMessageBox
 
 from app.ui.dialogs.add_book_dialog import AddBookDialog
 from app.ui.book_detail_view import BookDetailView
@@ -28,11 +29,24 @@ class LibraryView(QWidget):
         self.selected_book = None
 
         self.edit_button = QPushButton("Edit Book")
+
         self.edit_button.clicked.connect(
             self.open_edit_dialog
         )
 
         self.layout.addWidget(self.edit_button)
+
+        self.delete_button = QPushButton(
+            "Delete Book"
+        )
+
+        self.delete_button.clicked.connect(
+            self.delete_selected_book
+        )
+
+        self.layout.addWidget(
+            self.delete_button
+        )
 
         self.book_list = QListWidget()
 
@@ -54,8 +68,6 @@ class LibraryView(QWidget):
         books = BookService.get_all_books()
 
         self.book_list.clear()
-
-        
 
         for book in books:
             item = QListWidgetItem(book.title)
@@ -103,4 +115,42 @@ class LibraryView(QWidget):
 
             self.detail_view.display_book(
                 refreshed_book
+            )
+
+    def delete_selected_book(self):
+
+        if not self.selected_book:
+            return
+
+        reply = QMessageBox.question(
+            self,
+            "Delete Book",
+            f'Delete "{self.selected_book.title}"?',
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+
+            BookService.delete_book(
+                self.selected_book.id
+            )
+
+            self.selected_book = None
+
+            self.load_books()
+
+            self.detail_view.title_label.setText(
+                "Title:"
+            )
+
+            self.detail_view.author_label.setText(
+                "Author:"
+            )
+
+            self.detail_view.status_label.setText(
+                "Status:"
+            )
+
+            self.detail_view.page_label.setText(
+                "Current Page:"
             )

@@ -63,3 +63,21 @@ class BookService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def delete_book(book_id: int):
+        session = SessionLocal()
+
+        try:
+            book = session.get(Book, book_id)
+
+            if not book:
+                return False
+
+            session.delete(book)
+            session.commit()
+
+            return True
+
+        finally:
+            session.close()
