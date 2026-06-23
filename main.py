@@ -2,10 +2,9 @@ import sys
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtWidgets import QMainWindow
-from app.database.base import Base
-from app.database.engine import engine
 
-from app.models.book import Book
+from app.database.init_db import init_database
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -16,7 +15,8 @@ class MainWindow(QMainWindow):
 
 
 def main():
-    Base.metadata.create_all(bind=engine)
+    init_database()
+
     app = QApplication(sys.argv)
 
     window = MainWindow()
