@@ -24,6 +24,10 @@ from app.models.book import Book
 from app.models.note import Note
 from app.models.quote import Quote
 
+from app.models.scratchpad_entry import (
+    ScratchpadEntry
+)
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QStackedWidget
 )
 
+from app.ui.scratchpad_view import ScratchpadView
 from app.ui.journal.notes_view import NotesView
 from app.ui.journal.quotes_view import QuotesView
 
@@ -39,12 +40,20 @@ class JournalView(QWidget):
             "Quotes"
         )
 
+        self.scratchpad_button = QPushButton(
+            "Scratchpad"
+        )
+
         nav_layout.addWidget(
             self.notes_button
         )
 
         nav_layout.addWidget(
             self.quotes_button
+        )
+
+        nav_layout.addWidget(
+            self.scratchpad_button
         )
 
         main_layout.addLayout(
@@ -58,7 +67,10 @@ class JournalView(QWidget):
         self.pages = QStackedWidget()
 
         self.notes_page = NotesView()
+
         self.quotes_page = QuotesView()
+
+        self.scratchpad_page = ScratchpadView()
 
         self.pages.addWidget(
             self.notes_page
@@ -66,6 +78,10 @@ class JournalView(QWidget):
 
         self.pages.addWidget(
             self.quotes_page
+        )
+
+        self.pages.addWidget(
+            self.scratchpad_page
         )
 
         main_layout.addWidget(
@@ -82,6 +98,10 @@ class JournalView(QWidget):
 
         self.quotes_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(1)
+        )
+
+        self.scratchpad_button.clicked.connect(
+            lambda: self.pages.setCurrentIndex(2)
         )
 
         self.setLayout(main_layout)
