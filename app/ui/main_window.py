@@ -10,6 +10,9 @@ from PySide6.QtWidgets import (
 
 from app.ui.library_view import LibraryView
 from app.ui.journal_view import JournalView
+from app.ui.statistics_view import (
+    StatisticsView
+)
 
 
 class MainWindow(QMainWindow):
@@ -109,9 +112,7 @@ class MainWindow(QMainWindow):
 
         self.journal_page = JournalView()
 
-        self.statistics_page = QLabel(
-            "Statistics Module"
-        )
+        self.statistics_page = StatisticsView()
 
         self.focus_page = QLabel(
             "Focus Mode Module"
