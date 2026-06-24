@@ -14,13 +14,24 @@ class BookService:
             session.close()
 
     @staticmethod
-    def create_book(title: str, author: str):
+    def create_book(
+        title: str,
+        author: str,
+        isbn: str = "",
+        publisher: str = "",
+        genre: str = "",
+        page_count: int = 0
+    ):
         session = SessionLocal()
 
         try:
             book = Book(
                 title=title,
-                author=author
+                author=author,
+                isbn=isbn or None,
+                publisher=publisher or None,
+                genre=genre or None,
+                page_count=page_count if page_count > 0 else None
             )
 
             session.add(book)

@@ -3,7 +3,6 @@ from PySide6.QtWidgets import QVBoxLayout
 from PySide6.QtWidgets import QListWidget
 from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QListWidgetItem
-from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QMessageBox
 
 from app.ui.dialogs.add_book_dialog import AddBookDialog
@@ -139,18 +138,16 @@ class LibraryView(QWidget):
 
             self.load_books()
 
-            self.detail_view.title_label.setText(
-                "Title:"
-            )
+            self.detail_view.clear()
 
-            self.detail_view.author_label.setText(
-                "Author:"
-            )
+            if reply == QMessageBox.Yes:
 
-            self.detail_view.status_label.setText(
-                "Status:"
-            )
+                BookService.delete_book(
+                    self.selected_book.id
+                )
 
-            self.detail_view.page_label.setText(
-                "Current Page:"
-            )
+                self.selected_book = None
+
+                self.load_books()
+
+                self.detail_view.clear()
