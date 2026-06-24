@@ -18,6 +18,22 @@ class QuoteService:
             session.close()
 
     @staticmethod
+    def get_quote(
+        quote_id: int
+    ):
+
+        session = SessionLocal()
+
+        try:
+            return session.get(
+                Quote,
+                quote_id
+            )
+
+        finally:
+            session.close()
+
+    @staticmethod
     def create_quote(
         quote_text: str,
         source: str = "",
@@ -41,6 +57,31 @@ class QuoteService:
             session.commit()
 
             return quote
+
+        finally:
+            session.close()
+
+    @staticmethod
+    def delete_quote(
+        quote_id: int
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            quote = session.get(
+                Quote,
+                quote_id
+            )
+
+            if quote:
+
+                session.delete(
+                    quote
+                )
+
+                session.commit()
 
         finally:
             session.close()
