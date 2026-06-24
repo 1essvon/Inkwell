@@ -16,6 +16,10 @@ class NoteDetailView(QWidget):
         self.title_label = QLabel(
             "No Note Selected"
         )
+        self.title_label.setStyleSheet("""
+            font-size: 20px;
+            font-weight: bold;
+        """)
 
         self.content_label = QLabel(
             ""
@@ -32,6 +36,14 @@ class NoteDetailView(QWidget):
         self.setLayout(layout)
 
         self.content_editor = QTextEdit()
+
+        self.content_editor.setPlaceholderText(
+            "Write your thoughts here..."
+        )
+
+        self.content_editor.setMinimumHeight(
+            400
+        )
 
         self.save_button = QPushButton(
             "Save Note"
@@ -63,6 +75,10 @@ class NoteDetailView(QWidget):
 
         self.current_note = note
 
+        self.save_button.setText(
+            "Save Note"
+        )
+
         self.title_label.setText(
             note.title
         )
@@ -91,4 +107,8 @@ class NoteDetailView(QWidget):
         NoteService.update_note(
             self.current_note.id,
             self.content_editor.toPlainText()
+        )
+
+        self.save_button.setText(
+            "Saved!"
         )

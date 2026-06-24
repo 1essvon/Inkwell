@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QListWidget
 )
 from PySide6.QtWidgets import QListWidgetItem
+from PySide6.QtWidgets import QHBoxLayout
 
 from app.services.note_service import NoteService
 from app.ui.dialogs.add_note_dialog import AddNoteDialog
@@ -44,20 +45,34 @@ class NotesView(QWidget):
 
         self.detail_view = NoteDetailView()
 
-        layout.addWidget(
+        button_layout = QHBoxLayout()
+
+        button_layout.addWidget(
             self.add_note_button
         )
 
-        layout.addWidget(
+        button_layout.addWidget(
             self.delete_note_button
         )
 
-        layout.addWidget(
-            self.note_list
+        layout.addLayout(
+            button_layout
         )
 
-        layout.addWidget(
-            self.detail_view
+        content_layout = QHBoxLayout()
+
+        content_layout.addWidget(
+            self.note_list,
+            1
+        )
+
+        content_layout.addWidget(
+            self.detail_view,
+            3
+        )
+
+        layout.addLayout(
+            content_layout
         )
 
         self.load_notes()
@@ -86,6 +101,16 @@ class NotesView(QWidget):
 
             self.note_list.addItem(
                 item
+            )
+
+        if notes:
+
+            first_note = notes[0]
+
+            self.selected_note = first_note
+
+            self.detail_view.display_note(
+                first_note
             )
 
 
