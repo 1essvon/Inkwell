@@ -33,6 +33,18 @@ class StatisticsView(QWidget):
             f"Quotes: {stats['quotes']}"
         )
 
+        self.sessions_label = QLabel(
+            f"Reading Sessions: {stats['reading_sessions']}"
+        )
+
+        self.pages_label = QLabel(
+            f"Pages Read: {stats['pages_read']}"
+        )
+
+        self.minutes_label = QLabel(
+            f"Reading Time: {stats['reading_minutes']} min"
+        )
+
         layout.addWidget(
             self.books_label
         )
@@ -43,6 +55,18 @@ class StatisticsView(QWidget):
 
         layout.addWidget(
             self.quotes_label
+        )
+
+        layout.addWidget(
+            self.sessions_label
+        )
+
+        layout.addWidget(
+            self.pages_label
+        )
+
+        layout.addWidget(
+            self.minutes_label
         )
 
         layout.addStretch()

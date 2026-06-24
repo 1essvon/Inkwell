@@ -13,6 +13,7 @@ from app.ui.journal_view import JournalView
 from app.ui.statistics_view import (
     StatisticsView
 )
+from app.ui.focus_view import FocusView
 
 
 class MainWindow(QMainWindow):
@@ -114,9 +115,7 @@ class MainWindow(QMainWindow):
 
         self.statistics_page = StatisticsView()
 
-        self.focus_page = QLabel(
-            "Focus Mode Module"
-        )
+        self.focus_page = FocusView()
 
         self.settings_page = QLabel(
             "Settings Module"

@@ -27,6 +27,9 @@ from app.models.quote import Quote
 from app.models.scratchpad_entry import (
     ScratchpadEntry
 )
+from app.models.reading_session import (
+    ReadingSession
+)
 
 target_metadata = Base.metadata
 
