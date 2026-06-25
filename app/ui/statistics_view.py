@@ -16,59 +16,53 @@ class StatisticsView(QWidget):
 
         layout = QVBoxLayout()
 
-        stats = (
-            StatisticsService
-            .get_statistics()
-        )
+        self.books_label = QLabel()
+        self.notes_label = QLabel()
+        self.quotes_label = QLabel()
+        self.sessions_label = QLabel()
+        self.pages_label = QLabel()
+        self.minutes_label = QLabel()
 
-        self.books_label = QLabel(
-            f"Books: {stats['books']}"
-        )
+        layout.addWidget(self.books_label)
+        layout.addWidget(self.notes_label)
+        layout.addWidget(self.quotes_label)
 
-        self.notes_label = QLabel(
-            f"Notes: {stats['notes']}"
-        )
+        layout.addSpacing(12)
 
-        self.quotes_label = QLabel(
-            f"Quotes: {stats['quotes']}"
-        )
-
-        self.sessions_label = QLabel(
-            f"Reading Sessions: {stats['reading_sessions']}"
-        )
-
-        self.pages_label = QLabel(
-            f"Pages Read: {stats['pages_read']}"
-        )
-
-        self.minutes_label = QLabel(
-            f"Reading Time: {stats['reading_minutes']} min"
-        )
-
-        layout.addWidget(
-            self.books_label
-        )
-
-        layout.addWidget(
-            self.notes_label
-        )
-
-        layout.addWidget(
-            self.quotes_label
-        )
-
-        layout.addWidget(
-            self.sessions_label
-        )
-
-        layout.addWidget(
-            self.pages_label
-        )
-
-        layout.addWidget(
-            self.minutes_label
-        )
+        layout.addWidget(self.sessions_label)
+        layout.addWidget(self.pages_label)
+        layout.addWidget(self.minutes_label)
 
         layout.addStretch()
 
         self.setLayout(layout)
+
+        self.refresh()
+
+    def refresh(self):
+
+        stats = StatisticsService.get_statistics()
+
+        self.books_label.setText(
+            f"Books: {stats['books']}"
+        )
+
+        self.notes_label.setText(
+            f"Notes: {stats['notes']}"
+        )
+
+        self.quotes_label.setText(
+            f"Quotes: {stats['quotes']}"
+        )
+
+        self.sessions_label.setText(
+            f"Reading Sessions: {stats['reading_sessions']}"
+        )
+
+        self.pages_label.setText(
+            f"Pages Read: {stats['pages_read']}"
+        )
+
+        self.minutes_label.setText(
+            f"Reading Time: {stats['reading_minutes']} min"
+        )

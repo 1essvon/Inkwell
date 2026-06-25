@@ -171,3 +171,9 @@ class MainWindow(QMainWindow):
             self.pages,
             4
         )
+
+    def refresh_views(self):
+
+        self.library_page.refresh()
+
+        self.statistics_page.refresh()

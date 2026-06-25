@@ -92,3 +92,28 @@ class BookService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def update_current_page(
+        book_id: int,
+        current_page: int
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            book = session.get(
+                Book,
+                book_id
+            )
+
+            if book:
+
+                book.current_page = current_page
+
+                session.commit()
+
+        finally:
+
+            session.close()

@@ -53,7 +53,7 @@ class LibraryView(QWidget):
 
         self.setLayout(self.layout)
 
-        self.load_books()
+        self.refresh()
 
         self.detail_view = BookDetailView()
 
@@ -82,7 +82,7 @@ class LibraryView(QWidget):
         dialog = AddBookDialog()
 
         if dialog.exec():
-            self.load_books()
+            self.refresh()
 
     def show_book_details(self, item):
         book_id = item.data(1)
@@ -104,7 +104,7 @@ class LibraryView(QWidget):
 
         if dialog.exec():
 
-            self.load_books()
+            self.refresh()
 
             refreshed_book = BookService.get_book(
                 self.selected_book.id
@@ -136,18 +136,25 @@ class LibraryView(QWidget):
 
             self.selected_book = None
 
-            self.load_books()
+            self.refresh()
 
             self.detail_view.clear()
 
-            if reply == QMessageBox.Yes:
+    def refresh(self):
 
-                BookService.delete_book(
-                    self.selected_book.id
-                )
+        self.load_books()
 
-                self.selected_book = None
+        if not self.selected_book:
+            return
 
-                self.load_books()
+        refreshed = BookService.get_book(
+            self.selected_book.id
+        )
 
-                self.detail_view.clear()
+        if refreshed:
+
+            self.selected_book = refreshed
+
+            self.detail_view.display_book(
+                refreshed
+            )
