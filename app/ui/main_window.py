@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QStackedWidget
 )
-
+from app.ui.dashboard_view import DashboardView
 from app.ui.library_view import LibraryView
 from app.ui.journal_view import JournalView
 from app.ui.statistics_view import (
@@ -57,6 +57,10 @@ class MainWindow(QMainWindow):
 
         sidebar.addWidget(title)
 
+        self.dashboard_button = QPushButton(
+            "Dashboard"
+        )
+
         self.library_button = QPushButton(
             "Library"
         )
@@ -75,6 +79,10 @@ class MainWindow(QMainWindow):
 
         self.settings_button = QPushButton(
             "Settings"
+        )
+
+        sidebar.addWidget(
+            self.dashboard_button
         )
 
         sidebar.addWidget(
@@ -109,6 +117,8 @@ class MainWindow(QMainWindow):
 
         self.pages = QStackedWidget()
 
+        self.dashboard_page = DashboardView()
+
         self.library_page = LibraryView()
 
         self.journal_page = JournalView()
@@ -119,6 +129,10 @@ class MainWindow(QMainWindow):
 
         self.settings_page = QLabel(
             "Settings Module"
+        )
+
+        self.pages.addWidget(
+            self.dashboard_page
         )
 
         self.pages.addWidget(
@@ -145,24 +159,28 @@ class MainWindow(QMainWindow):
         # Navigation
         # ======================
 
-        self.library_button.clicked.connect(
+        self.dashboard_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(0)
         )
 
-        self.journal_button.clicked.connect(
+        self.library_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(1)
         )
 
-        self.statistics_button.clicked.connect(
+        self.journal_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(2)
         )
 
-        self.focus_button.clicked.connect(
+        self.statistics_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(3)
         )
 
-        self.settings_button.clicked.connect(
+        self.focus_button.clicked.connect(
             lambda: self.pages.setCurrentIndex(4)
+        )
+
+        self.settings_button.clicked.connect(
+            lambda: self.pages.setCurrentIndex(5)
         )
 
         main_layout.addWidget(sidebar_widget)
@@ -171,6 +189,8 @@ class MainWindow(QMainWindow):
             self.pages,
             4
         )
+
+        self.pages.setCurrentIndex(0)
 
     def refresh_views(self):
 

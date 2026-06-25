@@ -4,7 +4,6 @@ from PySide6.QtWidgets import QApplication
 
 from app.database.init_db import init_database
 from app.ui.main_window import MainWindow
-from app.ui.theme import APP_STYLESHEET
 
 
 def main():
@@ -12,7 +11,9 @@ def main():
     init_database()
 
     app = QApplication(sys.argv)
-    app.setStyleSheet(APP_STYLESHEET)
+
+    with open("app/styles/base.qss") as file:
+        app.setStyleSheet(file.read())
 
     window = MainWindow()
 

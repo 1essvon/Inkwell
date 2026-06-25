@@ -117,3 +117,31 @@ class BookService:
         finally:
 
             session.close()
+
+    @staticmethod
+    def get_current_reading():
+
+        session = SessionLocal()
+
+        try:
+
+            books = (
+                session.query(Book)
+                .order_by(Book.updated_at.desc())
+                .all()
+            )
+
+            for book in books:
+
+                if (
+                    book.current_page
+                    and book.page_count
+                    and book.current_page < book.page_count
+                ):
+                    return book
+
+            return None
+
+        finally:
+
+            session.close()
