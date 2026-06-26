@@ -30,3 +30,102 @@ QListWidget {
     border-radius: 8px;
     padding: 6px;
 }
+
+/* ===========================
+   Statistic Card
+=========================== */
+
+#cardTitle {
+
+    color: #777;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+#cardValue {
+
+    color: white;
+
+    font-size: 30px;
+
+    font-weight: bold;
+}
+
+/* ===========================
+   Progress Bar
+=========================== */
+
+QProgressBar {
+
+    border: 1px solid #444;
+
+    border-radius: 6px;
+
+    background: #262626;
+
+    text-align: center;
+
+    height: 18px;
+}
+
+QProgressBar::chunk {
+
+    background-color: #4a90e2;
+
+    border-radius: 5px;
+}
+
+/* ===========================
+   Page Title
+=========================== */
+
+#pageTitle {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    color: white;
+}
+
+/* ===========================
+   Info Card
+=========================== */
+
+#infoCard {
+
+    background: #252525;
+
+    border: 1px solid #3a3a3a;
+
+    border-radius: 12px;
+
+    padding: 18px;
+}
+
+#cardSectionTitle {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: white;
+}
+
+#cardSubtitle {
+
+    color: #9d9d9d;
+
+    font-size: 13px;
+}
+
+#cardContent {
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    color: white;
+}

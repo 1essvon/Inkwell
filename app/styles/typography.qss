@@ -1,0 +1,20 @@
+#bookTitle {
+
+    font-size:16px;
+
+    font-weight:bold;
+}
+
+#bookAuthor {
+
+    color:#9c9c9c;
+
+    font-size:12px;
+}
+
+#bookProgress {
+
+    color:#6aa8ff;
+
+    font-size:12px;
+}

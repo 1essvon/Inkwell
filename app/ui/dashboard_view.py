@@ -1,7 +1,17 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QLabel
+    QLabel,
+    QProgressBar,
+    QGridLayout
+)
+
+from app.ui.components.stat_card import (
+    StatCard
+)
+
+from app.ui.components.info_card import (
+    InfoCard
 )
 
 from app.services.statistics_service import (
@@ -21,22 +31,37 @@ class DashboardView(QWidget):
 
         self.title = QLabel("Dashboard")
 
-        self.title.setStyleSheet("""
-            font-size:24px;
-            font-weight:bold;
-        """)
+        self.title.setObjectName(
+            "pageTitle"
+        )
 
         layout.addWidget(self.title)
 
-        self.current_book = QLabel()
+        self.current_card = InfoCard()
 
         layout.addWidget(
-            self.current_book
+            self.current_card
         )
 
-        self.stats = QLabel()
+        self.progress = QProgressBar()
 
-        layout.addWidget(self.stats)
+        layout.addWidget(
+            self.progress
+        )
+
+        layout.addWidget(
+            self.current_card
+        )
+
+        layout.addWidget(
+            self.progress
+        )
+
+        self.stats_layout = QGridLayout()
+
+        layout.addLayout(
+            self.stats_layout
+        )
 
         layout.addStretch()
 
@@ -50,36 +75,78 @@ class DashboardView(QWidget):
 
         if book:
 
-            self.current_book.setText(
-                f"""
-        Continue Reading
+            percent = int(
+                (book.current_page / book.page_count) * 100
+            )
 
-        📚 {book.title}
+            self.current_card.set_data(
 
-        Page {book.current_page} / {book.page_count}
-        """
+                "Continue Reading",
+
+                book.author,
+
+                f"{book.title}\n\nPage {book.current_page} / {book.page_count}"
+
+            )
+
+            self.progress.setValue(
+                percent
             )
 
         else:
 
-            self.current_book.setText(
+            self.current_card.set_data(
+
+                "Continue Reading",
+
+                "",
+
                 "No active reading."
+
             )
+
+            self.progress.setValue(0)
 
         stats = StatisticsService.get_statistics()
 
-        self.stats.setText(
-            f"""
-            Books : {stats['books']}
+        while self.stats_layout.count():
 
-            Notes : {stats['notes']}
+            item = self.stats_layout.takeAt(0)
 
-            Quotes : {stats['quotes']}
+            if item.widget():
 
-            Reading Sessions : {stats['reading_sessions']}
+                item.widget().deleteLater()
 
-            Pages Read : {stats['pages_read']}
+        cards = [
 
-            Reading Time : {stats['reading_minutes']} min
-            """
-                    )
+            ("Books", stats["books"]),
+
+            ("Notes", stats["notes"]),
+
+            ("Quotes", stats["quotes"]),
+
+            ("Sessions", stats["reading_sessions"]),
+
+            ("Pages", stats["pages_read"]),
+
+            ("Minutes", stats["reading_minutes"])
+
+        ]
+
+        for index, (title, value) in enumerate(cards):
+
+            row = index // 3
+
+            col = index % 3
+
+            self.stats_layout.addWidget(
+
+                StatCard(
+                    title,
+                    str(value)
+                ),
+
+                row,
+
+                col
+            )

@@ -5,10 +5,14 @@ from PySide6.QtWidgets import QPushButton
 from PySide6.QtWidgets import QListWidgetItem
 from PySide6.QtWidgets import QMessageBox
 
+from app.ui.components.book_card import (
+    BookCard
+)
 from app.ui.dialogs.add_book_dialog import AddBookDialog
 from app.ui.book_detail_view import BookDetailView
 from app.services.book_service import BookService
 from app.ui.dialogs.edit_book_dialog import EditBookDialog
+
 
 
 class LibraryView(QWidget):
@@ -69,7 +73,19 @@ class LibraryView(QWidget):
         self.book_list.clear()
 
         for book in books:
-            item = QListWidgetItem(book.title)
+            progress = f"{book.current_page or 0} / {book.page_count or 0}"
+
+            item = QListWidgetItem()
+
+            widget = BookCard(
+                book.title,
+                book.author,
+                progress
+            )
+
+            item.setSizeHint(
+                widget.sizeHint()
+            )
 
             item.setData(
                 1,
@@ -77,6 +93,11 @@ class LibraryView(QWidget):
             )
 
             self.book_list.addItem(item)
+
+            self.book_list.setItemWidget(
+                item,
+                widget
+            )
 
     def open_add_book_dialog(self):
         dialog = AddBookDialog()
