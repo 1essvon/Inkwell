@@ -6,9 +6,18 @@
 
     background: #252525;
 
-    border: 1px solid #3a3a3a;
+    border: 1px solid #343434;
 
     border-radius: 12px;
 
-    padding: 8px;
+    padding: 14px;
+}
+
+/* ===========================
+   Info Card
+=========================== */
+
+#infoCard {
+
+    min-height: 140px;
 }

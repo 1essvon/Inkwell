@@ -1,22 +1,33 @@
 QMainWindow {
-    background: #F7F5F2;
+    background: #1E1E1E;
 }
 
 QWidget {
-    background: #F7F5F2;
-    color: #222222;
+    background: #1E1E1E;
+    color: #FFFFFF;
     font-size: 13px;
+    font-family: "Inter", "Segoe UI", sans-serif;
 }
 
 QPushButton {
-    background: white;
-    border: 1px solid #D8D8D8;
+
+    background: #252525;
+
+    border: 1px solid #3A3A3A;
+
     border-radius: 8px;
-    padding: 8px;
+
+    padding: 8px 12px;
 }
 
 QPushButton:hover {
-    background: #EFEFEF;
+
+    background: #303030;
+}
+
+QPushButton:pressed {
+
+    background: #383838;
 }
 
 QLineEdit,
@@ -25,10 +36,13 @@ QSpinBox,
 QComboBox,
 QListWidget {
 
-    background: white;
-    border: 1px solid #D8D8D8;
+    background: #252525;
+
+    border: 1px solid #3A3A3A;
+
     border-radius: 8px;
-    padding: 6px;
+
+    padding: 8px;
 }
 
 /* ===========================
@@ -51,30 +65,6 @@ QListWidget {
     font-size: 30px;
 
     font-weight: bold;
-}
-
-/* ===========================
-   Progress Bar
-=========================== */
-
-QProgressBar {
-
-    border: 1px solid #444;
-
-    border-radius: 6px;
-
-    background: #262626;
-
-    text-align: center;
-
-    height: 18px;
-}
-
-QProgressBar::chunk {
-
-    background-color: #4a90e2;
-
-    border-radius: 5px;
 }
 
 /* ===========================

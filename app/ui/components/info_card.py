@@ -1,8 +1,7 @@
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
     QLabel
 )
+
 from app.ui.components.base_card import (
     BaseCard
 )
@@ -12,12 +11,6 @@ class InfoCard(BaseCard):
 
     def __init__(self):
         super().__init__()
-
-        self.setObjectName(
-            "infoCard"
-        )
-
-        layout = QVBoxLayout()
 
         self.title = QLabel()
 
@@ -37,6 +30,10 @@ class InfoCard(BaseCard):
             "cardContent"
         )
 
+        self.content.setWordWrap(
+            True
+        )
+
         self.layout.addWidget(
             self.title
         )
@@ -45,13 +42,13 @@ class InfoCard(BaseCard):
             self.subtitle
         )
 
+        self.layout.addSpacing(
+            8
+        )
+
         self.layout.addWidget(
             self.content
         )
-
-        self.layout.addStretch()
-
-        self.setLayout(layout)
 
     def set_data(
         self,
@@ -60,8 +57,14 @@ class InfoCard(BaseCard):
         content
     ):
 
-        self.title.setText(title)
+        self.title.setText(
+            title
+        )
 
-        self.subtitle.setText(subtitle)
+        self.subtitle.setText(
+            subtitle
+        )
 
-        self.content.setText(content)
+        self.content.setText(
+            content
+        )

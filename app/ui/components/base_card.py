@@ -16,13 +16,13 @@ class BaseCard(QWidget):
         self.layout = QVBoxLayout()
 
         self.layout.setContentsMargins(
-            16,
-            16,
-            16,
-            16
+            20,
+            20,
+            20,
+            20
         )
 
-        self.layout.setSpacing(8)
+        self.layout.setSpacing(12)
 
         self.setLayout(
             self.layout

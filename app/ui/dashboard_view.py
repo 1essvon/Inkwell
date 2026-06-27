@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -17,6 +19,7 @@ from app.ui.components.info_card import (
 from app.services.statistics_service import (
     StatisticsService
 )
+
 from app.services.book_service import (
     BookService
 )
@@ -29,13 +32,49 @@ class DashboardView(QWidget):
 
         layout = QVBoxLayout()
 
+        # ======================
+        # Title
+        # ======================
+
         self.title = QLabel("Dashboard")
 
         self.title.setObjectName(
             "pageTitle"
         )
 
-        layout.addWidget(self.title)
+        layout.addWidget(
+            self.title
+        )
+
+        # ======================
+        # Greeting
+        # ======================
+
+        self.greeting = QLabel()
+
+        self.greeting.setObjectName(
+            "dashboardGreeting"
+        )
+
+        layout.addWidget(
+            self.greeting
+        )
+
+        self.subtitle = QLabel(
+            "Continue where you left off."
+        )
+
+        self.subtitle.setObjectName(
+            "dashboardSubtitle"
+        )
+
+        layout.addWidget(
+            self.subtitle
+        )
+
+        # ======================
+        # Continue Reading
+        # ======================
 
         self.current_card = InfoCard()
 
@@ -49,15 +88,27 @@ class DashboardView(QWidget):
             self.progress
         )
 
-        layout.addWidget(
-            self.current_card
+        layout.addSpacing(
+            12
         )
 
-        layout.addWidget(
-            self.progress
-        )
+        # ======================
+        # Statistics Grid
+        # ======================
 
         self.stats_layout = QGridLayout()
+
+        self.stats_layout.setHorizontalSpacing(
+            20
+        )
+
+        self.stats_layout.setVerticalSpacing(
+            20
+        )
+
+        layout.addSpacing(
+            36
+        )
 
         layout.addLayout(
             self.stats_layout
@@ -65,11 +116,39 @@ class DashboardView(QWidget):
 
         layout.addStretch()
 
-        self.setLayout(layout)
+        self.setLayout(
+            layout
+        )
 
         self.refresh()
 
     def refresh(self):
+
+        # ======================
+        # Greeting
+        # ======================
+
+        hour = datetime.now().hour
+
+        if hour < 12:
+
+            greeting = "Good Morning"
+
+        elif hour < 18:
+
+            greeting = "Good Afternoon"
+
+        else:
+
+            greeting = "Good Evening"
+
+        self.greeting.setText(
+            greeting
+        )
+
+        # ======================
+        # Continue Reading
+        # ======================
 
         book = BookService.get_current_reading()
 
@@ -105,13 +184,21 @@ class DashboardView(QWidget):
 
             )
 
-            self.progress.setValue(0)
+            self.progress.setValue(
+                0
+            )
+
+        # ======================
+        # Statistics
+        # ======================
 
         stats = StatisticsService.get_statistics()
 
         while self.stats_layout.count():
 
-            item = self.stats_layout.takeAt(0)
+            item = self.stats_layout.takeAt(
+                0
+            )
 
             if item.widget():
 
@@ -139,14 +226,13 @@ class DashboardView(QWidget):
 
             col = index % 3
 
+            card = StatCard(
+                title,
+                str(value)
+            )
+
             self.stats_layout.addWidget(
-
-                StatCard(
-                    title,
-                    str(value)
-                ),
-
+                card,
                 row,
-
                 col
             )
