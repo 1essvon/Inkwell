@@ -1,0 +1,73 @@
+/* ===========================
+   Badge
+=========================== */
+
+#badgeReading {
+
+    background: #2B4C7E;
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+#badgeFinished {
+
+    background: #2E7D32;
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+#badgeWaiting {
+
+    background: #555555;
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+#badgeDanger {
+
+    background: #9B2C2C;
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+#badgeDefault {
+
+    background: #444444;
+    color: white;
+
+    border-radius: 8px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}

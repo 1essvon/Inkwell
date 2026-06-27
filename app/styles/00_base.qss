@@ -119,3 +119,12 @@ QListWidget {
 
     color: white;
 }
+
+QListWidget {
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+}

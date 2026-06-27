@@ -12,7 +12,9 @@ QProgressBar {
 
     text-align: center;
 
-    height: 18px;
+    min-height: 10px;
+
+    max-height: 10px;
 }
 
 QProgressBar::chunk {
