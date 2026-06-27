@@ -1,0 +1,22 @@
+/* ==========================
+   Empty State
+========================== */
+
+#emptyIcon {
+
+    font-size: 42px;
+}
+
+#emptyTitle {
+
+    font-size: 22px;
+
+    font-weight: bold;
+}
+
+#emptySubtitle {
+
+    color: #9A9A9A;
+
+    font-size: 14px;
+}

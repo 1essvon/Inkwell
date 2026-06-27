@@ -3,13 +3,15 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QLabel,
-    QListWidget,
-    QListWidgetItem,
     QPushButton,
     QMessageBox
 )
+from app.ui.library.book_list_widget import (
+    BookListWidget
+)
 
-from app.ui.components.book_card import BookCard
+from app.services.book_service import BookService
+
 from app.ui.book_detail_view import BookDetailView
 
 from app.ui.dialogs.add_book_dialog import AddBookDialog
@@ -85,16 +87,16 @@ class LibraryView(QWidget):
         # Book List
         # ======================
 
-        self.book_list = QListWidget()
-
-        self.book_list.setSpacing(
-            10
-        )
+        self.book_list = BookListWidget()
 
         root_layout.addWidget(
             self.book_list,
             2
         )
+
+        @property
+        def list(self):
+            return self.list_widget
 
         # ======================
         # Detail
@@ -127,7 +129,7 @@ class LibraryView(QWidget):
             self.delete_selected_book
         )
 
-        self.book_list.itemClicked.connect(
+        self.book_list.list.itemClicked.connect(
             self.show_book_details
         )
 
@@ -137,41 +139,9 @@ class LibraryView(QWidget):
     # Data
     # ==========================
 
-    def load_books(self):
-
-        self.book_list.clear()
-
-        books = BookService.get_all_books()
-
-        for book in books:
-
-            widget = BookCard(
-                book
-            )
-
-            item = QListWidgetItem()
-
-            item.setSizeHint(
-                widget.sizeHint()
-            )
-
-            item.setData(
-                1,
-                book.id
-            )
-
-            self.book_list.addItem(
-                item
-            )
-
-            self.book_list.setItemWidget(
-                item,
-                widget
-            )
-
     def refresh(self):
 
-        self.load_books()
+        self.book_list.refresh()
 
         if self.selected_book:
 
@@ -193,9 +163,7 @@ class LibraryView(QWidget):
 
     def show_book_details(self, item):
 
-        book = BookService.get_book(
-            item.data(1)
-        )
+        book = self.book_list.current_book()
 
         if book:
 
