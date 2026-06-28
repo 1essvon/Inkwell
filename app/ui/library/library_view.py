@@ -26,7 +26,8 @@ from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
     QMessageBox,
-    QSplitter
+    QSplitter,
+    QComboBox
 )
 
 from app.services.book_service import BookService
@@ -125,6 +126,21 @@ class LibraryView(QWidget):
 
         layout.addWidget(
             self.search_bar
+        )
+
+        self.filter_box = QComboBox()
+
+        self.filter_box.addItems([
+            "All",
+            "Reading",
+            "Want To Read",
+            "Completed",
+            "Paused",
+            "Dropped"
+        ])
+
+        layout.addWidget(
+            self.filter_box
         )
 
         layout.addSpacing(12)

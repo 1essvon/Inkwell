@@ -3,6 +3,8 @@ from PySide6.QtWidgets import (
     QProgressBar
 )
 
+from app.constants.book_status import BookStatus
+from app.constants.book_status import BookStatus
 from app.models.book import Book
 
 from app.ui.components.base_card import (
@@ -84,42 +86,40 @@ class BookCard(BaseCard):
         # Status
         # ======================
 
-        if total == 0:
-
-            status = "Unknown"
-
-        elif current == 0:
-
-            status = "Want To Read"
-
-        elif current >= total:
-
-            status = "Finished"
-
-        else:
-
-            status = "Reading"
+        status = book.status
 
         self.status = QLabel(
             status
         )
 
-        if status == "Reading":
+        if status == BookStatus.READING:
 
             self.status.setObjectName(
                 "statusReading"
             )
 
-        elif status == "Finished":
+        elif status == BookStatus.COMPLETED:
 
             self.status.setObjectName(
                 "statusFinished"
             )
 
-        elif status == "Want To Read":
+        elif status == BookStatus.WANT_TO_READ:
 
             self.status.setObjectName(
                 "statusWaiting"
+            )
+
+        elif status == BookStatus.PAUSED:
+
+            self.status.setObjectName(
+                "statusPaused"
+            )
+
+        elif status == BookStatus.DROPPED:
+
+            self.status.setObjectName(
+                "statusDropped"
             )
 
         else:

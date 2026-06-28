@@ -4,11 +4,11 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
-
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 from app.database.base import Base
+from app.constants.book_status import BookStatus
 
 
 class Book(Base):
@@ -62,14 +62,15 @@ class Book(Base):
         nullable=True
     )
 
-    status: Mapped[str] = mapped_column(
-        String(50),
-        default="Want To Read"
-    )
-
     current_page: Mapped[int] = mapped_column(
         Integer,
         default=0
+    )
+
+    status: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default=BookStatus.WANT_TO_READ
     )
 
     rating: Mapped[int | None] = mapped_column(

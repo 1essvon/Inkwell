@@ -16,12 +16,17 @@ Does NOT:
     - Menghapus data
 """
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import (
+    Qt,
+    Signal
+)
+
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QListWidget,
     QListWidgetItem,
+    QLabel,
     QSizePolicy
 )
 
@@ -58,6 +63,16 @@ class BookListWidget(QWidget):
 
         self.list_widget = QListWidget()
 
+        self.empty_label = QLabel(
+            "🔍\n\nNo books found.\n\nTry another keyword."
+        )
+
+        self.empty_label.setAlignment(
+            Qt.AlignCenter
+        )
+
+        self.empty_label.hide()
+
         self.list_widget.setSpacing(10)
 
         self.list_widget.setSizePolicy(
@@ -71,6 +86,10 @@ class BookListWidget(QWidget):
 
         layout.addWidget(
             self.list_widget
+        )
+
+        layout.addWidget(
+            self.empty_label
         )
 
         self.setLayout(
@@ -90,8 +109,6 @@ class BookListWidget(QWidget):
         self,
         keyword=""
     ):
-
-        books = BookService.get_all_books()
 
         self.list_widget.clear()
 
@@ -116,6 +133,30 @@ class BookListWidget(QWidget):
                     continue
 
             self.add_book(book)
+
+            # ----------------------------
+            # Auto Select
+            # ----------------------------
+
+            if self.list_widget.count() == 1:
+
+                self.list_widget.setCurrentRow(0)
+
+                self.on_item_clicked(
+                    self.list_widget.currentItem()
+                )
+
+            if self.list_widget.count() == 0:
+
+                self.list_widget.hide()
+
+                self.empty_label.show()
+
+            else:
+
+                self.empty_label.hide()
+
+                self.list_widget.show()
 
     def add_book(
         self,
