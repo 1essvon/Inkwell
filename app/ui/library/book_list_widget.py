@@ -28,6 +28,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem
 )
+from PySide6.QtCore import Signal
 
 from app.models import book
 from app.services.book_service import BookService
@@ -46,6 +47,7 @@ class BookListWidget(QWidget):
     Widget ini hanya bertanggung jawab
     terhadap list buku.
     """
+    bookSelected = Signal(object)
 
     def __init__(self):
         """
@@ -71,6 +73,10 @@ class BookListWidget(QWidget):
         self.layout = QVBoxLayout()
 
         self.list_widget = QListWidget()
+
+        self.list_widget.itemClicked.connect(
+            self.on_item_clicked
+        )
 
         self.list_widget.setSpacing(
             10
@@ -172,4 +178,25 @@ class BookListWidget(QWidget):
         self.list_widget.setItemWidget(
             item,
             card
+        )
+
+    # ----------------------------------
+    # Events
+    # ----------------------------------
+
+    def on_item_clicked(
+        self,
+        item
+    ):
+        """
+        Dipanggil saat user
+        memilih sebuah buku.
+        """
+
+        book = BookService.get_book(
+            item.data(1)
+        )
+
+        self.bookSelected.emit(
+            book
         )

@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
     QStackedWidget
 )
 from app.ui.dashboard_view import DashboardView
-from app.ui.library_view import LibraryView
+from app.ui.library.library_view import LibraryView
 from app.ui.journal_view import JournalView
 from app.ui.statistics_view import (
     StatisticsView

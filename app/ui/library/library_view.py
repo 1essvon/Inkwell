@@ -12,7 +12,7 @@ from app.ui.library.book_list_widget import (
 
 from app.services.book_service import BookService
 
-from app.ui.book_detail_view import BookDetailView
+from app.ui.library.book_detail_widget import BookDetailWidget
 
 from app.ui.dialogs.add_book_dialog import AddBookDialog
 from app.ui.dialogs.edit_book_dialog import EditBookDialog
@@ -102,7 +102,7 @@ class LibraryView(QWidget):
         # Detail
         # ======================
 
-        self.detail_view = BookDetailView()
+        self.detail_view = BookDetailWidget()
 
         root_layout.addWidget(
             self.detail_view,
@@ -129,8 +129,8 @@ class LibraryView(QWidget):
             self.delete_selected_book
         )
 
-        self.book_list.list.itemClicked.connect(
-            self.show_book_details
+        self.book_list.bookSelected.connect(
+            self.detail_view.set_book
         )
 
         self.refresh()
@@ -160,18 +160,6 @@ class LibraryView(QWidget):
     # ==========================
     # Events
     # ==========================
-
-    def show_book_details(self, item):
-
-        book = self.book_list.current_book()
-
-        if book:
-
-            self.selected_book = book
-
-            self.detail_view.display_book(
-                book
-            )
 
     def open_add_book_dialog(self):
 
