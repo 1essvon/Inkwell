@@ -1,37 +1,77 @@
+"""
+File:
+    library_view.py
+
+Purpose:
+    Halaman utama Library.
+
+Responsibilities:
+    - Menyusun layout
+    - Menghubungkan widget
+    - Membuka dialog
+    - Menghapus buku
+
+Does NOT:
+    - Membuat BookCard
+    - Menampilkan detail buku
+    - Mengelola QListWidget
+"""
+
+from PySide6.QtCore import Qt
+
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QMessageBox
+    QMessageBox,
+    QSplitter
 )
+
+from app.services.book_service import BookService
+
 from app.ui.library.book_list_widget import (
     BookListWidget
 )
 
-from app.services.book_service import BookService
+from app.ui.library.book_detail_widget import (
+    BookDetailWidget
+)
 
-from app.ui.library.book_detail_widget import BookDetailWidget
+from app.ui.dialogs.add_book_dialog import (
+    AddBookDialog
+)
 
-from app.ui.dialogs.add_book_dialog import AddBookDialog
-from app.ui.dialogs.edit_book_dialog import EditBookDialog
-
-from app.services.book_service import BookService
+from app.ui.dialogs.edit_book_dialog import (
+    EditBookDialog
+)
 
 
 class LibraryView(QWidget):
+
+    # ----------------------------------
+    # Initialization
+    # ----------------------------------
 
     def __init__(self):
         super().__init__()
 
         self.selected_book = None
 
-        root_layout = QVBoxLayout()
+        self.setup_ui()
 
-        # ======================
-        # Title
-        # ======================
+        self.setup_connections()
+
+        self.refresh()
+
+    # ----------------------------------
+    # UI
+    # ----------------------------------
+
+    def setup_ui(self):
+
+        layout = QVBoxLayout()
 
         title = QLabel("Library")
 
@@ -39,17 +79,11 @@ class LibraryView(QWidget):
             "pageTitle"
         )
 
-        root_layout.addWidget(
-            title
-        )
-
-        # ======================
-        # Toolbar
-        # ======================
+        layout.addWidget(title)
 
         toolbar = QHBoxLayout()
 
-        self.add_book_button = QPushButton(
+        self.add_button = QPushButton(
             "Add Book"
         )
 
@@ -62,7 +96,7 @@ class LibraryView(QWidget):
         )
 
         toolbar.addWidget(
-            self.add_book_button
+            self.add_button
         )
 
         toolbar.addWidget(
@@ -75,49 +109,57 @@ class LibraryView(QWidget):
 
         toolbar.addStretch()
 
-        root_layout.addLayout(
+        layout.addLayout(
             toolbar
         )
 
-        root_layout.addSpacing(
+        layout.addSpacing(
             12
         )
 
-        # ======================
-        # Book List
-        # ======================
-
         self.book_list = BookListWidget()
-
-        root_layout.addWidget(
-            self.book_list,
-            2
-        )
-
-        @property
-        def list(self):
-            return self.list_widget
-
-        # ======================
-        # Detail
-        # ======================
 
         self.detail_view = BookDetailWidget()
 
-        root_layout.addWidget(
-            self.detail_view,
+        self.splitter = QSplitter(
+            Qt.Horizontal
+        )
+
+        self.splitter.setChildrenCollapsible(False)
+
+        self.splitter.setStretchFactor(0, 1)
+
+        self.splitter.setStretchFactor(1, 1)
+
+        self.splitter.addWidget(
+            self.book_list
+        )
+
+        self.splitter.addWidget(
+            self.detail_view
+        )
+
+        self.splitter.setSizes([
+            450,
+            650
+        ])
+
+        layout.addWidget(
+            self.splitter,
             1
         )
 
         self.setLayout(
-            root_layout
+            layout
         )
 
-        # ======================
-        # Events
-        # ======================
+    # ----------------------------------
+    # Connections
+    # ----------------------------------
 
-        self.add_book_button.clicked.connect(
+    def setup_connections(self):
+
+        self.add_button.clicked.connect(
             self.open_add_book_dialog
         )
 
@@ -130,14 +172,31 @@ class LibraryView(QWidget):
         )
 
         self.book_list.bookSelected.connect(
-            self.detail_view.set_book
+            self.on_book_selected
         )
 
-        self.refresh()
+    # ----------------------------------
+    # Events
+    # ----------------------------------
 
-    # ==========================
+    def on_book_selected(
+        self,
+        book
+    ):
+        """
+        Dipanggil saat user
+        memilih sebuah buku.
+        """
+
+        self.selected_book = book
+
+        self.detail_view.set_book(
+            book
+        )
+
+    # ----------------------------------
     # Data
-    # ==========================
+    # ----------------------------------
 
     def refresh(self):
 
@@ -153,13 +212,13 @@ class LibraryView(QWidget):
 
                 self.selected_book = refreshed
 
-                self.detail_view.display_book(
+                self.detail_view.set_book(
                     refreshed
                 )
 
-    # ==========================
-    # Events
-    # ==========================
+    # ----------------------------------
+    # Dialog
+    # ----------------------------------
 
     def open_add_book_dialog(self):
 
@@ -171,7 +230,7 @@ class LibraryView(QWidget):
 
     def open_edit_dialog(self):
 
-        if not self.selected_book:
+        if self.selected_book is None:
 
             return
 
@@ -183,9 +242,13 @@ class LibraryView(QWidget):
 
             self.refresh()
 
+    # ----------------------------------
+    # Delete
+    # ----------------------------------
+
     def delete_selected_book(self):
 
-        if not self.selected_book:
+        if self.selected_book is None:
 
             return
 
