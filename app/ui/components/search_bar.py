@@ -1,51 +1,81 @@
+"""
+File:
+    search_bar.py
+
+Purpose:
+    Search bar reusable untuk seluruh aplikasi.
+
+Responsibilities:
+    - Menampilkan input pencarian
+    - Mengirim signal saat teks berubah
+
+Does NOT:
+    - Melakukan pencarian data
+"""
+
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import (
+    QWidget,
     QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QWidget
+    QLineEdit
 )
 
 
 class SearchBar(QWidget):
 
-    def __init__(
-        self,
-        placeholder="Search..."
-    ):
+    textChanged = Signal(str)
+
+    # ----------------------------------
+    # Initialization
+    # ----------------------------------
+
+    def __init__(self):
         super().__init__()
+
+        self.setup_ui()
+
+        self.setup_connections()
+
+    # ----------------------------------
+    # UI
+    # ----------------------------------
+
+    def setup_ui(self):
 
         layout = QHBoxLayout()
 
         layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0
-        )
-
-        layout.setSpacing(8)
-
-        icon = QLabel("🔍")
-
-        icon.setObjectName(
-            "searchIcon"
+            0, 0, 0, 0
         )
 
         self.input = QLineEdit()
 
         self.input.setPlaceholderText(
-            placeholder
+            "Search books..."
         )
 
-        self.input.setObjectName(
-            "searchInput"
+        layout.addWidget(
+            self.input
         )
 
-        layout.addWidget(icon)
+        self.setLayout(
+            layout
+        )
 
-        layout.addWidget(self.input)
+    # ----------------------------------
+    # Connections
+    # ----------------------------------
 
-        self.setLayout(layout)
+    def setup_connections(self):
+
+        self.input.textChanged.connect(
+            self.textChanged.emit
+        )
+
+    # ----------------------------------
+    # Public API
+    # ----------------------------------
 
     def text(self):
 
@@ -54,7 +84,3 @@ class SearchBar(QWidget):
     def clear(self):
 
         self.input.clear()
-
-    def line_edit(self):
-
-        return self.input

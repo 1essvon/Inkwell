@@ -86,13 +86,34 @@ class BookListWidget(QWidget):
     # Data
     # ----------------------------------
 
-    def refresh(self):
+    def refresh(
+        self,
+        keyword=""
+    ):
+
+        books = BookService.get_all_books()
 
         self.list_widget.clear()
 
         books = BookService.get_all_books()
 
+        keyword = keyword.lower().strip()
+
         for book in books:
+
+            if keyword:
+
+                if (
+
+                    keyword not in book.title.lower()
+
+                    and
+
+                    keyword not in book.author.lower()
+
+                ):
+
+                    continue
 
             self.add_book(book)
 

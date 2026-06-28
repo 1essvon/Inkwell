@@ -47,6 +47,10 @@ from app.ui.dialogs.edit_book_dialog import (
     EditBookDialog
 )
 
+from app.ui.components.search_bar import (
+    SearchBar
+)
+
 
 class LibraryView(QWidget):
 
@@ -117,6 +121,14 @@ class LibraryView(QWidget):
             12
         )
 
+        self.search_bar = SearchBar()
+
+        layout.addWidget(
+            self.search_bar
+        )
+
+        layout.addSpacing(12)
+
         self.book_list = BookListWidget()
 
         self.detail_view = BookDetailWidget()
@@ -175,6 +187,10 @@ class LibraryView(QWidget):
             self.on_book_selected
         )
 
+        self.search_bar.textChanged.connect(
+            self.on_search_changed
+        )
+
     # ----------------------------------
     # Events
     # ----------------------------------
@@ -192,6 +208,18 @@ class LibraryView(QWidget):
 
         self.detail_view.set_book(
             book
+        )
+
+    def on_search_changed(
+        self,
+        text
+    ):
+        """
+        Dipanggil saat isi SearchBar berubah.
+        """
+
+        self.book_list.refresh(
+            text
         )
 
     # ----------------------------------
