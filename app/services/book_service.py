@@ -221,7 +221,7 @@ class BookService:
     # ----------------------------------
     # Reading
     # ----------------------------------
-
+    
     @staticmethod
     def get_current_reading():
 

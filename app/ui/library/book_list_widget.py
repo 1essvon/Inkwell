@@ -107,7 +107,9 @@ class BookListWidget(QWidget):
 
     def refresh(
         self,
-        keyword=""
+        keyword="",
+        status="All",
+        selected_id=None
     ):
 
         self.list_widget.clear()
@@ -117,6 +119,10 @@ class BookListWidget(QWidget):
         keyword = keyword.lower().strip()
 
         for book in books:
+
+            # ----------------------------
+            # Search Filter
+            # ----------------------------
 
             if keyword:
 
@@ -132,31 +138,35 @@ class BookListWidget(QWidget):
 
                     continue
 
+            # ----------------------------
+            # Status Filter
+            # ----------------------------
+
+            if status != "All":
+
+                if book.status != status:
+
+                    continue
+
+            # ----------------------------
+            # Add Book
+            # ----------------------------
+
             self.add_book(book)
 
-            # ----------------------------
-            # Auto Select
-            # ----------------------------
+            if selected_id == book.id:
 
-            if self.list_widget.count() == 1:
-
-                self.list_widget.setCurrentRow(0)
-
-                self.on_item_clicked(
-                    self.list_widget.currentItem()
+                item = self.list_widget.item(
+                    self.list_widget.count() - 1
                 )
 
-            if self.list_widget.count() == 0:
+                self.list_widget.setCurrentItem(
+                    item
+                )
 
-                self.list_widget.hide()
-
-                self.empty_label.show()
-
-            else:
-
-                self.empty_label.hide()
-
-                self.list_widget.show()
+                self.on_item_clicked(
+                    item
+                )
 
     def add_book(
         self,

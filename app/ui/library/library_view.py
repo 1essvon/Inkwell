@@ -78,13 +78,23 @@ class LibraryView(QWidget):
 
         layout = QVBoxLayout()
 
+        # ======================
+        # Title
+        # ======================
+
         title = QLabel("Library")
 
         title.setObjectName(
             "pageTitle"
         )
 
-        layout.addWidget(title)
+        layout.addWidget(
+            title
+        )
+
+        # ======================
+        # Toolbar
+        # ======================
 
         toolbar = QHBoxLayout()
 
@@ -122,10 +132,17 @@ class LibraryView(QWidget):
             12
         )
 
+        # ======================
+        # Search / Filter / Sort
+        # ======================
+
+        controls_layout = QHBoxLayout()
+
         self.search_bar = SearchBar()
 
-        layout.addWidget(
-            self.search_bar
+        controls_layout.addWidget(
+            self.search_bar,
+            1
         )
 
         self.filter_box = QComboBox()
@@ -139,11 +156,34 @@ class LibraryView(QWidget):
             "Dropped"
         ])
 
-        layout.addWidget(
+        controls_layout.addWidget(
             self.filter_box
         )
 
-        layout.addSpacing(12)
+        self.sort_box = QComboBox()
+
+        self.sort_box.addItems([
+            "Title",
+            "Author",
+            "Recently Added",
+            "Recently Updated"
+        ])
+
+        controls_layout.addWidget(
+            self.sort_box
+        )
+
+        layout.addLayout(
+            controls_layout
+        )
+
+        layout.addSpacing(
+            12
+        )
+
+        # ======================
+        # Splitter
+        # ======================
 
         self.book_list = BookListWidget()
 
@@ -153,11 +193,9 @@ class LibraryView(QWidget):
             Qt.Horizontal
         )
 
-        self.splitter.setChildrenCollapsible(False)
-
-        self.splitter.setStretchFactor(0, 1)
-
-        self.splitter.setStretchFactor(1, 1)
+        self.splitter.setChildrenCollapsible(
+            False
+        )
 
         self.splitter.addWidget(
             self.book_list
@@ -165,6 +203,16 @@ class LibraryView(QWidget):
 
         self.splitter.addWidget(
             self.detail_view
+        )
+
+        self.splitter.setStretchFactor(
+            0,
+            1
+        )
+
+        self.splitter.setStretchFactor(
+            1,
+            1
         )
 
         self.splitter.setSizes([
@@ -207,6 +255,10 @@ class LibraryView(QWidget):
             self.on_search_changed
         )
 
+        self.filter_box.currentTextChanged.connect(
+            self.refresh
+        )
+
     # ----------------------------------
     # Events
     # ----------------------------------
@@ -225,6 +277,7 @@ class LibraryView(QWidget):
         self.detail_view.set_book(
             book
         )
+        
 
     def on_search_changed(
         self,
@@ -238,27 +291,35 @@ class LibraryView(QWidget):
             text
         )
 
+        self.sort_box.currentTextChanged.connect(
+            self.refresh
+        )
+
     # ----------------------------------
     # Data
     # ----------------------------------
 
     def refresh(self):
 
-        self.book_list.refresh()
+        keyword = self.search_bar.text()
+
+        status = self.filter_box.currentText()
+
+        selected_id = None
 
         if self.selected_book:
 
-            refreshed = BookService.get_book(
-                self.selected_book.id
-            )
+            selected_id = self.selected_book.id
 
-            if refreshed:
+        self.book_list.refresh(
 
-                self.selected_book = refreshed
+            keyword=keyword,
 
-                self.detail_view.set_book(
-                    refreshed
-                )
+            status=status,
+
+            selected_id=selected_id
+
+        )
 
     # ----------------------------------
     # Dialog
