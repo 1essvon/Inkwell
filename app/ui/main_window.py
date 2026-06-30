@@ -14,6 +14,9 @@ from app.ui.statistics_view import (
     StatisticsView
 )
 from app.ui.focus_view import FocusView
+from app.ui.reading.reading_session_view import (
+    ReadingSessionView
+)
 
 
 class MainWindow(QMainWindow):
@@ -65,6 +68,10 @@ class MainWindow(QMainWindow):
             "Library"
         )
 
+        self.reading_button = QPushButton(
+            "Reading Session"
+        )
+
         self.journal_button = QPushButton(
             "Journal"
         )
@@ -87,6 +94,10 @@ class MainWindow(QMainWindow):
 
         sidebar.addWidget(
             self.library_button
+        )
+
+        sidebar.addWidget(
+            self.reading_button
         )
 
         sidebar.addWidget(
@@ -121,6 +132,8 @@ class MainWindow(QMainWindow):
 
         self.library_page = LibraryView()
 
+        self.reading_page = ReadingSessionView()
+
         self.journal_page = JournalView()
 
         self.statistics_page = StatisticsView()
@@ -137,6 +150,10 @@ class MainWindow(QMainWindow):
 
         self.pages.addWidget(
             self.library_page
+        )
+
+        self.pages.addWidget(
+            self.reading_page
         )
 
         self.pages.addWidget(
@@ -165,6 +182,10 @@ class MainWindow(QMainWindow):
 
         self.library_button.clicked.connect(
             self.show_library
+        )
+
+        self.reading_button.clicked.connect(
+            self.show_reading
         )
 
         self.journal_button.clicked.connect(
@@ -215,11 +236,19 @@ class MainWindow(QMainWindow):
             1
         )
 
+    def show_reading(self):
+
+        self.reading_page.refresh()
+
+        self.pages.setCurrentIndex(
+            2
+        )
+
 
     def show_journal(self):
 
         self.pages.setCurrentIndex(
-            2
+            3
         )
 
 
@@ -228,19 +257,19 @@ class MainWindow(QMainWindow):
         self.statistics_page.refresh()
 
         self.pages.setCurrentIndex(
-            3
+            4
         )
 
 
     def show_focus(self):
 
         self.pages.setCurrentIndex(
-            4
+            5
         )
 
 
     def show_settings(self):
 
         self.pages.setCurrentIndex(
-            5
+            6
         )

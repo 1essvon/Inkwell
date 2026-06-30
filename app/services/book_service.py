@@ -314,3 +314,30 @@ class BookService:
         finally:
 
             session.close()
+
+    @staticmethod
+    def get_reading_books():
+
+        session = SessionLocal()
+
+        try:
+
+            return (
+
+                session.query(Book)
+
+                .filter(
+                    Book.status == BookStatus.READING
+                )
+
+                .order_by(
+                    Book.updated_at.desc()
+                )
+
+                .all()
+
+            )
+
+        finally:
+
+            session.close()
