@@ -252,3 +252,65 @@ class BookService:
         finally:
 
             session.close()
+
+    @staticmethod
+    def get_status_summary():
+
+        session = SessionLocal()
+
+        try:
+
+            books = session.query(Book).all()
+
+            summary = {
+
+                BookStatus.READING: 0,
+
+                BookStatus.WANT_TO_READ: 0,
+
+                BookStatus.COMPLETED: 0,
+
+                BookStatus.PAUSED: 0,
+
+                BookStatus.DROPPED: 0,
+
+            }
+
+            for book in books:
+
+                if book.status in summary:
+
+                    summary[book.status] += 1
+
+            return summary
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def get_recent_books(
+        limit=5
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            return (
+
+                session.query(Book)
+
+                .order_by(
+                    Book.updated_at.desc()
+                )
+
+                .limit(limit)
+
+                .all()
+
+            )
+
+        finally:
+
+            session.close()

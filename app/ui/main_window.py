@@ -160,27 +160,27 @@ class MainWindow(QMainWindow):
         # ======================
 
         self.dashboard_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(0)
+            self.show_dashboard
         )
 
         self.library_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(1)
+            self.show_library
         )
 
         self.journal_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(2)
+            self.show_journal
         )
 
         self.statistics_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(3)
+            self.show_statistics
         )
 
         self.focus_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(4)
+            self.show_focus
         )
 
         self.settings_button.clicked.connect(
-            lambda: self.pages.setCurrentIndex(5)
+            self.show_settings
         )
 
         main_layout.addWidget(sidebar_widget)
@@ -197,3 +197,50 @@ class MainWindow(QMainWindow):
         self.library_page.refresh()
 
         self.statistics_page.refresh()
+
+    def show_dashboard(self):
+
+        self.dashboard_page.refresh()
+
+        self.pages.setCurrentIndex(
+            0
+        )
+
+
+    def show_library(self):
+
+        self.library_page.refresh()
+
+        self.pages.setCurrentIndex(
+            1
+        )
+
+
+    def show_journal(self):
+
+        self.pages.setCurrentIndex(
+            2
+        )
+
+
+    def show_statistics(self):
+
+        self.statistics_page.refresh()
+
+        self.pages.setCurrentIndex(
+            3
+        )
+
+
+    def show_focus(self):
+
+        self.pages.setCurrentIndex(
+            4
+        )
+
+
+    def show_settings(self):
+
+        self.pages.setCurrentIndex(
+            5
+        )
