@@ -109,12 +109,39 @@ class BookListWidget(QWidget):
         self,
         keyword="",
         status="All",
-        selected_id=None
+        selected_id=None,
+        sort_by="Title"
     ):
 
         self.list_widget.clear()
 
         books = BookService.get_all_books()
+
+        if sort_by == "Title":
+
+            books.sort(
+                key=lambda b: (b.title or "").lower()
+            )
+
+        elif sort_by == "Author":
+
+            books.sort(
+                key=lambda b: (b.author or "").lower()
+            )
+
+        elif sort_by == "Recently Added":
+
+            books.sort(
+                key=lambda b: b.id,
+                reverse=True
+            )
+
+        elif sort_by == "Recently Updated":
+
+            books.sort(
+                key=lambda b: b.updated_at,
+                reverse=True
+            )
 
         keyword = keyword.lower().strip()
 

@@ -259,6 +259,10 @@ class LibraryView(QWidget):
             self.refresh
         )
 
+        self.sort_box.currentTextChanged.connect(
+            self.refresh
+        )
+
     # ----------------------------------
     # Events
     # ----------------------------------
@@ -305,6 +309,8 @@ class LibraryView(QWidget):
 
         status = self.filter_box.currentText()
 
+        sort_by = self.sort_box.currentText()
+
         selected_id = None
 
         if self.selected_book:
@@ -317,7 +323,9 @@ class LibraryView(QWidget):
 
             status=status,
 
-            selected_id=selected_id
+            selected_id=selected_id,
+
+            sort_by=sort_by
 
         )
 
