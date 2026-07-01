@@ -2,7 +2,9 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QPushButton,
-    QListWidget
+    QListWidget,
+    QLabel,
+    QComboBox
 )
 from PySide6.QtWidgets import QListWidgetItem
 from PySide6.QtWidgets import QHBoxLayout
@@ -12,6 +14,9 @@ from app.ui.dialogs.add_note_dialog import AddNoteDialog
 from app.ui.journal.note_detail_view import (
     NoteDetailView
 )
+from app.services.book_service import (
+    BookService
+)
 
 
 class NotesView(QWidget):
@@ -20,6 +25,16 @@ class NotesView(QWidget):
         super().__init__()
 
         layout = QVBoxLayout()
+
+        layout.addWidget(
+            QLabel("Book")
+        )
+
+        self.book_filter = QComboBox()
+
+        layout.addWidget(
+            self.book_filter
+        )
 
         self.add_note_button = QPushButton(
             "Add Note"
@@ -75,18 +90,54 @@ class NotesView(QWidget):
             content_layout
         )
 
+        self.load_books()
+
+        self.book_filter.currentIndexChanged.connect(
+            self.load_notes
+        )
+
         self.load_notes()
 
         self.setLayout(layout)
 
         self.selected_note = None
 
+    def load_books(self):
+
+        self.book_filter.clear()
+
+        self.book_filter.addItem(
+            "All Books",
+            None
+        )
+
+        books = BookService.get_all_books()
+
+        for book in books:
+
+            self.book_filter.addItem(
+
+                book.title,
+
+                book.id
+
+            )
 
     def load_notes(self):
 
         self.note_list.clear()
 
-        notes = NoteService.get_all_notes()
+        book_id = self.book_filter.currentData()
+
+        if book_id is None:
+
+            notes = NoteService.get_all_notes()
+
+        else:
+
+            notes = NoteService.get_notes_for_book(
+                book_id
+            )
 
         for note in notes:
 
@@ -116,7 +167,15 @@ class NotesView(QWidget):
 
     def open_add_note_dialog(self):
 
-        dialog = AddNoteDialog()
+        book_id = self.book_filter.currentData()
+
+        if book_id is None:
+
+            return
+
+        dialog = AddNoteDialog(
+            book_id
+        )
 
         if dialog.exec():
             self.load_notes()

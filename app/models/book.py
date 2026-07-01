@@ -4,11 +4,17 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+)
 
 from app.database.base import Base
 from app.constants.book_status import BookStatus
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from app.models.note import Note
 
 
 class Book(Base):
@@ -87,4 +93,9 @@ class Book(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=datetime.utcnow
+    )
+
+    notes: Mapped[list["Note"]] = relationship(
+        back_populates="book",
+        cascade="all, delete-orphan"
     )

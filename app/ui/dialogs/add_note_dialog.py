@@ -11,8 +11,13 @@ from app.services.note_service import NoteService
 
 class AddNoteDialog(QDialog):
 
-    def __init__(self):
+    def __init__(
+        self,
+        book_id
+    ):
         super().__init__()
+
+        self.book_id = book_id
 
         self.setWindowTitle("Add Note")
 
@@ -50,7 +55,9 @@ class AddNoteDialog(QDialog):
             return
 
         NoteService.create_note(
-            title
+            book_id=self.book_id,
+            title=title,
+            content=""
         )
 
         self.accept()

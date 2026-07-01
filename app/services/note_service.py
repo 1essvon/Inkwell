@@ -1,5 +1,6 @@
 from app.database.session import SessionLocal
 from app.models.note import Note
+from app.models.book import Book
 
 
 class NoteService:
@@ -15,14 +16,50 @@ class NoteService:
             session.close()
 
     @staticmethod
-    def create_note(title: str):
+    def get_notes_for_book(
+
+        book_id: int
+
+    ):
 
         session = SessionLocal()
 
         try:
-            note = Note(
-                title=title
+
+            return (
+
+                session.query(Note)
+
+                .filter(
+                    Note.book_id == book_id
+                )
+
+                .order_by(
+                    Note.updated_at.desc()
+                )
+
+                .all()
+
             )
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def create_note(
+        book_id: int,
+        title: str,
+        content: str = ""
+    ):
+        session = SessionLocal()
+
+        try:
+            note = Note(
+            book_id=book_id,
+            title=title,
+            content=content
+        )
 
             session.add(note)
             session.commit()
@@ -31,6 +68,27 @@ class NoteService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def create_quick_note(
+
+        book_id: int,
+
+        content: str
+
+    ):
+
+        title = "Quick Note"
+
+        return NoteService.create_note(
+
+            book_id=book_id,
+
+            title=title,
+
+            content=content
+
+        )
 
     @staticmethod
     def get_note(note_id: int):
