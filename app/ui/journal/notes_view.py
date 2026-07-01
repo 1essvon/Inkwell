@@ -4,10 +4,11 @@ from PySide6.QtWidgets import (
     QPushButton,
     QListWidget,
     QLabel,
-    QComboBox
+    QComboBox,
+    QScrollArea,
+    QListWidgetItem,
+    QHBoxLayout
 )
-from PySide6.QtWidgets import QListWidgetItem
-from PySide6.QtWidgets import QHBoxLayout
 
 from app.services.note_service import NoteService
 from app.ui.dialogs.add_note_dialog import AddNoteDialog
@@ -24,7 +25,21 @@ class NotesView(QWidget):
     def __init__(self):
         super().__init__()
 
+        root_layout = QVBoxLayout()
+
+        scroll = QScrollArea()
+
+        scroll.setWidgetResizable(True)
+
+        content = QWidget()
+
         layout = QVBoxLayout()
+
+        content.setLayout(layout)
+
+        scroll.setWidget(content)
+
+        root_layout.addWidget(scroll)
 
         layout.addWidget(
             QLabel("Book")
@@ -98,7 +113,7 @@ class NotesView(QWidget):
 
         self.load_notes()
 
-        self.setLayout(layout)
+        self.setLayout(root_layout)
 
         self.selected_note = None
 

@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QLineEdit,
+    QTextEdit,
     QPushButton
 )
 
@@ -30,6 +31,16 @@ class AddNoteDialog(QDialog):
         self.title_input = QLineEdit()
 
         layout.addWidget(
+            QLabel("Content")
+        )
+
+        self.content_input = QTextEdit()
+
+        layout.addWidget(
+            self.content_input
+        )
+
+        layout.addWidget(
             self.title_input
         )
 
@@ -51,13 +62,15 @@ class AddNoteDialog(QDialog):
 
         title = self.title_input.text().strip()
 
+        content = self.content_input.toPlainText().strip()
+
         if not title:
             return
 
         NoteService.create_note(
             book_id=self.book_id,
             title=title,
-            content=""
+            content=content
         )
 
         self.accept()

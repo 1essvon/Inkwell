@@ -1,6 +1,7 @@
 from app.database.session import SessionLocal
 from app.models.note import Note
 from app.models.book import Book
+from datetime import datetime
 
 
 class NoteService:
@@ -74,11 +75,15 @@ class NoteService:
 
         book_id: int,
 
-        content: str
+        content: str,
+
+        current_page: int
 
     ):
 
-        title = "Quick Note"
+        title = (
+            f"Reading • Page {current_page}"
+        )
 
         return NoteService.create_note(
 

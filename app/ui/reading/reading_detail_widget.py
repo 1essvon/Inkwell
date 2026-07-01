@@ -4,12 +4,16 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
-    QSpinBox
+    QSpinBox,
+    QTextEdit
 )
 from PySide6.QtCore import Signal
 
 from app.services.book_service import (
     BookService
+)
+from app.services.note_service import (
+    NoteService
 )
 
 class ReadingDetailWidget(QWidget):
@@ -98,6 +102,32 @@ class ReadingDetailWidget(QWidget):
             self.save_button
         )
 
+        layout.addSpacing(
+            24
+        )
+
+        layout.addWidget(
+            QLabel("Today's Note")
+        )
+
+        self.note_input = QTextEdit()
+
+        self.note_input.setPlaceholderText(
+            "Write something about today's reading..."
+        )
+
+        layout.addWidget(
+            self.note_input
+        )
+
+        self.save_note_button = QPushButton(
+            "Save Note"
+        )
+
+        layout.addWidget(
+            self.save_note_button
+        )
+
         layout.addStretch()
 
         self.setLayout(
@@ -128,6 +158,10 @@ class ReadingDetailWidget(QWidget):
             self.save_page
         )
 
+        self.save_note_button.clicked.connect(
+            self.save_note
+        )
+
     def set_book(
         self,
         book
@@ -147,7 +181,35 @@ class ReadingDetailWidget(QWidget):
 
             self.progress.clear()
 
+            self.page_input.setEnabled(False)
+
+            self.plus_one.setEnabled(False)
+
+            self.plus_five.setEnabled(False)
+
+            self.plus_ten.setEnabled(False)
+
+            self.save_button.setEnabled(False)
+
+            self.save_note_button.setEnabled(False)
+
+            self.note_input.setEnabled(False)
+
             return
+
+        self.page_input.setEnabled(True)
+
+        self.plus_one.setEnabled(True)
+
+        self.plus_five.setEnabled(True)
+
+        self.plus_ten.setEnabled(True)
+
+        self.save_button.setEnabled(True)
+
+        self.save_note_button.setEnabled(True)
+
+        self.note_input.setEnabled(True)
 
         current = self.book.current_page or 0
 
@@ -224,3 +286,31 @@ class ReadingDetailWidget(QWidget):
         self.refresh()
 
         self.progressUpdated.emit()
+
+    def save_note(self):
+
+        if not self.book:
+
+            return
+
+        content = self.note_input.toPlainText().strip()
+
+        if not content:
+
+            return
+        
+        self.save_note_button.setEnabled(False)
+
+        NoteService.create_quick_note(
+
+            book_id=self.book.id,
+
+            content=content,
+
+            current_page=self.book.current_page
+
+        )
+
+        self.note_input.clear()
+        self.save_note_button.setEnabled(True)
+        self.note_input.setFocus()
