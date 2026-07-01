@@ -15,6 +15,7 @@ from app.constants.book_status import BookStatus
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from app.models.note import Note
+    from app.models.quote import Quote
 
 
 class Book(Base):
@@ -96,6 +97,11 @@ class Book(Base):
     )
 
     notes: Mapped[list["Note"]] = relationship(
+        back_populates="book",
+        cascade="all, delete-orphan"
+    )
+
+    quotes: Mapped[list["Quote"]] = relationship(
         back_populates="book",
         cascade="all, delete-orphan"
     )

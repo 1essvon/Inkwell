@@ -16,6 +16,10 @@ from app.services.note_service import (
     NoteService
 )
 
+from app.services.quote_service import (
+    QuoteService
+)
+
 class ReadingDetailWidget(QWidget):
 
     progressUpdated = Signal()
@@ -110,6 +114,30 @@ class ReadingDetailWidget(QWidget):
             QLabel("Today's Note")
         )
 
+        layout.addSpacing(20)
+
+        layout.addWidget(
+            QLabel("Quote")
+        )
+
+        self.quote_input = QTextEdit()
+
+        self.quote_input.setPlaceholderText(
+            "Save a memorable quote..."
+        )
+
+        layout.addWidget(
+            self.quote_input
+        )
+
+        self.save_quote_button = QPushButton(
+            "Save Quote"
+        )
+
+        layout.addWidget(
+            self.save_quote_button
+        )
+
         self.note_input = QTextEdit()
 
         self.note_input.setPlaceholderText(
@@ -162,6 +190,10 @@ class ReadingDetailWidget(QWidget):
             self.save_note
         )
 
+        self.save_quote_button.clicked.connect(
+            self.save_quote
+        )
+
     def set_book(
         self,
         book
@@ -195,6 +227,10 @@ class ReadingDetailWidget(QWidget):
 
             self.note_input.setEnabled(False)
 
+            self.quote_input.setEnabled(False)
+
+            self.save_quote_button.setEnabled(False)
+
             return
 
         self.page_input.setEnabled(True)
@@ -210,6 +246,10 @@ class ReadingDetailWidget(QWidget):
         self.save_note_button.setEnabled(True)
 
         self.note_input.setEnabled(True)
+
+        self.quote_input.setEnabled(True)
+
+        self.save_quote_button.setEnabled(True)
 
         current = self.book.current_page or 0
 
@@ -314,3 +354,33 @@ class ReadingDetailWidget(QWidget):
         self.note_input.clear()
         self.save_note_button.setEnabled(True)
         self.note_input.setFocus()
+
+    def save_quote(self):
+
+        if not self.book:
+
+            return
+
+        content = (
+            self.quote_input
+            .toPlainText()
+            .strip()
+        )
+
+        if not content:
+
+            return
+
+        QuoteService.create_quick_quote(
+
+            book_id=self.book.id,
+
+            content=content,
+
+            page=self.book.current_page
+
+        )
+
+        self.quote_input.clear()
+
+        self.quote_input.setFocus()

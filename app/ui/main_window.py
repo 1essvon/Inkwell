@@ -247,6 +247,8 @@ class MainWindow(QMainWindow):
 
     def show_journal(self):
 
+        self.journal_page.refresh()
+
         self.pages.setCurrentIndex(
             3
         )

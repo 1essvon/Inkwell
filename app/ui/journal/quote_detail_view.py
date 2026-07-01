@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (
     QWidget,
     QLabel,
+    QTextEdit,
     QVBoxLayout
 )
 
@@ -8,60 +9,48 @@ from PySide6.QtWidgets import (
 class QuoteDetailView(QWidget):
 
     def __init__(self):
+
         super().__init__()
 
         layout = QVBoxLayout()
 
-        self.quote_label = QLabel(
-            "No Quote Selected"
-        )
+        self.page_label = QLabel()
 
-        self.quote_label.setStyleSheet("""
-            font-size: 18px;
-            font-weight: bold;
-        """)
+        self.content = QTextEdit()
 
-        self.source_label = QLabel("")
-
-        self.page_label = QLabel("")
-
-        self.quote_label.setWordWrap(
-            True
-        )
-
-        layout.addWidget(
-            self.quote_label
-        )
-
-        layout.addWidget(
-            self.source_label
-        )
+        self.content.setReadOnly(True)
 
         layout.addWidget(
             self.page_label
         )
 
-        self.setLayout(layout)
-
-    def display_quote(self, quote):
-
-        self.quote_label.setText(
-            quote.quote_text
+        layout.addWidget(
+            self.content
         )
 
-        self.source_label.setText(
-            f"Source: {quote.source or '-'}"
+        self.setLayout(
+            layout
         )
+
+        self.clear()
+
+    def display_quote(
+        self,
+        quote
+    ):
 
         self.page_label.setText(
-            f"Page: {quote.page_number or '-'}"
+            f"Page {quote.page}"
+        )
+
+        self.content.setPlainText(
+            quote.content
         )
 
     def clear(self):
 
-        self.quote_label.setText(
+        self.page_label.setText(
             "No Quote Selected"
         )
 
-        self.source_label.setText("")
-        self.page_label.setText("")
+        self.content.clear()

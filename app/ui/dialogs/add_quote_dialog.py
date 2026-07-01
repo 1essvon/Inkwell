@@ -1,22 +1,31 @@
 from PySide6.QtWidgets import (
     QDialog,
-    QVBoxLayout,
     QLabel,
     QTextEdit,
-    QLineEdit,
+    QPushButton,
     QSpinBox,
-    QPushButton
+    QVBoxLayout
 )
 
-from app.services.quote_service import QuoteService
+from app.services.quote_service import (
+    QuoteService
+)
 
 
 class AddQuoteDialog(QDialog):
 
-    def __init__(self):
+    def __init__(
+        self,
+        book_id
+    ):
+
         super().__init__()
 
-        self.setWindowTitle("Add Quote")
+        self.book_id = book_id
+
+        self.setWindowTitle(
+            "Add Quote"
+        )
 
         layout = QVBoxLayout()
 
@@ -26,63 +35,62 @@ class AddQuoteDialog(QDialog):
 
         self.quote_input = QTextEdit()
 
+        self.quote_input.setPlaceholderText(
+            "Enter quote..."
+        )
+
         layout.addWidget(
             self.quote_input
         )
 
         layout.addWidget(
-            QLabel("Source")
-        )
-
-        self.source_input = QLineEdit()
-
-        layout.addWidget(
-            self.source_input
-        )
-
-        layout.addWidget(
-            QLabel("Page Number")
+            QLabel("Page")
         )
 
         self.page_input = QSpinBox()
 
-        self.page_input.setMaximum(
-            100000
-        )
+        self.page_input.setMinimum(1)
 
         layout.addWidget(
             self.page_input
         )
 
-        save_button = QPushButton(
+        self.save_button = QPushButton(
             "Save"
         )
 
-        save_button.clicked.connect(
+        self.save_button.clicked.connect(
             self.save_quote
         )
 
         layout.addWidget(
-            save_button
+            self.save_button
         )
 
-        self.setLayout(layout)
+        self.setLayout(
+            layout
+        )
 
     def save_quote(self):
 
-        quote_text = (
+        content = (
             self.quote_input
             .toPlainText()
             .strip()
         )
 
-        if not quote_text:
+        if not content:
+
             return
 
         QuoteService.create_quote(
-            quote_text=quote_text,
-            source=self.source_input.text(),
-            page_number=self.page_input.value()
+
+            book_id=self.book_id,
+
+            content=content,
+
+            page=self.page_input.value()
+
         )
 
         self.accept()

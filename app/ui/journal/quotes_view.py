@@ -2,18 +2,25 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QPushButton,
-    QListWidget
+    QListWidget,
+    QLabel,
+    QComboBox,
+    QListWidgetItem,
+    QHBoxLayout,
+    QMessageBox,
+    QScrollArea
 )
-from PySide6.QtWidgets import QListWidgetItem
-from PySide6.QtWidgets import QHBoxLayout
-from PySide6.QtWidgets import QMessageBox
 
-from app.ui.dialogs.add_quote_dialog import (
-    AddQuoteDialog
+from app.services.book_service import (
+    BookService
 )
 
 from app.services.quote_service import (
     QuoteService
+)
+
+from app.ui.dialogs.add_quote_dialog import (
+    AddQuoteDialog
 )
 
 from app.ui.journal.quote_detail_view import (
@@ -24,9 +31,42 @@ from app.ui.journal.quote_detail_view import (
 class QuotesView(QWidget):
 
     def __init__(self):
+
         super().__init__()
 
+        self.selected_quote = None
+
+        root_layout = QVBoxLayout()
+
+        scroll = QScrollArea()
+
+        scroll.setWidgetResizable(True)
+
+        content = QWidget()
+
         layout = QVBoxLayout()
+
+        content.setLayout(
+            layout
+        )
+
+        scroll.setWidget(
+            content
+        )
+
+        root_layout.addWidget(
+            scroll
+        )
+
+        layout.addWidget(
+            QLabel("Book")
+        )
+
+        self.book_filter = QComboBox()
+
+        layout.addWidget(
+            self.book_filter
+        )
 
         self.add_quote_button = QPushButton(
             "Add Quote"
@@ -34,24 +74,6 @@ class QuotesView(QWidget):
 
         self.delete_quote_button = QPushButton(
             "Delete Quote"
-        )
-
-        self.delete_quote_button.clicked.connect(
-            self.delete_selected_quote
-        )
-
-        self.add_quote_button.clicked.connect(
-            self.open_add_quote_dialog
-        )
-
-        self.quote_list = QListWidget()
-
-        self.selected_quote = None
-
-        self.detail_view = QuoteDetailView()
-
-        self.quote_list.itemClicked.connect(
-            self.show_quote_details
         )
 
         button_layout = QHBoxLayout()
@@ -68,11 +90,15 @@ class QuotesView(QWidget):
             button_layout
         )
 
+        self.quote_list = QListWidget()
+
+        self.detail_view = QuoteDetailView()
+
         content_layout = QHBoxLayout()
 
         content_layout.addWidget(
             self.quote_list,
-            2
+            1
         )
 
         content_layout.addWidget(
@@ -84,22 +110,75 @@ class QuotesView(QWidget):
             content_layout
         )
 
+        self.setLayout(
+            root_layout
+        )
+
+        self.add_quote_button.clicked.connect(
+            self.open_add_quote_dialog
+        )
+
+        self.delete_quote_button.clicked.connect(
+            self.delete_selected_quote
+        )
+
+        self.quote_list.itemClicked.connect(
+            self.show_quote_details
+        )
+
+        self.book_filter.currentIndexChanged.connect(
+            self.load_quotes
+        )
+
+        self.load_books()
+
         self.load_quotes()
 
-        self.setLayout(layout)
+    def load_books(self):
+
+        self.book_filter.clear()
+
+        self.book_filter.addItem(
+            "All Books",
+            None
+        )
+
+        books = BookService.get_all_books()
+
+        for book in books:
+
+            self.book_filter.addItem(
+
+                book.title,
+
+                book.id
+
+            )
 
     def load_quotes(self):
 
         self.quote_list.clear()
 
-        quotes = QuoteService.get_all_quotes()
+        book_id = self.book_filter.currentData()
+
+        if book_id is None:
+
+            quotes = QuoteService.get_all_quotes()
+
+        else:
+
+            quotes = QuoteService.get_quotes_for_book(
+                book_id
+            )
 
         for quote in quotes:
 
-            preview = quote.quote_text.split("\n")[0][:80]
+            text = (
+                f"Page {quote.page}"
+            )
 
             item = QListWidgetItem(
-                preview
+                text
             )
 
             item.setData(
@@ -127,17 +206,29 @@ class QuotesView(QWidget):
 
     def open_add_quote_dialog(self):
 
-        dialog = AddQuoteDialog()
+        book_id = self.book_filter.currentData()
+
+        if book_id is None:
+
+            return
+
+        dialog = AddQuoteDialog(
+            book_id
+        )
 
         if dialog.exec():
+
             self.load_quotes()
 
-    def show_quote_details(self, item):
-
-        quote_id = item.data(1)
+    def show_quote_details(
+        self,
+        item
+    ):
 
         quote = QuoteService.get_quote(
-            quote_id
+
+            item.data(1)
+
         )
 
         if quote:
@@ -151,19 +242,27 @@ class QuotesView(QWidget):
     def delete_selected_quote(self):
 
         if not self.selected_quote:
+
             return
 
         reply = QMessageBox.question(
+
             self,
+
             "Delete Quote",
+
             "Delete selected quote?",
+
             QMessageBox.Yes | QMessageBox.No
+
         )
 
         if reply == QMessageBox.Yes:
 
             QuoteService.delete_quote(
+
                 self.selected_quote.id
+
             )
 
             self.selected_quote = None

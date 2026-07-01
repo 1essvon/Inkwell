@@ -105,3 +105,15 @@ class JournalView(QWidget):
         )
 
         self.setLayout(main_layout)
+
+    def refresh(self):
+
+        self.notes_page.selected_note = None
+
+        self.quotes_page.selected_quote = None
+
+        self.notes_page.load_books()
+        self.notes_page.load_notes()
+
+        self.quotes_page.load_books()
+        self.quotes_page.load_quotes()

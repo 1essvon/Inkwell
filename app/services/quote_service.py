@@ -1,6 +1,6 @@
 from app.database.session import SessionLocal
 from app.models.quote import Quote
-
+from app.models.book import Book
 
 class QuoteService:
 
@@ -15,6 +15,37 @@ class QuoteService:
             ).all()
 
         finally:
+            session.close()
+
+    @staticmethod
+    def get_quotes_for_book(
+
+        book_id: int
+
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            return (
+
+                session.query(Quote)
+
+                .filter(
+                    Quote.book_id == book_id
+                )
+
+                .order_by(
+                    Quote.created_at.desc()
+                )
+
+                .all()
+
+            )
+
+        finally:
+
             session.close()
 
     @staticmethod
@@ -35,20 +66,23 @@ class QuoteService:
 
     @staticmethod
     def create_quote(
-        quote_text: str,
-        source: str = "",
-        page_number: int | None = None
+        book_id: int,
+        content: str,
+        page: int
     ):
 
         session = SessionLocal()
 
         try:
-
             quote = Quote(
-                quote_text=quote_text,
-                source=source or None,
-                page_number=page_number
-            )
+
+            book_id=book_id,
+
+            content=content,
+
+            page=page
+
+        )
 
             session.add(
                 quote
@@ -60,6 +94,27 @@ class QuoteService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def create_quick_quote(
+
+        book_id: int,
+
+        content: str,
+
+        page: int
+
+    ):
+
+        return QuoteService.create_quote(
+
+            book_id=book_id,
+
+            content=content,
+
+            page=page
+
+        )
 
     @staticmethod
     def delete_quote(
@@ -85,3 +140,7 @@ class QuoteService:
 
         finally:
             session.close()
+
+    
+
+    

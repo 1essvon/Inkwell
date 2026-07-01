@@ -1,17 +1,28 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import Integer
-from sqlalchemy import Text
-from sqlalchemy import String
-from sqlalchemy import DateTime
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    Integer,
+    Text
+)
 
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship
+)
 
 from app.database.base import Base
 
 
+if TYPE_CHECKING:
+    from app.models.book import Book
+
+
 class Quote(Base):
+
     __tablename__ = "quotes"
 
     id: Mapped[int] = mapped_column(
@@ -19,21 +30,23 @@ class Quote(Base):
         primary_key=True
     )
 
-    quote_text: Mapped[str] = mapped_column(
+    book_id: Mapped[int] = mapped_column(
+        ForeignKey("books.id")
+    )
+
+    content: Mapped[str] = mapped_column(
         Text
     )
 
-    source: Mapped[str | None] = mapped_column(
-        String(255),
-        nullable=True
-    )
-
-    page_number: Mapped[int | None] = mapped_column(
-        Integer,
-        nullable=True
+    page: Mapped[int] = mapped_column(
+        Integer
     )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow
+    )
+
+    book: Mapped["Book"] = relationship(
+        back_populates="quotes"
     )
