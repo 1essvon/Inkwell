@@ -17,7 +17,19 @@ from app.services.book_service import BookService
 from app.services.reading_session_service import (
     ReadingSessionService
 )
+from app.ui.dialogs.end_session_dialog import (
+    EndSessionDialog
+)
+from app.ui.dialogs.session_complete_dialog import (
+    SessionCompleteDialog
+)
+from app.ui.dialogs.add_note_dialog import (
+    AddNoteDialog
+)
 
+from app.ui.dialogs.add_quote_dialog import (
+    AddQuoteDialog
+)
 
 class FocusView(QWidget):
 
@@ -54,32 +66,24 @@ class FocusView(QWidget):
             self.book_combo
         )
 
-        # =====================
-        # Start Page
-        # =====================
+        self.current_page_label = QLabel()
 
-        layout.addWidget(
-            QLabel("Start Page")
+        self.current_page_label.setAlignment(
+            Qt.AlignCenter
         )
 
-        self.start_page = QSpinBox()
+        self.current_page_label.setStyleSheet("""
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            padding:12px;
+
+        """)
 
         layout.addWidget(
-            self.start_page
-        )
-
-        # =====================
-        # End Page
-        # =====================
-
-        layout.addWidget(
-            QLabel("End Page")
-        )
-
-        self.end_page = QSpinBox()
-
-        layout.addWidget(
-            self.end_page
+            self.current_page_label
         )
 
         # =====================
@@ -103,6 +107,10 @@ class FocusView(QWidget):
         layout.addWidget(
             self.timer_label
         )
+
+        self.session_start_page = 0
+
+        self.book = None
 
         # =====================
         # Button
@@ -172,32 +180,22 @@ class FocusView(QWidget):
 
         book_id = self.book_combo.currentData()
 
-        book = BookService.get_book(
+        self.book = BookService.get_book(
             book_id
         )
 
-        if not book:
+        if not self.book:
             return
 
-        current_page = book.current_page or 0
+        current = self.book.current_page or 0
 
-        max_page = book.page_count or 9999
+        total = self.book.page_count or 0
 
-        self.start_page.setMaximum(
-            max_page
-        )
+        self.current_page_label.setText(
 
-        self.end_page.setMaximum(
-            max_page
-        )
+            f"Page {current} / {total}"
 
-        self.start_page.setValue(
-            current_page
-        )
-
-        self.end_page.setValue(
-            current_page
-        )
+        )  
 
     # =====================
     # Start / Stop
@@ -205,17 +203,27 @@ class FocusView(QWidget):
 
     def toggle_session(self):
 
+        # ==========================
+        # START SESSION
+        # ==========================
+
         if not self.is_reading:
 
             self.started_at = datetime.now()
 
             self.is_reading = True
 
+            self.session_start_page = (
+                self.book.current_page or 0
+            )
+
+            self.timer_label.setText(
+                "00:00:00"
+            )
+
             self.timer.start(1000)
 
             self.book_combo.setEnabled(False)
-
-            self.start_page.setEnabled(False)
 
             self.session_button.setText(
                 "Stop Session"
@@ -223,15 +231,9 @@ class FocusView(QWidget):
 
             return
 
-        if self.end_page.value() < self.start_page.value():
-
-            QMessageBox.warning(
-                self,
-                "Invalid Page",
-                "End page must be greater than or equal to start page."
-            )
-
-            return
+        # ==========================
+        # STOP SESSION
+        # ==========================
 
         self.timer.stop()
 
@@ -242,21 +244,52 @@ class FocusView(QWidget):
 
         duration = max(
             1,
-            int(elapsed.total_seconds() / 60)
+            int(
+                elapsed.total_seconds() / 60
+            )
+        )
+
+        dialog = EndSessionDialog(
+
+            self.session_start_page,
+
+            self.book.page_count
+
+        )
+
+        if not dialog.exec():
+
+            self.timer.start(1000)
+
+            return
+
+        end_page = dialog.value()
+
+        pages_read = max(
+            0,
+            end_page - self.session_start_page
         )
 
         book_id = self.book_combo.currentData()
 
         ReadingSessionService.create_session(
+
             book_id=book_id,
-            start_page=self.start_page.value(),
-            end_page=self.end_page.value(),
+
+            start_page=self.session_start_page,
+
+            end_page=end_page,
+
             duration_minutes=duration
+
         )
 
         BookService.update_current_page(
+
             book_id,
-            self.end_page.value()
+
+            end_page
+
         )
 
         self.is_reading = False
@@ -264,8 +297,6 @@ class FocusView(QWidget):
         self.started_at = None
 
         self.book_combo.setEnabled(True)
-
-        self.start_page.setEnabled(True)
 
         self.session_button.setText(
             "Start Session"
@@ -279,11 +310,26 @@ class FocusView(QWidget):
             self.book_combo.currentIndex()
         )
 
-        QMessageBox.information(
-            self,
-            "Reading Session",
-            "Reading session saved!"
+        dialog = SessionCompleteDialog(
+
+            self.book.title,
+
+            pages_read,
+
+            duration
+
         )
+
+        dialog.exec()
+
+        if dialog.result_action == SessionCompleteDialog.NOTE:
+
+            self.open_note_dialog()
+
+        elif dialog.result_action == SessionCompleteDialog.QUOTE:
+
+            self.open_quote_dialog()
+
 
     # =====================
     # Timer
@@ -318,3 +364,27 @@ class FocusView(QWidget):
     def refresh(self):
 
         pass
+
+    def open_note_dialog(self):
+
+        dialog = AddNoteDialog(
+
+            self.book.id
+
+        )
+
+        dialog.exec()
+
+        self.refresh()
+
+    def open_quote_dialog(self):
+
+        dialog = AddQuoteDialog(
+
+            self.book.id
+
+        )
+
+        dialog.exec()
+
+        self.refresh()
