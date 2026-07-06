@@ -221,46 +221,85 @@ class MainWindow(QMainWindow):
 
     def show_dashboard(self):
 
-        self.dashboard_page.refresh()
-
         self.pages.setCurrentIndex(
             0
         )
 
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
+
 
     def show_library(self):
-
-        self.library_page.refresh()
 
         self.pages.setCurrentIndex(
             1
         )
 
-    def show_reading(self):
+        self.refresh_current_page()
 
-        self.reading_page.refresh()
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
+
+    def show_reading(self):
 
         self.pages.setCurrentIndex(
             2
         )
 
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
 
     def show_journal(self):
-
-        self.journal_page.refresh()
 
         self.pages.setCurrentIndex(
             3
         )
 
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
+
 
     def show_statistics(self):
-
-        self.statistics_page.refresh()
 
         self.pages.setCurrentIndex(
             4
         )
+
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
 
 
     def show_focus(self):
@@ -269,9 +308,29 @@ class MainWindow(QMainWindow):
             5
         )
 
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()
+
 
     def show_settings(self):
 
         self.pages.setCurrentIndex(
             6
         )
+
+        self.refresh_current_page()
+
+    def refresh_current_page(self):
+
+        page = self.pages.currentWidget()
+
+        if hasattr(page, "refresh"):
+
+            page.refresh()

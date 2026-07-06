@@ -314,3 +314,7 @@ class FocusView(QWidget):
         self.timer_label.setText(
             f"{hours:02}:{minutes:02}:{seconds:02}"
         )
+
+    def refresh(self):
+
+        pass
