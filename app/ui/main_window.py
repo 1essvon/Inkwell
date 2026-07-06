@@ -7,29 +7,59 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QStackedWidget
 )
-from app.ui.dashboard.dashboard_view import DashboardView
-from app.ui.library.library_view import LibraryView
-from app.ui.journal_view import JournalView
-from app.ui.statistics_view import (
-    StatisticsView
+
+from app.ui.dashboard.dashboard_view import (
+    DashboardView
 )
-from app.ui.focus_view import FocusView
+
+from app.ui.library.library_view import (
+    LibraryView
+)
+
 from app.ui.reading.reading_session_view import (
     ReadingSessionView
 )
 
+from app.ui.journal_view import (
+    JournalView
+)
+
+from app.ui.statistics_view import (
+    StatisticsView
+)
+
+from app.ui.focus_view import (
+    FocusView
+)
+
+from app.ui.history.reading_history_view import (
+    ReadingHistoryView
+)
+
+from app.ui.journal.scratchpad_view import (
+    ScratchpadView
+)
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
+
         super().__init__()
 
-        self.setWindowTitle("The Inkwell")
-        self.resize(1280, 720)
+        self.setWindowTitle(
+            "The Inkwell"
+        )
+
+        self.resize(
+            1280,
+            720
+        )
 
         root = QWidget()
 
-        self.setCentralWidget(root)
+        self.setCentralWidget(
+            root
+        )
 
         main_layout = QHBoxLayout()
 
@@ -40,25 +70,37 @@ class MainWindow(QMainWindow):
             12
         )
 
-        main_layout.setSpacing(12)
+        main_layout.setSpacing(
+            12
+        )
 
-        root.setLayout(main_layout)
+        root.setLayout(
+            main_layout
+        )
 
-        # ======================
+        # ==========================
         # Sidebar
-        # ======================
+        # ==========================
 
         sidebar = QVBoxLayout()
 
-        title = QLabel("THE INKWELL")
+        title = QLabel(
+            "THE INKWELL"
+        )
 
         title.setStyleSheet("""
-        font-size: 20px;
-        font-weight: bold;
-        padding: 12px;
+
+            font-size:20px;
+
+            font-weight:bold;
+
+            padding:12px;
+
         """)
 
-        sidebar.addWidget(title)
+        sidebar.addWidget(
+            title
+        )
 
         self.dashboard_button = QPushButton(
             "Dashboard"
@@ -82,6 +124,14 @@ class MainWindow(QMainWindow):
 
         self.focus_button = QPushButton(
             "Focus Mode"
+        )
+
+        self.history_button = QPushButton(
+            "History"
+        )
+
+        self.scratchpad_button = QPushButton(
+            "Scratchpad"
         )
 
         self.settings_button = QPushButton(
@@ -113,18 +163,32 @@ class MainWindow(QMainWindow):
         )
 
         sidebar.addWidget(
+            self.history_button
+        )
+
+        sidebar.addWidget(
+            self.scratchpad_button
+        )
+
+        sidebar.addWidget(
             self.settings_button
         )
 
         sidebar.addStretch()
 
         sidebar_widget = QWidget()
-        sidebar_widget.setLayout(sidebar)
-        sidebar_widget.setFixedWidth(220)
 
-        # ======================
+        sidebar_widget.setLayout(
+            sidebar
+        )
+
+        sidebar_widget.setFixedWidth(
+            220
+        )
+
+        # ==========================
         # Pages
-        # ======================
+        # ==========================
 
         self.pages = QStackedWidget()
 
@@ -139,6 +203,10 @@ class MainWindow(QMainWindow):
         self.statistics_page = StatisticsView()
 
         self.focus_page = FocusView()
+
+        self.history_page = ReadingHistoryView()
+
+        self.scratchpad_page = ScratchpadView()
 
         self.settings_page = QLabel(
             "Settings Module"
@@ -169,12 +237,20 @@ class MainWindow(QMainWindow):
         )
 
         self.pages.addWidget(
+            self.history_page
+        )
+
+        self.pages.addWidget(
+            self.scratchpad_page
+        )
+
+        self.pages.addWidget(
             self.settings_page
         )
 
-        # ======================
+        # ==========================
         # Navigation
-        # ======================
+        # ==========================
 
         self.dashboard_button.clicked.connect(
             self.show_dashboard
@@ -200,24 +276,32 @@ class MainWindow(QMainWindow):
             self.show_focus
         )
 
+        self.history_button.clicked.connect(
+            self.show_history
+        )
+
+        self.scratchpad_button.clicked.connect(
+            self.show_scratchpad
+        )
+
         self.settings_button.clicked.connect(
             self.show_settings
         )
 
-        main_layout.addWidget(sidebar_widget)
+        main_layout.addWidget(
+            sidebar_widget
+        )
 
         main_layout.addWidget(
             self.pages,
             4
         )
 
-        self.pages.setCurrentIndex(0)
+        self.show_dashboard()
 
-    def refresh_views(self):
-
-        self.library_page.refresh()
-
-        self.statistics_page.refresh()
+    # ==========================
+    # Navigation
+    # ==========================
 
     def show_dashboard(self):
 
@@ -227,15 +311,6 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
-
-
     def show_library(self):
 
         self.pages.setCurrentIndex(
@@ -243,14 +318,6 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
-
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
 
     def show_reading(self):
 
@@ -260,14 +327,6 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
-
     def show_journal(self):
 
         self.pages.setCurrentIndex(
@@ -275,15 +334,6 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
-
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
-
 
     def show_statistics(self):
 
@@ -293,15 +343,6 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
-
-
     def show_focus(self):
 
         self.pages.setCurrentIndex(
@@ -310,16 +351,7 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
-    def refresh_current_page(self):
-
-        page = self.pages.currentWidget()
-
-        if hasattr(page, "refresh"):
-
-            page.refresh()
-
-
-    def show_settings(self):
+    def show_history(self):
 
         self.pages.setCurrentIndex(
             6
@@ -327,10 +359,35 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
+    def show_scratchpad(self):
+
+        self.pages.setCurrentIndex(
+            7
+        )
+
+        self.refresh_current_page()
+
+    def show_settings(self):
+
+        self.pages.setCurrentIndex(
+            8
+        )
+
+        self.refresh_current_page()
+
+    # ==========================
+    # Refresh
+    # ==========================
+
     def refresh_current_page(self):
 
         page = self.pages.currentWidget()
 
-        if hasattr(page, "refresh"):
+        if hasattr(
+            page,
+            "refresh"
+        ):
 
             page.refresh()
+
+    

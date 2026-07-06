@@ -54,3 +54,98 @@ class ReadingSessionService:
 
         finally:
             session.close()
+
+    @staticmethod
+    def get_recent_sessions(
+        limit=20
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            return (
+
+                session.query(
+                    ReadingSession
+                )
+
+                .order_by(
+                    ReadingSession.ended_at.desc()
+                )
+
+                .limit(limit)
+
+                .all()
+
+            )
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def get_sessions_by_book(
+        book_id: int
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            return (
+
+                session.query(
+                    ReadingSession
+                )
+
+                .filter(
+                    ReadingSession.book_id == book_id
+                )
+
+                .order_by(
+                    ReadingSession.started_at.desc()
+                )
+
+                .all()
+
+            )
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def get_total_pages_read():
+
+        sessions = (
+            ReadingSessionService
+            .get_all_sessions()
+        )
+
+        return sum(
+
+            session.end_page
+            - session.start_page
+
+            for session in sessions
+
+        )
+    
+    @staticmethod
+    def get_total_reading_minutes():
+
+        sessions = (
+            ReadingSessionService
+            .get_all_sessions()
+        )
+
+        return sum(
+
+            session.duration_minutes
+
+            for session in sessions
+
+        )
+    
+    

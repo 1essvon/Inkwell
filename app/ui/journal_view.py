@@ -7,7 +7,9 @@ from PySide6.QtWidgets import (
     QStackedWidget
 )
 
-from app.ui.scratchpad_view import ScratchpadView
+from app.ui.journal.scratchpad_view import (
+    ScratchpadView
+)
 from app.ui.journal.notes_view import NotesView
 from app.ui.journal.quotes_view import QuotesView
 

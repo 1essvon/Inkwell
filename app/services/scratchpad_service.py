@@ -1,4 +1,7 @@
-from app.database.session import SessionLocal
+from app.database.session import (
+    SessionLocal
+)
+
 from app.models.scratchpad_entry import (
     ScratchpadEntry
 )
@@ -7,55 +10,82 @@ from app.models.scratchpad_entry import (
 class ScratchpadService:
 
     @staticmethod
-    def get_entry():
+    def get():
 
         session = SessionLocal()
 
         try:
 
-            entry = (
+            scratchpad = (
+
                 session.query(
                     ScratchpadEntry
-                )
-                .first()
+                ).first()
+
             )
 
-            return entry
+            if scratchpad is None:
 
-        finally:
-            session.close()
+                scratchpad = ScratchpadEntry(
 
-    @staticmethod
-    def save_content(
-        content: str
-    ):
+                    content=""
 
-        session = SessionLocal()
-
-        try:
-
-            entry = (
-                session.query(
-                    ScratchpadEntry
-                )
-                .first()
-            )
-
-            if not entry:
-
-                entry = ScratchpadEntry(
-                    content=content
                 )
 
                 session.add(
-                    entry
+                    scratchpad
+                )
+
+                session.commit()
+
+                session.refresh(
+                    scratchpad
+                )
+
+            return scratchpad
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def save(content: str):
+
+        session = SessionLocal()
+
+        try:
+
+            scratchpad = (
+
+                session.query(
+                    ScratchpadEntry
+                ).first()
+
+            )
+
+            if scratchpad is None:
+
+                scratchpad = ScratchpadEntry(
+
+                    content=content
+
+                )
+
+                session.add(
+                    scratchpad
                 )
 
             else:
 
-                entry.content = content
+                scratchpad.content = content
 
             session.commit()
 
         finally:
+
             session.close()
+
+    @staticmethod
+    def clear():
+
+        ScratchpadService.save("")
