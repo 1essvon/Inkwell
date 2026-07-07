@@ -40,6 +40,10 @@ from app.ui.journal.scratchpad_view import (
     ScratchpadView
 )
 
+from app.ui.settings_view import (
+    SettingsView
+)
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -208,9 +212,7 @@ class MainWindow(QMainWindow):
 
         self.scratchpad_page = ScratchpadView()
 
-        self.settings_page = QLabel(
-            "Settings Module"
-        )
+        self.settings_page = SettingsView()
 
         self.pages.addWidget(
             self.dashboard_page
@@ -369,8 +371,8 @@ class MainWindow(QMainWindow):
 
     def show_settings(self):
 
-        self.pages.setCurrentIndex(
-            8
+        self.pages.setCurrentWidget(
+            self.settings_page
         )
 
         self.refresh_current_page()
