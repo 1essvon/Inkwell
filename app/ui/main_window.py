@@ -307,64 +307,65 @@ class MainWindow(QMainWindow):
 
     def show_dashboard(self):
 
-        self.pages.setCurrentIndex(
-            0
+        self.pages.setCurrentWidget(
+            self.dashboard_page
         )
 
         self.refresh_current_page()
 
     def show_library(self):
 
-        self.pages.setCurrentIndex(
-            1
+        self.pages.setCurrentWidget(
+            self.library_page
         )
 
         self.refresh_current_page()
+        
 
     def show_reading(self):
 
-        self.pages.setCurrentIndex(
-            2
+        self.pages.setCurrentWidget(
+            self.reading_page
         )
 
         self.refresh_current_page()
 
     def show_journal(self):
 
-        self.pages.setCurrentIndex(
-            3
+        self.pages.setCurrentWidget(
+            self.journal_page
         )
 
         self.refresh_current_page()
 
     def show_statistics(self):
 
-        self.pages.setCurrentIndex(
-            4
+        self.pages.setCurrentWidget(
+            self.statistics_page
         )
 
         self.refresh_current_page()
 
     def show_focus(self):
 
-        self.pages.setCurrentIndex(
-            5
+        self.pages.setCurrentWidget(
+            self.focus_page
         )
 
         self.refresh_current_page()
 
     def show_history(self):
 
-        self.pages.setCurrentIndex(
-            6
+        self.pages.setCurrentWidget(
+            self.history_page
         )
 
         self.refresh_current_page()
 
     def show_scratchpad(self):
 
-        self.pages.setCurrentIndex(
-            7
+        self.pages.setCurrentWidget(
+            self.scratchpad_page
         )
 
         self.refresh_current_page()
