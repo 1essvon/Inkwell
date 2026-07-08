@@ -3,16 +3,14 @@ from pathlib import Path
 
 def load_styles():
 
-    style_dir = Path(__file__).parent
+    style_file = (
 
-    stylesheet = ""
+        Path(__file__).parent
 
-    for file in sorted(style_dir.glob("*.qss")):
+        / "dark.qss"
 
-        stylesheet += file.read_text(
-            encoding="utf-8"
-        )
+    )
 
-        stylesheet += "\n"
-
-    return stylesheet
+    return style_file.read_text(
+        encoding="utf-8"
+    )

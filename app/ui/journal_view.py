@@ -21,10 +21,10 @@ class JournalView(QWidget):
         main_layout = QVBoxLayout()
 
         title = QLabel("Journal")
-        title.setStyleSheet("""
-            font-size: 20px;
-            font-weight: bold;
-        """)
+
+        title.setObjectName(
+            "pageTitle"
+        )
 
         main_layout.addWidget(title)
 

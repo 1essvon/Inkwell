@@ -10,6 +10,9 @@ from app.database.seed import (
     seed_notes,
     seed_quotes
 )
+from app.services.theme_service import (
+    ThemeService
+)
 
 def main():
 
@@ -18,9 +21,7 @@ def main():
 
     app = QApplication(sys.argv)
 
-    app.setStyleSheet(
-        load_styles()
-    )
+    ThemeService.apply_theme(app)
 
     window = MainWindow()
 

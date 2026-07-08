@@ -1,5 +1,7 @@
 from app.database.session import SessionLocal
 
+import app.models
+
 from app.models.book import Book
 
 from app.constants.book_status import (

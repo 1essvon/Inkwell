@@ -72,15 +72,9 @@ class FocusView(QWidget):
             Qt.AlignCenter
         )
 
-        self.current_page_label.setStyleSheet("""
-
-            font-size:18px;
-
-            font-weight:bold;
-
-            padding:12px;
-
-        """)
+        self.current_page_label.setObjectName(
+            "pageIndicator"
+        )
 
         layout.addWidget(
             self.current_page_label
@@ -98,11 +92,9 @@ class FocusView(QWidget):
             Qt.AlignCenter
         )
 
-        self.timer_label.setStyleSheet("""
-            font-size:32px;
-            font-weight:bold;
-            padding:20px;
-        """)
+        self.timer_label.setObjectName(
+            "timerLabel"
+        )
 
         layout.addWidget(
             self.timer_label

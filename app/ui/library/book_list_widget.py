@@ -1,21 +1,3 @@
-"""
-File:
-    book_list_widget.py
-
-Purpose:
-    Menampilkan daftar buku pada Library.
-
-Responsibilities:
-    - Menampilkan BookCard
-    - Mengelola QListWidget
-    - Mengirim signal saat buku dipilih
-
-Does NOT:
-    - Menampilkan detail buku
-    - Membuka dialog
-    - Menghapus data
-"""
-
 from PySide6.QtCore import (
     Qt,
     Signal
@@ -32,7 +14,9 @@ from PySide6.QtWidgets import (
 
 from app.services.book_service import BookService
 from app.ui.components.book_card import BookCard
-
+from app.ui.components.empty_state import (
+    EmptyState
+)
 
 class BookListWidget(QWidget):
 
@@ -63,15 +47,19 @@ class BookListWidget(QWidget):
 
         self.list_widget = QListWidget()
 
-        self.empty_label = QLabel(
-            "🔍\n\nNo books found.\n\nTry another keyword."
+        self.empty_state = EmptyState(
+
+            icon="📚",
+
+            title="Your Library is Empty",
+
+            subtitle=(
+                "Add your first book to start reading."
+            )
+
         )
 
-        self.empty_label.setAlignment(
-            Qt.AlignCenter
-        )
-
-        self.empty_label.hide()
+        self.empty_state.hide()
 
         self.list_widget.setSpacing(10)
 
@@ -89,7 +77,7 @@ class BookListWidget(QWidget):
         )
 
         layout.addWidget(
-            self.empty_label
+            self.empty_state
         )
 
         self.setLayout(
@@ -195,6 +183,8 @@ class BookListWidget(QWidget):
                     item
                 )
 
+        self.update_empty_state()
+
     def add_book(
         self,
         book
@@ -220,6 +210,20 @@ class BookListWidget(QWidget):
         self.list_widget.setItemWidget(
             item,
             card
+        )
+
+    def update_empty_state(self):
+
+        has_books = (
+            self.list_widget.count() > 0
+        )
+
+        self.list_widget.setVisible(
+            has_books
+        )
+
+        self.empty_state.setVisible(
+            not has_books
         )
 
     def current_book(self):

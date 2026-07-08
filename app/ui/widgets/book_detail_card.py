@@ -21,10 +21,9 @@ class BookDetailCard(QWidget):
         self.genre_label = QLabel("")
         self.rating_label = QLabel("")
 
-        self.title_label.setStyleSheet("""
-            font-size: 20px;
-            font-weight: bold;
-        """)
+        self.title_label.setObjectName(
+            "bookTitle"
+        )
 
         layout.addWidget(self.title_label)
         layout.addWidget(self.author_label)

@@ -64,19 +64,11 @@ class ReadingHistoryView(QWidget):
 
         layout = QVBoxLayout()
 
-        title = QLabel(
-            "Reading History"
+        title = QLabel("Reading History")
+
+        title.setObjectName(
+            "pageTitle"
         )
-
-        title.setStyleSheet("""
-
-            font-size:20px;
-
-            font-weight:bold;
-
-            padding:8px;
-
-        """)
 
         layout.addWidget(
             title

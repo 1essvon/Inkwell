@@ -16,10 +16,9 @@ class NoteDetailView(QWidget):
         self.title_label = QLabel(
             "No Note Selected"
         )
-        self.title_label.setStyleSheet("""
-            font-size: 20px;
-            font-weight: bold;
-        """)
+        self.title_label.setObjectName(
+            "detailTitle"
+        )
 
         self.content_label = QLabel(
             ""

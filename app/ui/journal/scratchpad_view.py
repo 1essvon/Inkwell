@@ -35,19 +35,11 @@ class ScratchpadView(QWidget):
 
         layout = QVBoxLayout()
 
-        title = QLabel(
-            "Scratchpad"
+        title = QLabel("Scratchpad")
+
+        title.setObjectName(
+            "pageTitle"
         )
-
-        title.setStyleSheet("""
-
-            font-size:20px;
-
-            font-weight:bold;
-
-            padding:8px;
-
-        """)
 
         layout.addWidget(
             title

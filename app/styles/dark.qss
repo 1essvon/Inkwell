@@ -1,0 +1,153 @@
+/* ===========================
+   Window
+=========================== */
+
+QWidget {
+
+    background-color: #202124;
+
+    color: #E8EAED;
+
+    font-size: 14px;
+
+}
+
+/* ===========================
+   Page Title
+=========================== */
+
+QLabel#pageTitle {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    padding: 8px;
+
+}
+
+/* ===========================
+   Dialog Title
+=========================== */
+
+QLabel#dialogTitle {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+/* ===========================
+   Book Title
+=========================== */
+
+QLabel#bookTitle {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+/* ===========================
+   Detail Title
+=========================== */
+
+QLabel#detailTitle {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+/* ===========================
+   Timer
+=========================== */
+
+QLabel#timerLabel {
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+}
+
+/* ===========================
+   Page Indicator
+=========================== */
+
+QLabel#pageIndicator {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+QPushButton {
+
+    padding: 8px 16px;
+
+    border-radius: 8px;
+
+    background: #3C4043;
+
+}
+
+QPushButton:hover {
+
+    background: #5F6368;
+
+}
+
+/* ===========================
+   Inputs
+=========================== */
+
+QLineEdit,
+
+QTextEdit,
+
+QComboBox,
+
+QSpinBox {
+
+    border: 1px solid #5F6368;
+
+    border-radius: 6px;
+
+    padding: 6px;
+
+}
+
+/* ===========================
+   Empty State
+=========================== */
+
+QLabel#emptyIcon {
+
+    font-size: 64px;
+
+}
+
+QLabel#emptyTitle {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+QLabel#emptySubtitle {
+
+    font-size: 14px;
+
+    color: #BDC1C6;
+
+}

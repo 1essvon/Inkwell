@@ -60,13 +60,9 @@ class SessionCompleteDialog(QDialog):
             Qt.AlignCenter
         )
 
-        title_label.setStyleSheet("""
-
-        font-size:20px;
-
-        font-weight:bold;
-
-        """)
+        title_label.setObjectName(
+            "dialogTitle"
+        )
 
         layout.addWidget(
             title_label
@@ -78,13 +74,9 @@ class SessionCompleteDialog(QDialog):
             Qt.AlignCenter
         )
 
-        book_label.setStyleSheet("""
-
-        font-size:17px;
-
-        font-weight:bold;
-
-        """)
+        book_label.setObjectName(
+            "dialogBook"
+        )
 
         layout.addWidget(book_label)
 

@@ -88,19 +88,11 @@ class MainWindow(QMainWindow):
 
         sidebar = QVBoxLayout()
 
-        title = QLabel(
-            "THE INKWELL"
+        title = QLabel("Inkwell")
+
+        title.setObjectName(
+            "pageTitle"
         )
-
-        title.setStyleSheet("""
-
-            font-size:20px;
-
-            font-weight:bold;
-
-            padding:12px;
-
-        """)
 
         sidebar.addWidget(
             title
