@@ -4,7 +4,8 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     Integer,
-    String
+    String,
+    Column
 )
 
 from sqlalchemy.orm import (
@@ -43,4 +44,16 @@ class AppSettings(Base):
         DateTime,
         default=datetime.utcnow,
         onupdate=datetime.utcnow
+    )
+
+    reading_goal_books = Column(
+        Integer,
+        nullable=False,
+        default=20,
+    )
+
+    reading_goal_pages = Column(
+        Integer,
+        nullable=False,
+        default=30,
     )

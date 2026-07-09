@@ -1,13 +1,17 @@
 from app.database.session import (
-    SessionLocal
+    SessionLocal,
 )
 
 from app.models.app_settings import (
-    AppSettings
+    AppSettings,
 )
 
 
 class SettingsService:
+
+    # ==========================
+    # Get
+    # ==========================
 
     @staticmethod
     def get():
@@ -44,12 +48,18 @@ class SettingsService:
 
             session.close()
 
+    # ==========================
+    # Save
+    # ==========================
+
     @staticmethod
     def save(
 
         theme,
         autosave,
-        confirm_clear
+        confirm_clear,
+        reading_goal_books,
+        reading_goal_pages,
 
     ):
 
@@ -81,11 +91,23 @@ class SettingsService:
                 confirm_clear
             )
 
+            settings.reading_goal_books = (
+                reading_goal_books
+            )
+
+            settings.reading_goal_pages = (
+                reading_goal_pages
+            )
+
             session.commit()
 
         finally:
 
             session.close()
+
+    # ==========================
+    # Reset
+    # ==========================
 
     @staticmethod
     def reset():
@@ -96,6 +118,10 @@ class SettingsService:
 
             autosave=False,
 
-            confirm_clear=True
+            confirm_clear=True,
+
+            reading_goal_books=20,
+
+            reading_goal_pages=30,
 
         )

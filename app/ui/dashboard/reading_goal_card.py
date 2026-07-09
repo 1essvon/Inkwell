@@ -1,33 +1,27 @@
-"""
-File:
-    reading_goal_card.py
-
-Purpose:
-    Menampilkan progres target membaca.
-
-Responsibilities:
-    - Menampilkan jumlah buku selesai
-    - Menghitung progress
-
-Does NOT:
-    - Menyimpan target pengguna
-"""
-
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QLabel,
-    QProgressBar
+    QProgressBar,
 )
 
-from app.services.book_service import BookService
-from app.constants.book_status import BookStatus
+from app.services.book_service import (
+    BookService,
+)
+
+from app.services.settings_service import (
+    SettingsService,
+)
+
+from app.constants.book_status import (
+    BookStatus,
+)
+
 
 class ReadingGoalCard(QWidget):
 
-    GOAL = 20
-
     def __init__(self):
+
         super().__init__()
 
         self.setup_ui()
@@ -74,10 +68,13 @@ class ReadingGoalCard(QWidget):
         )
 
         self.setLayout(
-            layout
-        )
+            layout)
 
     def refresh(self):
+
+        settings = SettingsService.get()
+
+        goal = settings.reading_goal_books
 
         summary = BookService.get_status_summary()
 
@@ -85,10 +82,10 @@ class ReadingGoalCard(QWidget):
             BookStatus.COMPLETED
         ]
 
-        if self.GOAL > 0:
+        if goal > 0:
 
             percent = int(
-                completed / self.GOAL * 100
+                completed / goal * 100
             )
 
         else:
@@ -103,19 +100,22 @@ class ReadingGoalCard(QWidget):
             ),
         )
 
-        if completed >= self.GOAL:
+        if completed >= goal:
 
             status = "🎉 Goal achieved!"
 
         else:
 
-            remaining = self.GOAL - completed
+            remaining = goal - completed
 
-            status = f"{remaining} books to go"
+            status = (
+                f"{remaining} books to go"
+            )
 
         self.progress_text.setText(
 
-            f"{completed} / {self.GOAL} books\n{status}"
+            f"{completed} / {goal} books\n"
+            f"{status}"
 
         )
 

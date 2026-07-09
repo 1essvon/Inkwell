@@ -7,10 +7,15 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QPushButton,
     QMessageBox,
+    QSpinBox,
 )
 
 from app.services.settings_service import (
     SettingsService,
+)
+
+from app.ui.components.page_header import (
+    PageHeader,
 )
 
 
@@ -34,9 +39,17 @@ class SettingsView(QWidget):
 
         layout = QVBoxLayout(self)
 
-        title = QLabel("Settings")
-        title.setObjectName("pageTitle")
-        layout.addWidget(title)
+        layout.setSpacing(
+            16,
+        )
+
+        layout.addWidget(
+
+            PageHeader(
+                "Settings"
+            )
+
+        )
 
         # --------------------------
         # Appearance
@@ -113,6 +126,62 @@ class SettingsView(QWidget):
         )
 
         # --------------------------
+        # Reading Goals
+        # --------------------------
+
+        goals_group = QGroupBox(
+            "Reading Goals"
+        )
+
+        goals_layout = QVBoxLayout()
+
+        goals_layout.addWidget(
+            QLabel(
+                "Books per Year"
+            )
+        )
+
+        self.books_goal_spin = (
+            QSpinBox()
+        )
+
+        self.books_goal_spin.setRange(
+            1,
+            1000,
+        )
+
+        goals_layout.addWidget(
+            self.books_goal_spin
+        )
+
+        goals_layout.addWidget(
+            QLabel(
+                "Pages per Day"
+            )
+        )
+
+        self.pages_goal_spin = (
+            QSpinBox()
+        )
+
+        self.pages_goal_spin.setRange(
+            1,
+            5000,
+        )
+
+        goals_layout.addWidget(
+            self.pages_goal_spin
+        )
+
+        goals_group.setLayout(
+            goals_layout
+        )
+
+        layout.addWidget(
+            goals_group
+        )
+
+        # --------------------------
         # Save Button
         # --------------------------
 
@@ -158,6 +227,18 @@ class SettingsView(QWidget):
 
         )
 
+        self.books_goal_spin.setValue(
+
+            self.settings.reading_goal_books
+
+        )
+
+        self.pages_goal_spin.setValue(
+
+            self.settings.reading_goal_pages
+
+        )
+
     # ==========================
     # Save
     # ==========================
@@ -170,8 +251,14 @@ class SettingsView(QWidget):
 
             autosave=self.autosave_checkbox.isChecked(),
 
-            confirm_clear=(
-                self.confirm_checkbox.isChecked()
+            confirm_clear=self.confirm_checkbox.isChecked(),
+
+            reading_goal_books=(
+                self.books_goal_spin.value()
+            ),
+
+            reading_goal_pages=(
+                self.pages_goal_spin.value()
             ),
 
         )
@@ -185,6 +272,8 @@ class SettingsView(QWidget):
             "Settings saved."
 
         )
+
+        self.load()
 
     # ==========================
     # Refresh
