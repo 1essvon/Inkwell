@@ -5,15 +5,19 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QLabel,
     QListWidget,
-    QListWidgetItem
-)
-
-from app.services.reading_session_service import (
-    ReadingSessionService
+    QListWidgetItem,
 )
 
 from app.services.book_service import (
-    BookService
+    BookService,
+)
+
+from app.services.reading_session_service import (
+    ReadingSessionService,
+)
+
+from app.ui.components.empty_state import (
+    EmptyState,
 )
 
 
@@ -26,6 +30,10 @@ class ReadingHistoryView(QWidget):
         self.setup_ui()
 
         self.refresh()
+
+    # ==================================
+    # Helpers
+    # ==================================
 
     def format_datetime(self, dt):
 
@@ -40,7 +48,8 @@ class ReadingHistoryView(QWidget):
 
         if (
 
-            now.date() - dt.date()
+            now.date()
+            - dt.date()
 
         ).days == 1:
 
@@ -50,10 +59,27 @@ class ReadingHistoryView(QWidget):
             )
 
         return (
+
             "🕒 "
+
             + dt.strftime(
                 "%d %b %Y • %H:%M"
             )
+
+        )
+
+    def update_empty_state(self):
+
+        has_history = (
+            self.history_list.count() > 0
+        )
+
+        self.history_list.setVisible(
+            has_history
+        )
+
+        self.empty_state.setVisible(
+            not has_history
         )
 
     # ==================================
@@ -64,7 +90,9 @@ class ReadingHistoryView(QWidget):
 
         layout = QVBoxLayout()
 
-        title = QLabel("Reading History")
+        title = QLabel(
+            "Reading History"
+        )
 
         title.setObjectName(
             "pageTitle"
@@ -76,11 +104,32 @@ class ReadingHistoryView(QWidget):
 
         self.history_list = QListWidget()
 
+        self.empty_state = EmptyState(
+
+            icon="📖",
+
+            title="No Reading History",
+
+            subtitle=(
+                "Complete your first reading "
+                "session to see it here."
+            )
+
+        )
+
+        self.empty_state.hide()
+
         layout.addWidget(
             self.history_list
         )
 
-        self.setLayout(layout)
+        layout.addWidget(
+            self.empty_state
+        )
+
+        self.setLayout(
+            layout
+        )
 
     # ==================================
     # Refresh
@@ -91,24 +140,11 @@ class ReadingHistoryView(QWidget):
         self.history_list.clear()
 
         sessions = (
+
             ReadingSessionService
             .get_recent_sessions()
+
         )
-
-        if not sessions:
-
-            self.history_list.addItem(
-
-                QListWidgetItem(
-
-                    "No reading sessions yet.\n\n"
-                    "Start a Focus Session to begin."
-
-                )
-
-            )
-
-            return
 
         for session in sessions:
 
@@ -120,20 +156,30 @@ class ReadingHistoryView(QWidget):
                 continue
 
             pages = (
+
                 session.end_page
                 - session.start_page
+
             )
 
             page_text = (
+
                 "Page"
+
                 if pages == 1
+
                 else "Pages"
+
             )
 
             minute_text = (
+
                 "Minute"
+
                 if session.duration_minutes == 1
+
                 else "Minutes"
+
             )
 
             date_text = self.format_datetime(
@@ -168,7 +214,9 @@ class ReadingHistoryView(QWidget):
 
             size = item.sizeHint()
 
-            size.setHeight(110)
+            size.setHeight(
+                110
+            )
 
             item.setSizeHint(
                 size
@@ -178,4 +226,6 @@ class ReadingHistoryView(QWidget):
                 item
             )
 
-            self.history_list.scrollToTop()
+        self.history_list.scrollToTop()
+
+        self.update_empty_state()
