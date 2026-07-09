@@ -1,25 +1,6 @@
-"""
-File:
-    dashboard_view.py
-
-Purpose:
-    Halaman Dashboard.
-
-Responsibilities:
-    - Menyusun layout
-    - Menghubungkan widget Dashboard
-    - Refresh seluruh widget
-
-Does NOT:
-    - Mengambil data database
-    - Menghitung greeting
-    - Menampilkan statistik
-"""
-
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QLabel,
     QScrollArea
 )
 
@@ -45,6 +26,10 @@ from app.ui.dashboard.recent_books_card import (
 
 from app.ui.dashboard.reading_goal_card import (
     ReadingGoalCard
+)
+
+from app.ui.components.page_header import (
+    PageHeader
 )
 
 
@@ -91,14 +76,6 @@ class DashboardView(QWidget):
         # Widgets
         # ======================
 
-        self.title = QLabel(
-            "Dashboard"
-        )
-
-        self.title.setObjectName(
-            "pageTitle"
-        )
-
         self.greeting = GreetingWidget()
 
         self.continue_reading = ContinueReadingWidget()
@@ -116,7 +93,13 @@ class DashboardView(QWidget):
         # ======================
 
         layout.addWidget(
-            self.title
+
+            PageHeader(
+
+                "Dashboard"
+
+            )
+
         )
 
         layout.addWidget(

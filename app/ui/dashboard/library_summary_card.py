@@ -1,33 +1,25 @@
-"""
-File:
-    library_summary_card.py
-
-Purpose:
-    Menampilkan ringkasan jumlah buku berdasarkan status.
-
-Responsibilities:
-    - Menampilkan jumlah buku per status
-    - Mengambil data dari BookService
-
-Does NOT:
-    - Mengakses database secara langsung
-"""
-
 from PySide6.QtWidgets import (
-    QWidget,
     QVBoxLayout,
-    QLabel
+    QWidget,
 )
-
-from app.services.book_service import BookService
 
 from app.constants.book_status import (
-    BookStatus
+    BookStatus,
 )
+
+from app.services.book_service import (
+    BookService,
+)
+
+from app.ui.components.info_card import (
+    InfoCard,
+)
+
 
 class LibrarySummaryCard(QWidget):
 
     def __init__(self):
+
         super().__init__()
 
         self.setup_ui()
@@ -38,54 +30,55 @@ class LibrarySummaryCard(QWidget):
 
         layout = QVBoxLayout()
 
-        self.title = QLabel(
-            "Library Summary"
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        self.reading = QLabel()
+        layout.setSpacing(
+            8,
+        )
 
-        self.want_to_read = QLabel()
+        self.card = InfoCard()
 
-        self.completed = QLabel()
+        layout.addWidget(
+            self.card
+        )
 
-        self.paused = QLabel()
-
-        self.dropped = QLabel()
-
-        layout.addWidget(self.title)
-
-        layout.addWidget(self.reading)
-
-        layout.addWidget(self.want_to_read)
-
-        layout.addWidget(self.completed)
-
-        layout.addWidget(self.paused)
-
-        layout.addWidget(self.dropped)
-
-        self.setLayout(layout)
+        self.setLayout(
+            layout
+        )
 
     def refresh(self):
 
         summary = BookService.get_status_summary()
 
-        self.reading.setText(
-            f"📖 Reading : {summary[BookStatus.READING]}"
+        details = "\n".join(
+
+            [
+
+                f"📖 Reading : {summary[BookStatus.READING]}",
+
+                f"📚 Want To Read : {summary[BookStatus.WANT_TO_READ]}",
+
+                f"✅ Completed : {summary[BookStatus.COMPLETED]}",
+
+                f"⏸ Paused : {summary[BookStatus.PAUSED]}",
+
+                f"❌ Dropped : {summary[BookStatus.DROPPED]}",
+
+            ]
+
         )
 
-        self.want_to_read.setText(
-            f"📚 Want To Read : {summary[BookStatus.WANT_TO_READ]}"
-        )
+        self.card.set_data(
 
-        self.completed.setText(
-            f"✅ Completed : {summary[BookStatus.COMPLETED]}"
-        )
+            "Library Summary",
 
-        self.paused.setText(
-            f"⏸ Paused : {summary[BookStatus.PAUSED]}"
-        )
+            "",
 
-        self.dropped.setText(
-            f"❌ Dropped : {summary[BookStatus.DROPPED]}"
+            details,
+
         )

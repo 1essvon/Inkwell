@@ -92,7 +92,13 @@ class NoteDetailView(QWidget):
             "No Note Selected"
         )
 
-        self.content_label.setText("")
+        self.content_label.setText(
+            ""
+        )
+
+        self.content_editor.clear()
+
+        self.current_note = None
 
     def save_note(self):
 

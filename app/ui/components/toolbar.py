@@ -1,12 +1,13 @@
 from PySide6.QtWidgets import (
     QWidget,
-    QHBoxLayout
+    QHBoxLayout,
 )
 
 
 class Toolbar(QWidget):
 
     def __init__(self):
+
         super().__init__()
 
         self.layout = QHBoxLayout()
@@ -15,14 +16,12 @@ class Toolbar(QWidget):
             0,
             0,
             0,
-            0
+            0,
         )
 
         self.layout.setSpacing(
             8
         )
-
-        self.layout.addStretch()
 
         self.setLayout(
             self.layout
@@ -30,10 +29,14 @@ class Toolbar(QWidget):
 
     def add_widget(
         self,
-        widget
+        widget,
+        stretch=0,
     ):
-
-        self.layout.insertWidget(
-            self.layout.count() - 1,
-            widget
+        self.layout.addWidget(
+            widget,
+            stretch
         )
+
+    def add_stretch(self):
+
+        self.layout.addStretch()

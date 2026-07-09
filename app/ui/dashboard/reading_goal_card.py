@@ -38,6 +38,17 @@ class ReadingGoalCard(QWidget):
 
         layout = QVBoxLayout()
 
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        layout.setSpacing(
+            8,
+        )
+
         self.title = QLabel(
             "Reading Goal"
         )
@@ -74,17 +85,37 @@ class ReadingGoalCard(QWidget):
             BookStatus.COMPLETED
         ]
 
-        percent = int(
-            completed / self.GOAL * 100
+        if self.GOAL > 0:
+
+            percent = int(
+                completed / self.GOAL * 100
+            )
+
+        else:
+
+            percent = 0
+
+        percent = max(
+            0,
+            min(
+                percent,
+                100,
+            ),
         )
 
-        if percent > 100:
+        if completed >= self.GOAL:
 
-            percent = 100
+            status = "🎉 Goal achieved!"
+
+        else:
+
+            remaining = self.GOAL - completed
+
+            status = f"{remaining} books to go"
 
         self.progress_text.setText(
 
-            f"{completed} / {self.GOAL} books"
+            f"{completed} / {self.GOAL} books\n{status}"
 
         )
 

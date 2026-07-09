@@ -1,20 +1,3 @@
-"""
-File:
-    continue_reading_widget.py
-
-Purpose:
-    Menampilkan buku yang sedang dibaca.
-
-Responsibilities:
-    - Mengambil current reading
-    - Menampilkan informasi buku
-    - Menampilkan progress
-
-Does NOT:
-    - Mengakses statistik
-    - Menampilkan greeting
-"""
-
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -50,6 +33,17 @@ class ContinueReadingWidget(QWidget):
     def setup_ui(self):
 
         layout = QVBoxLayout()
+
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        layout.setSpacing(
+            8
+        )
 
         self.info_card = InfoCard()
 
@@ -87,8 +81,22 @@ class ContinueReadingWidget(QWidget):
 
             return
 
-        percent = int(
-            (book.current_page / book.page_count) * 100
+        if book.page_count > 0:
+
+            percent = int(
+                (book.current_page / book.page_count) * 100
+            )
+
+        else:
+
+            percent = 0
+
+        percent = max(
+            0,
+            min(
+                percent,
+                100,
+            ),
         )
 
         self.info_card.set_data(

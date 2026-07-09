@@ -20,6 +20,13 @@ from app.ui.components.empty_state import (
     EmptyState,
 )
 
+from app.ui.components.page_header import (
+    PageHeader
+)
+
+from app.ui.components.toolbar import (
+    Toolbar
+)
 
 class ReadingHistoryView(QWidget):
 
@@ -90,16 +97,14 @@ class ReadingHistoryView(QWidget):
 
         layout = QVBoxLayout()
 
-        title = QLabel(
-            "Reading History"
-        )
-
-        title.setObjectName(
-            "pageTitle"
-        )
-
         layout.addWidget(
-            title
+
+            PageHeader(
+
+                "Reading History"
+
+            )
+
         )
 
         self.history_list = QListWidget()

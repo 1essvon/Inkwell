@@ -47,6 +47,8 @@ class QuoteDetailView(QWidget):
             quote.content
         )
 
+        self.current_quote = quote
+
     def clear(self):
 
         self.page_label.setText(
@@ -54,3 +56,5 @@ class QuoteDetailView(QWidget):
         )
 
         self.content.clear()
+
+        self.current_quote = None

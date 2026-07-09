@@ -1,18 +1,3 @@
-"""
-File:
-    recent_books_card.py
-
-Purpose:
-    Menampilkan daftar buku terbaru.
-
-Responsibilities:
-    - Menampilkan maksimal 5 buku
-    - Mengambil data dari BookService
-
-Does NOT:
-    - Mengakses database secara langsung
-"""
-
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -22,6 +7,8 @@ from PySide6.QtWidgets import (
 from app.services.book_service import BookService
 
 class RecentBooksCard(QWidget):
+
+    MAX_ITEMS = 5
 
     # ----------------------------------
     # Initialization
@@ -38,6 +25,17 @@ class RecentBooksCard(QWidget):
 
         layout = QVBoxLayout()
 
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        layout.setSpacing(
+            8,
+        )
+
         self.title = QLabel(
             "Recent Books"
         )
@@ -52,7 +50,7 @@ class RecentBooksCard(QWidget):
 
         self.items = []
 
-        for _ in range(5):
+        for _ in range(self.MAX_ITEMS):
 
             label = QLabel()
 
@@ -82,8 +80,19 @@ class RecentBooksCard(QWidget):
 
             label.clear()
 
-        for label, book in zip(self.items, books):
+        if not books:
+
+            self.items[0].setText(
+                "No books yet."
+            )
+
+            return
+
+        for label, book in zip(
+            self.items,
+            books,
+        ):
 
             label.setText(
-                f"📖 {book.title}"
+                f"📖 {book.title} — {book.author}"
             )

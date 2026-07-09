@@ -151,3 +151,11 @@ QLabel#emptySubtitle {
     color: #BDC1C6;
 
 }
+
+QLabel#pageSubtitle {
+
+    color: #9AA0A6;
+
+    font-size: 13px;
+
+}

@@ -27,6 +27,18 @@ from app.ui.journal.quote_detail_view import (
     QuoteDetailView
 )
 
+from app.ui.components.page_header import (
+    PageHeader,
+)
+
+from app.ui.components.toolbar import (
+    Toolbar,
+)
+
+from app.ui.components.empty_state import (
+    EmptyState,
+)
+
 
 class QuotesView(QWidget):
 
@@ -45,6 +57,16 @@ class QuotesView(QWidget):
         content = QWidget()
 
         layout = QVBoxLayout()
+
+        layout.addWidget(
+
+            PageHeader(
+
+                "Quotes"
+
+            )
+
+        )
 
         content.setLayout(
             layout
@@ -76,21 +98,38 @@ class QuotesView(QWidget):
             "Delete Quote"
         )
 
-        button_layout = QHBoxLayout()
+        toolbar = Toolbar()
 
-        button_layout.addWidget(
+        toolbar.add_stretch()
+
+        toolbar.add_widget(
             self.add_quote_button
         )
 
-        button_layout.addWidget(
+        toolbar.add_widget(
             self.delete_quote_button
         )
 
-        layout.addLayout(
-            button_layout
+        layout.addWidget(
+            toolbar
         )
 
         self.quote_list = QListWidget()
+
+        self.empty_state = EmptyState(
+
+            icon="💬",
+
+            title="No Quotes Yet",
+
+            subtitle=(
+                "Save memorable quotes\n"
+                "from your reading."
+            )
+
+        )
+
+        self.empty_state.hide()
 
         self.detail_view = QuoteDetailView()
 
@@ -98,6 +137,11 @@ class QuotesView(QWidget):
 
         content_layout.addWidget(
             self.quote_list,
+            1
+        )
+
+        content_layout.addWidget(
+            self.empty_state,
             1
         )
 
@@ -204,6 +248,8 @@ class QuotesView(QWidget):
 
             self.detail_view.clear()
 
+        self.update_empty_state()
+
     def open_add_quote_dialog(self):
 
         book_id = self.book_filter.currentData()
@@ -270,3 +316,21 @@ class QuotesView(QWidget):
             self.load_quotes()
 
             self.detail_view.clear()
+
+    def update_empty_state(self):
+
+        has_quotes = (
+            self.quote_list.count() > 0
+        )
+
+        self.quote_list.setVisible(
+            has_quotes
+        )
+
+        self.detail_view.setVisible(
+            has_quotes
+        )
+
+        self.empty_state.setVisible(
+            not has_quotes
+        )

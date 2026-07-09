@@ -1,22 +1,3 @@
-"""
-File:
-    library_view.py
-
-Purpose:
-    Halaman utama Library.
-
-Responsibilities:
-    - Menyusun layout
-    - Menghubungkan widget
-    - Membuka dialog
-    - Menghapus buku
-
-Does NOT:
-    - Membuat BookCard
-    - Menampilkan detail buku
-    - Mengelola QListWidget
-"""
-
 from PySide6.QtCore import Qt
 
 from PySide6.QtWidgets import (
@@ -52,6 +33,14 @@ from app.ui.components.search_bar import (
     SearchBar
 )
 
+from app.ui.components.page_header import (
+    PageHeader
+)
+
+from app.ui.components.toolbar import (
+    Toolbar
+)
+
 
 class LibraryView(QWidget):
 
@@ -82,21 +71,41 @@ class LibraryView(QWidget):
         # Title
         # ======================
 
-        title = QLabel("Library")
-
-        title.setObjectName(
-            "pageTitle"
-        )
-
         layout.addWidget(
-            title
+
+            PageHeader(
+
+                "Library"
+
+            )
+
         )
 
         # ======================
         # Toolbar
         # ======================
 
-        toolbar = QHBoxLayout()
+        self.search_bar = SearchBar()
+
+        self.filter_box = QComboBox()
+
+        self.filter_box.addItems([
+            "All",
+            "Reading",
+            "Want To Read",
+            "Completed",
+            "Paused",
+            "Dropped",
+        ])
+
+        self.sort_box = QComboBox()
+
+        self.sort_box.addItems([
+            "Title",
+            "Author",
+            "Recently Added",
+            "Recently Updated",
+        ])
 
         self.add_button = QPushButton(
             "Add Book"
@@ -110,71 +119,37 @@ class LibraryView(QWidget):
             "Delete Book"
         )
 
-        toolbar.addWidget(
-            self.add_button
-        )
+        toolbar = Toolbar()
 
-        toolbar.addWidget(
-            self.edit_button
-        )
-
-        toolbar.addWidget(
-            self.delete_button
-        )
-
-        toolbar.addStretch()
-
-        layout.addLayout(
-            toolbar
-        )
-
-        layout.addSpacing(
-            12
-        )
-
-        # ======================
-        # Search / Filter / Sort
-        # ======================
-
-        controls_layout = QHBoxLayout()
-
-        self.search_bar = SearchBar()
-
-        controls_layout.addWidget(
+        toolbar.add_widget(
             self.search_bar,
             1
         )
 
-        self.filter_box = QComboBox()
-
-        self.filter_box.addItems([
-            "All",
-            "Reading",
-            "Want To Read",
-            "Completed",
-            "Paused",
-            "Dropped"
-        ])
-
-        controls_layout.addWidget(
+        toolbar.add_widget(
             self.filter_box
         )
 
-        self.sort_box = QComboBox()
-
-        self.sort_box.addItems([
-            "Title",
-            "Author",
-            "Recently Added",
-            "Recently Updated"
-        ])
-
-        controls_layout.addWidget(
+        toolbar.add_widget(
             self.sort_box
         )
 
-        layout.addLayout(
-            controls_layout
+        toolbar.add_stretch()
+
+        toolbar.add_widget(
+            self.edit_button
+        )
+
+        toolbar.add_widget(
+            self.delete_button
+        )
+
+        toolbar.add_widget(
+            self.add_button
+        )
+
+        layout.addWidget(
+            toolbar
         )
 
         layout.addSpacing(
@@ -293,10 +268,6 @@ class LibraryView(QWidget):
 
         self.book_list.refresh(
             text
-        )
-
-        self.sort_box.currentTextChanged.connect(
-            self.refresh
         )
 
     # ----------------------------------

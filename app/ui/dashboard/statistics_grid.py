@@ -15,6 +15,8 @@ Does NOT:
     - Continue Reading
 """
 
+from operator import index
+
 from PySide6.QtWidgets import (
     QWidget,
     QGridLayout
@@ -30,6 +32,8 @@ from app.ui.components.stat_card import (
 
 
 class StatisticsGrid(QWidget):
+
+    COLUMNS = 3
 
     # ----------------------------------
     # Initialization
@@ -49,6 +53,28 @@ class StatisticsGrid(QWidget):
     def setup_ui(self):
 
         self.layout = QGridLayout()
+
+        self.layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        self.layout.setColumnStretch(
+            0,
+            1,
+        )
+
+        self.layout.setColumnStretch(
+            1,
+            1,
+        )
+
+        self.layout.setColumnStretch(
+            2,
+            1,
+        )
 
         self.layout.setHorizontalSpacing(
             24
@@ -79,26 +105,19 @@ class StatisticsGrid(QWidget):
         stats = StatisticsService.get_statistics()
 
         cards = [
-
             ("Books", stats["books"]),
-
             ("Notes", stats["notes"]),
-
             ("Quotes", stats["quotes"]),
-
             ("Sessions", stats["reading_sessions"]),
-
             ("Pages", stats["pages_read"]),
-
-            ("Minutes", stats["reading_minutes"])
-
+            ("Minutes", stats["reading_minutes"]),
         ]
 
         for index, (title, value) in enumerate(cards):
 
-            row = index // 3
+            row = index // self.COLUMNS
 
-            col = index % 3
+            col = index % self.COLUMNS
 
             self.layout.addWidget(
 

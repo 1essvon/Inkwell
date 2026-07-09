@@ -45,6 +45,17 @@ class GreetingWidget(QWidget):
 
         layout = QVBoxLayout()
 
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        layout.setSpacing(
+            4
+        )
+
         self.title = QLabel()
 
         self.title.setObjectName(

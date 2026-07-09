@@ -19,6 +19,18 @@ from app.services.book_service import (
     BookService
 )
 
+from app.ui.components.page_header import (
+    PageHeader,
+)
+
+from app.ui.components.toolbar import (
+    Toolbar,
+)
+
+from app.ui.components.empty_state import (
+    EmptyState,
+)
+
 
 class NotesView(QWidget):
 
@@ -34,6 +46,16 @@ class NotesView(QWidget):
         content = QWidget()
 
         layout = QVBoxLayout()
+
+        layout.addWidget(
+
+            PageHeader(
+
+                "Notes"
+
+            )
+
+        )
 
         content.setLayout(layout)
 
@@ -69,30 +91,52 @@ class NotesView(QWidget):
 
         self.note_list = QListWidget()
 
+        self.empty_state = EmptyState(
+
+            icon="📝",
+
+            title="No Notes Yet",
+
+            subtitle=(
+                "Create your first note\n"
+                "to keep track of your ideas."
+            )
+
+        )
+
+        self.empty_state.hide()
+
         self.note_list.itemClicked.connect(
             self.show_note_details
         )
 
         self.detail_view = NoteDetailView()
 
-        button_layout = QHBoxLayout()
+        toolbar = Toolbar()
 
-        button_layout.addWidget(
+        toolbar.add_stretch()
+
+        toolbar.add_widget(
             self.add_note_button
         )
 
-        button_layout.addWidget(
+        toolbar.add_widget(
             self.delete_note_button
         )
 
-        layout.addLayout(
-            button_layout
+        layout.addWidget(
+            toolbar
         )
 
         content_layout = QHBoxLayout()
 
         content_layout.addWidget(
             self.note_list,
+            1
+        )
+
+        content_layout.addWidget(
+            self.empty_state,
             1
         )
 
@@ -178,6 +222,14 @@ class NotesView(QWidget):
             self.detail_view.display_note(
                 first_note
             )
+            
+        else:
+
+            self.selected_note = None
+
+            self.detail_view.clear()
+
+        self.update_empty_state()
 
 
     def open_add_note_dialog(self):
@@ -224,3 +276,21 @@ class NotesView(QWidget):
         self.load_notes()
 
         self.detail_view.clear()
+
+    def update_empty_state(self):
+
+        has_notes = (
+            self.note_list.count() > 0
+        )
+
+        self.note_list.setVisible(
+            has_notes
+        )
+
+        self.detail_view.setVisible(
+            has_notes
+        )
+
+        self.empty_state.setVisible(
+            not has_notes
+        )
