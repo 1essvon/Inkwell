@@ -190,6 +190,24 @@ class MainWindow(QMainWindow):
 
         self.dashboard_page = DashboardView()
 
+        self.dashboard_page.add_book_requested.connect(
+
+            self.open_add_book_dialog
+
+        )
+
+        self.dashboard_page.start_session_requested.connect(
+
+            self.open_start_session
+
+        )
+
+        self.dashboard_page.new_note_requested.connect(
+
+            self.open_new_note
+
+        )
+
         self.library_page = LibraryView()
 
         self.reading_page = ReadingSessionView()
@@ -385,4 +403,18 @@ class MainWindow(QMainWindow):
 
             page.refresh()
 
-    
+    def open_add_book_dialog(self):
+
+        self.show_library()
+
+        self.library_page.show_add_book_dialog()
+
+    def open_start_session(self):
+
+        self.show_reading()
+        
+    def open_new_note(self):
+
+        self.show_journal()
+
+        self.journal_page.show_add_note_dialog()

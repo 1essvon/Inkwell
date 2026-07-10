@@ -159,3 +159,15 @@ QLabel#pageSubtitle {
     font-size: 13px;
 
 }
+
+QPushButton {
+    border-radius: 10px;
+}
+
+QPushButton:hover {
+    border: 1px solid #4a90ff;
+}
+
+QPushButton:pressed {
+    padding-top: 2px;
+}

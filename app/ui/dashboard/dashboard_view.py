@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QScrollArea
 )
 
@@ -32,14 +33,31 @@ from app.ui.components.page_header import (
     PageHeader
 )
 
+from app.ui.dashboard.reading_streak_card import (
+    ReadingStreakCard,
+)
+
+from app.ui.dashboard.quick_actions_widget import (
+    QuickActionsWidget,
+)
+
+from PySide6.QtCore import Signal
+
 
 class DashboardView(QWidget):
+
+    add_book_requested = Signal()
+
+    start_session_requested = Signal()
+
+    new_note_requested = Signal()
 
     # ----------------------------------
     # Initialization
     # ----------------------------------
 
     def __init__(self):
+
         super().__init__()
 
         self.setup_ui()
@@ -52,7 +70,7 @@ class DashboardView(QWidget):
 
     def setup_ui(self):
 
-        root_layout = QVBoxLayout()
+        root_layout = QVBoxLayout(self)
 
         # ======================
         # Scroll Area
@@ -60,17 +78,13 @@ class DashboardView(QWidget):
 
         scroll = QScrollArea()
 
-        scroll.setWidgetResizable(
-            True
-        )
+        scroll.setWidgetResizable(True)
 
         content = QWidget()
 
         layout = QVBoxLayout()
 
-        layout.setSpacing(
-            18
-        )
+        layout.setSpacing(18)
 
         # ======================
         # Widgets
@@ -78,32 +92,70 @@ class DashboardView(QWidget):
 
         self.greeting = GreetingWidget()
 
+        self.quick_actions = QuickActionsWidget()
+
         self.continue_reading = ContinueReadingWidget()
 
         self.library_summary = LibrarySummaryCard()
 
-        self.recent_books = RecentBooksCard()
+        self.reading_goal = ReadingGoalCard()
+
+        self.reading_streak = ReadingStreakCard()
 
         self.statistics = StatisticsGrid()
 
-        self.reading_goal = ReadingGoalCard()
+        self.recent_books = RecentBooksCard()
+
+        # ======================
+        # Signals
+        # ======================
+
+        self.quick_actions.add_book_requested.connect(
+            self.add_book_requested.emit
+        )
+
+        self.quick_actions.start_session_requested.connect(
+            self.start_session_requested.emit
+        )
+
+        self.quick_actions.new_note_requested.connect(
+            self.new_note_requested.emit
+        )
+
+        # ======================
+        # Goal Row
+        # ======================
+
+        goal_row = QHBoxLayout()
+
+        goal_row.setSpacing(16)
+
+        goal_row.addWidget(
+            self.reading_goal,
+            1,
+        )
+
+        goal_row.addWidget(
+            self.reading_streak,
+            1,
+        )
 
         # ======================
         # Layout
         # ======================
 
         layout.addWidget(
-
             PageHeader(
-
                 "Dashboard"
-
             )
-
         )
 
         layout.addWidget(
             self.greeting
+        )
+
+        layout.addWidget(
+            self.quick_actions
         )
 
         layout.addWidget(
@@ -114,12 +166,12 @@ class DashboardView(QWidget):
             self.library_summary
         )
 
-        layout.addWidget(
-            self.statistics
+        layout.addLayout(
+            goal_row
         )
 
         layout.addWidget(
-            self.reading_goal
+            self.statistics
         )
 
         layout.addWidget(
@@ -140,10 +192,6 @@ class DashboardView(QWidget):
             scroll
         )
 
-        self.setLayout(
-            root_layout
-        )
-
     # ----------------------------------
     # Data
     # ----------------------------------
@@ -161,3 +209,5 @@ class DashboardView(QWidget):
         self.recent_books.refresh()
 
         self.reading_goal.refresh()
+
+        self.reading_streak.refresh()

@@ -119,3 +119,16 @@ class JournalView(QWidget):
 
         self.quotes_page.load_books()
         self.quotes_page.load_quotes()
+
+    def show_add_note_dialog(self):
+
+        self.pages.setCurrentIndex(0)
+
+        self.notes_page.load_books()
+
+        if self.notes_page.book_filter.count() <= 1:
+            return
+
+        self.notes_page.book_filter.setCurrentIndex(1)
+
+        self.notes_page.open_add_note_dialog()

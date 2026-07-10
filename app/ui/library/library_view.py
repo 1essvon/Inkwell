@@ -48,8 +48,9 @@ class LibraryView(QWidget):
     # Initialization
     # ----------------------------------
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+
+        super().__init__(parent)
 
         self.selected_book = None
 
@@ -211,7 +212,7 @@ class LibraryView(QWidget):
     def setup_connections(self):
 
         self.add_button.clicked.connect(
-            self.open_add_book_dialog
+            self.show_add_book_dialog
         )
 
         self.edit_button.clicked.connect(
@@ -304,7 +305,7 @@ class LibraryView(QWidget):
     # Dialog
     # ----------------------------------
 
-    def open_add_book_dialog(self):
+    def show_add_book_dialog(self):
 
         dialog = AddBookDialog()
 

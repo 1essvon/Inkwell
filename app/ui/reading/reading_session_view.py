@@ -1,20 +1,3 @@
-"""
-File:
-    reading_session_view.py
-
-Purpose:
-    Halaman sesi membaca.
-
-Responsibilities:
-    - Menampilkan buku yang sedang dibaca
-    - Update current page
-    - Membuat catatan
-    - Menyimpan quote
-
-Does NOT:
-    - Mengakses database langsung
-"""
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
@@ -96,20 +79,6 @@ class ReadingSessionView(QWidget):
 
         self.book_list.refresh()
 
-    def setup_connections(self):
-
-        self.plus_one.clicked.connect(
-            lambda: self.add_pages(1)
-        )
-
-        self.plus_five.clicked.connect(
-            lambda: self.add_pages(5)
-        )
-
-        self.plus_ten.clicked.connect(
-            lambda: self.add_pages(10)
-        ) 
-
     def add_pages(
         self,
         amount
@@ -160,6 +129,10 @@ class ReadingSessionView(QWidget):
         self.detail.set_book(
             book
         )
+
+    def open_start_session(self):
+
+        self.show_reading()
 
     def refresh_list(self):
 

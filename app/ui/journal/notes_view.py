@@ -238,13 +238,20 @@ class NotesView(QWidget):
 
         if book_id is None:
 
-            return
+            books = BookService.get_all_books()
+
+            if not books:
+
+                return
+
+            book_id = books[0].id
 
         dialog = AddNoteDialog(
             book_id
         )
 
         if dialog.exec():
+
             self.load_notes()
 
     def show_note_details(self, item):
