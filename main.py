@@ -21,6 +21,11 @@ def main():
 
     window.show()
 
+    print("min :", window.minimumSize())
+    print("max :", window.maximumSize())
+    print("size:", window.size())
+    print("hint:", window.minimumSizeHint())
+
     sys.exit(app.exec())
 
 
