@@ -15,11 +15,10 @@ class StatCard(BaseCard):
     def __init__(
         self,
         title: str,
-        value: str
+        value: str,
     ):
-        super().__init__()
 
-        layout = QVBoxLayout()
+        super().__init__()
 
         self.title = QLabel(title)
 
@@ -41,6 +40,8 @@ class StatCard(BaseCard):
             "cardValue"
         )
 
+        self.layout.setSpacing(8)
+
         self.layout.addWidget(
             self.title
         )
@@ -49,9 +50,16 @@ class StatCard(BaseCard):
             self.value
         )
 
-        self.setLayout(layout)
-
         self.setMinimumSize(
             140,
             100
+        )
+
+    def set_value(
+        self,
+        value,
+    ):
+
+        self.value.setText(
+            str(value)
         )
