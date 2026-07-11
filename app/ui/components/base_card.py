@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import (
     QWidget,
-    QVBoxLayout
+    QVBoxLayout,
+    QSizePolicy
 )
-
+from PySide6.QtCore import Qt
 
 class BaseCard(QWidget):
 
@@ -26,4 +27,14 @@ class BaseCard(QWidget):
 
         self.setLayout(
             self.layout
+        )
+
+        self.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Minimum
+        )
+
+        self.setAttribute(
+            Qt.WidgetAttribute.WA_StyledBackground,
+            True
         )

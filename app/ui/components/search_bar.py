@@ -30,12 +30,19 @@ class SearchBar(QWidget):
     # Initialization
     # ----------------------------------
 
-    def __init__(self):
+    def __init__(
+        self,
+        placeholder="Search...",
+    ):
         super().__init__()
 
         self.setup_ui()
 
         self.setup_connections()
+
+        self.input.setPlaceholderText(
+            placeholder
+        )
 
     # ----------------------------------
     # UI
@@ -84,3 +91,16 @@ class SearchBar(QWidget):
     def clear(self):
 
         self.input.clear()
+
+    def focus(self):
+
+        self.input.setFocus()
+
+    def set_text(
+        self,
+        text: str,
+    ):
+
+        self.input.setText(
+            text
+        )

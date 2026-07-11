@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import (
     QWidget,
     QHBoxLayout,
+    QSpacerItem,
+    QSizePolicy,
 )
-
 
 class Toolbar(QWidget):
 
@@ -31,12 +32,40 @@ class Toolbar(QWidget):
         self,
         widget,
         stretch=0,
+        alignment=None,
     ):
-        self.layout.addWidget(
-            widget,
-            stretch
-        )
+
+        if alignment is None:
+
+            self.layout.addWidget(
+                widget,
+                stretch,
+            )
+
+        else:
+
+            self.layout.addWidget(
+                widget,
+                stretch,
+                alignment,
+            )
 
     def add_stretch(self):
 
         self.layout.addStretch()
+
+    def add_spacing(
+        self,
+        width: int,
+    ):
+
+        self.layout.addSpacerItem(
+
+            QSpacerItem(
+                width,
+                0,
+                QSizePolicy.Policy.Fixed,
+                QSizePolicy.Policy.Minimum,
+            )
+
+        )

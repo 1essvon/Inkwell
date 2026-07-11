@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QLabel
+from PySide6.QtCore import Qt
 
 
 class Badge(QLabel):
@@ -11,19 +12,19 @@ class Badge(QLabel):
         super().__init__(text)
 
         self.setAlignment(
-            __import__("PySide6.QtCore").QtCore.Qt.AlignCenter
+            Qt.AlignCenter
         )
 
-        mapping = {
+        BADGE_TYPES = {
             "reading": "badgeReading",
             "finished": "badgeFinished",
             "waiting": "badgeWaiting",
             "danger": "badgeDanger",
-            "default": "badgeDefault"
+            "default": "badgeDefault",
         }
 
         self.setObjectName(
-            mapping.get(
+            self.BADGE_TYPES.get(
                 badge_type,
                 "badgeDefault"
             )

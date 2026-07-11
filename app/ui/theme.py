@@ -42,6 +42,78 @@ QLabel#summaryItem {
     color: #c8c8c8;
 }
 
+QLabel#pageSubtitle {
+
+    color: #9b9b9b;
+
+    font-size: 13px;
+
+}
+
+QLabel#emptyIcon {
+
+    font-size: 52px;
+
+}
+
+QLabel#emptyTitle {
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+QLabel#emptySubtitle {
+
+    color: #9b9b9b;
+
+}
+
+QLabel#badgeReading,
+QLabel#badgeFinished,
+QLabel#badgeWaiting,
+QLabel#badgeDanger,
+QLabel#badgeDefault {
+
+    padding: 4px 10px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+}
+
+QLabel#badgeReading {
+
+    background: #2f6feb;
+
+}
+
+QLabel#badgeFinished {
+
+    background: #238636;
+
+}
+
+QLabel#badgeWaiting {
+
+    background: #8b949e;
+
+}
+
+QLabel#badgeDanger {
+
+    background: #da3633;
+
+}
+
+QLabel#badgeDefault {
+
+    background: #444444;
+
+}
+
 QPushButton {
 
     background-color: #2b2b2b;

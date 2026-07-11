@@ -64,6 +64,8 @@ class EmptyState(QWidget):
             True
         )
 
+        layout.addStretch()
+
         layout.addWidget(
             self.icon
         )
