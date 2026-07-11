@@ -1,21 +1,6 @@
-"""
-File:
-    reading_book_card.py
-
-Purpose:
-    Mini card untuk daftar buku yang sedang dibaca.
-
-Responsibilities:
-    - Menampilkan judul
-    - Menampilkan progress halaman
-    - Menampilkan status
-
-Does NOT:
-    - Mengakses database
-"""
-
 from PySide6.QtWidgets import (
-    QLabel
+    QLabel,
+    QProgressBar
 )
 
 from app.models.book import Book
@@ -38,6 +23,22 @@ class ReadingBookCard(BaseCard):
 
     def setup_ui(self):
 
+        current = self.book.current_page or 0
+
+        total = self.book.page_count or 0
+
+        percent = 0
+
+        if total > 0:
+
+            percent = int(
+                (current / total) * 100
+            )
+
+        # ==========================
+        # Title
+        # ==========================
+
         title = QLabel(
             f"📖 {self.book.title}"
         )
@@ -46,20 +47,83 @@ class ReadingBookCard(BaseCard):
             "bookTitle"
         )
 
-        current = self.book.current_page or 0
+        self.layout.addWidget(
+            title
+        )
 
-        total = self.book.page_count or 0
+        # ==========================
+        # Author
+        # ==========================
+
+        author = QLabel(
+            self.book.author
+        )
+
+        author.setObjectName(
+            "secondaryText"
+        )
+
+        self.layout.addWidget(
+            author
+        )
+
+        self.layout.addSpacing(8)
+
+        # ==========================
+        # Progress
+        # ==========================
 
         progress = QLabel(
-            f"{current} / {total}"
+            f"{current} / {total} pages"
         )
 
         progress.setObjectName(
             "bookProgress"
         )
 
+        self.layout.addWidget(
+            progress
+        )
+
+        bar = QProgressBar()
+
+        bar.setRange(
+            0,
+            100
+        )
+
+        bar.setValue(
+            percent
+        )
+
+        bar.setTextVisible(
+            False
+        )
+
+        self.layout.addWidget(
+            bar
+        )
+
+        percent_label = QLabel(
+            f"{percent}%"
+        )
+
+        percent_label.setObjectName(
+            "secondaryText"
+        )
+
+        self.layout.addWidget(
+            percent_label
+        )
+
+        self.layout.addSpacing(8)
+
+        # ==========================
+        # Status
+        # ==========================
+
         status = QLabel(
-            self.book.status
+            f"● {self.book.status.title()}"
         )
 
         status.setObjectName(
@@ -67,15 +131,5 @@ class ReadingBookCard(BaseCard):
         )
 
         self.layout.addWidget(
-            title
-        )
-
-        self.layout.addWidget(
-            progress
-        )
-
-        self.layout.addWidget(
             status
         )
-
-    

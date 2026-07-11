@@ -28,6 +28,10 @@ from app.ui.components.toolbar import (
     Toolbar
 )
 
+from app.ui.history.history_card import (
+    HistoryCard
+)
+
 class ReadingHistoryView(QWidget):
 
     def __init__(self):
@@ -41,39 +45,6 @@ class ReadingHistoryView(QWidget):
     # ==================================
     # Helpers
     # ==================================
-
-    def format_datetime(self, dt):
-
-        now = datetime.now()
-
-        if dt.date() == now.date():
-
-            return (
-                "🕒 Today • "
-                + dt.strftime("%H:%M")
-            )
-
-        if (
-
-            now.date()
-            - dt.date()
-
-        ).days == 1:
-
-            return (
-                "🕒 Yesterday • "
-                + dt.strftime("%H:%M")
-            )
-
-        return (
-
-            "🕒 "
-
-            + dt.strftime(
-                "%d %b %Y • %H:%M"
-            )
-
-        )
 
     def update_empty_state(self):
 
@@ -145,10 +116,8 @@ class ReadingHistoryView(QWidget):
         self.history_list.clear()
 
         sessions = (
-
             ReadingSessionService
             .get_recent_sessions()
-
         )
 
         for session in sessions:
@@ -160,75 +129,24 @@ class ReadingHistoryView(QWidget):
             if not book:
                 continue
 
-            pages = (
-
-                session.end_page
-                - session.start_page
-
+            card = HistoryCard(
+                book,
+                session
             )
 
-            page_text = (
-
-                "Page"
-
-                if pages == 1
-
-                else "Pages"
-
-            )
-
-            minute_text = (
-
-                "Minute"
-
-                if session.duration_minutes == 1
-
-                else "Minutes"
-
-            )
-
-            date_text = self.format_datetime(
-                session.ended_at
-            )
-
-            text = (
-
-                f"📖 {book.title}\n\n"
-
-                f"{session.start_page}"
-
-                f" → "
-
-                f"{session.end_page}\n\n"
-
-                f"+{pages} {page_text}"
-
-                f" • "
-
-                f"⏱ "
-
-                f"{session.duration_minutes} {minute_text}\n\n"
-
-                f"{date_text}"
-
-            )
-
-            item = QListWidgetItem(
-                text
-            )
-
-            size = item.sizeHint()
-
-            size.setHeight(
-                110
-            )
+            item = QListWidgetItem()
 
             item.setSizeHint(
-                size
+                card.sizeHint()
             )
 
             self.history_list.addItem(
                 item
+            )
+
+            self.history_list.setItemWidget(
+                item,
+                card
             )
 
         self.history_list.scrollToTop()
