@@ -21,3 +21,19 @@
 
     min-height: 140px;
 }
+
+QLabel#bookCover {
+
+    background: #2B2B2B;
+
+    border: 1px solid #3F3F3F;
+
+    border-radius: 8px;
+
+    color: #9A9A9A;
+}
+
+QLabel#secondaryText {
+
+    color: #B5B5B5;
+}

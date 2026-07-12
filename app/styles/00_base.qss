@@ -9,6 +9,24 @@ QWidget {
     font-family: "Inter", "Segoe UI", sans-serif;
 }
 
+/* ===========================
+   Base Card
+=========================== */
+
+QWidget#baseCard {
+
+    background: #232323;
+
+    border: 1px solid #3B3B3B;
+
+    border-radius: 12px;
+}
+
+QWidget#baseCard:hover {
+
+    border: 1px solid #505050;
+}
+
 QPushButton {
 
     background: #252525;
