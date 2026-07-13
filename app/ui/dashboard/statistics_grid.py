@@ -1,82 +1,70 @@
 from PySide6.QtWidgets import (
+    QGridLayout,
     QWidget,
-    QGridLayout
 )
 
 from app.services.statistics_service import (
-    StatisticsService
+    StatisticsService,
 )
 
-from app.ui.components.stat_card import (
-    StatCard
+from app.ui.components.metric_card import (
+    MetricCard,
 )
-
 
 class StatisticsGrid(QWidget):
 
     COLUMNS = 3
 
-    # ----------------------------------
-    # Initialization
-    # ----------------------------------
-
     def __init__(self):
+
         super().__init__()
 
         self.setup_ui()
 
         self.refresh()
 
-    # ----------------------------------
-    # UI
-    # ----------------------------------
-
     def setup_ui(self):
 
-        self.layout = QGridLayout()
+        self.grid_layout = QGridLayout()
 
-        self.layout.setContentsMargins(
+        self.grid_layout.setContentsMargins(
             0,
             0,
             0,
             0,
         )
 
-        self.layout.setColumnStretch(
-            0,
-            1,
+        self.grid_layout.setHorizontalSpacing(
+            20,
         )
 
-        self.layout.setColumnStretch(
-            1,
-            1,
+        self.grid_layout.setVerticalSpacing(
+            20,
         )
 
-        self.layout.setColumnStretch(
-            2,
-            1,
-        )
+        for column in range(self.COLUMNS):
 
-        self.layout.setRowStretch(0, 1)
-        self.layout.setRowStretch(1, 1)
+            self.grid_layout.setColumnStretch(
+                column,
+                1,
+            )
 
-        self.layout.setHorizontalSpacing(20)
+        for row in range(2):
 
-        self.layout.setVerticalSpacing(20)
+            self.grid_layout.setRowStretch(
+                row,
+                1,
+            )
 
         self.setLayout(
-            self.layout
+            self.grid_layout
         )
-
-    # ----------------------------------
-    # Data
-    # ----------------------------------
 
     def refresh(self):
 
-        while self.layout.count():
+        while self.grid_layout.count():
 
-            item = self.layout.takeAt(0)
+            item = self.grid_layout.takeAt(0)
 
             if item.widget():
 
@@ -84,30 +72,74 @@ class StatisticsGrid(QWidget):
 
         stats = StatisticsService.get_statistics()
 
-        cards = [
-            ("📚", "Books", stats["books"]),
-            ("📝", "Notes", stats["notes"]),
-            ("💬", "Quotes", stats["quotes"]),
-            ("⏱", "Sessions", stats["reading_sessions"]),
-            ("📄", "Pages", stats["pages_read"]),
-            ("⌛", "Minutes", stats["reading_minutes"]),
+        metrics = [
+
+            (
+                "Books",
+                stats["books"],
+                "In Library",
+            ),
+
+            (
+                "Notes",
+                stats["notes"],
+                "Saved",
+            ),
+
+            (
+                "Quotes",
+                stats["quotes"],
+                "Collected",
+            ),
+
+            (
+                "Sessions",
+                stats["reading_sessions"],
+                "Completed",
+            ),
+
+            (
+                "Pages",
+                stats["pages_read"],
+                "Read",
+            ),
+
+            (
+                "Minutes",
+                stats["reading_minutes"],
+                "Reading Time",
+            ),
+
         ]
 
-        for index, (icon, title, value) in enumerate(cards):
+        for index, (
+
+            title,
+
+            value,
+
+            subtitle,
+
+        ) in enumerate(metrics):
 
             row = index // self.COLUMNS
 
-            col = index % self.COLUMNS
+            column = index % self.COLUMNS
 
-            self.layout.addWidget(
+            self.grid_layout.addWidget(
 
-                StatCard(
+                MetricCard(
+
                     title=title,
+
                     value=str(value),
-                    icon=icon,
+
+                    subtitle=subtitle,
+
                 ),
 
                 row,
 
-                col
+                column,
+
             )

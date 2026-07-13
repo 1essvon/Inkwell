@@ -1,9 +1,46 @@
-RADIUS_SMALL = 6
-RADIUS_MEDIUM = 10
-RADIUS_LARGE = 16
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   07_metrics.qss
 
-SPACING_SMALL = 8
-SPACING_MEDIUM = 12
-SPACING_LARGE = 20
+   Metric card styles.
+========================================================== */
 
-SIDEBAR_WIDTH = 240
+
+/* ==========================================================
+   METRIC TITLE
+========================================================== */
+
+QLabel#metricTitle {
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    color: #A8A8A8;
+}
+
+
+/* ==========================================================
+   METRIC VALUE
+========================================================== */
+
+QLabel#metricValue {
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #FFFFFF;
+}
+
+
+/* ==========================================================
+   METRIC SUBTITLE
+========================================================== */
+
+QLabel#metricSubtitle {
+
+    font-size: 11px;
+
+    color: #8A8A8A;
+}

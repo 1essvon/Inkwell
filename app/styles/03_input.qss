@@ -1,0 +1,189 @@
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   03_input.qss
+
+   Input controls only.
+========================================================== */
+
+
+/* ==========================================================
+   LINE EDIT
+========================================================== */
+
+QLineEdit {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 8px 12px;
+
+    selection-background-color: #4F8EF7;
+
+    selection-color: #FFFFFF;
+}
+
+QLineEdit:hover {
+
+    border-color: #5A5A5A;
+}
+
+QLineEdit:focus {
+
+    border: 1px solid #4F8EF7;
+}
+
+
+/* ==========================================================
+   TEXT EDIT
+========================================================== */
+
+QTextEdit {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    selection-background-color: #4F8EF7;
+
+    selection-color: #FFFFFF;
+}
+
+QTextEdit:focus {
+
+    border: 1px solid #4F8EF7;
+}
+
+
+/* ==========================================================
+   PLAIN TEXT EDIT
+========================================================== */
+
+QPlainTextEdit {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 10px;
+
+    selection-background-color: #4F8EF7;
+
+    selection-color: #FFFFFF;
+}
+
+QPlainTextEdit:focus {
+
+    border: 1px solid #4F8EF7;
+}
+
+
+/* ==========================================================
+   COMBO BOX
+========================================================== */
+
+QComboBox {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 6px 10px;
+
+    min-height: 22px;
+}
+
+QComboBox:hover {
+
+    border-color: #5A5A5A;
+}
+
+QComboBox:focus {
+
+    border: 1px solid #4F8EF7;
+}
+
+QComboBox::drop-down {
+
+    border: none;
+
+    width: 24px;
+}
+
+QComboBox::down-arrow {
+
+    image: none;
+}
+
+
+/* ==========================================================
+   SPIN BOX
+========================================================== */
+
+QSpinBox {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 6px 10px;
+
+    min-height: 22px;
+}
+
+QSpinBox:focus {
+
+    border: 1px solid #4F8EF7;
+}
+
+
+/* ==========================================================
+   DATE EDIT
+========================================================== */
+
+QDateEdit {
+
+    background-color: #2A2A2A;
+
+    color: #FFFFFF;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    padding: 6px 10px;
+}
+
+
+/* ==========================================================
+   PLACEHOLDER
+========================================================== */
+
+QLineEdit[placeholderText],
+QTextEdit,
+QPlainTextEdit {
+
+    color: #FFFFFF;
+}

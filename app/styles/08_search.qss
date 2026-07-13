@@ -1,30 +1,79 @@
-/* ==========================
-   Search Bar
-========================== */
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   08_search.qss
 
-#searchInput {
+   Search components only.
+========================================================== */
 
-    min-height: 34px;
 
-    border: 1px solid #444;
+/* ==========================================================
+   SEARCH INPUT
+========================================================== */
 
-    border-radius: 8px;
+QLineEdit#searchInput {
 
-    padding-left: 10px;
+    min-height: 36px;
 
-    background: #2A2A2A;
+    padding: 0px 12px;
 
-    color: white;
+    background-color: #2A2A2A;
+
+    border: 1px solid #3C3C3C;
+
+    border-radius: 10px;
+
+    color: #FFFFFF;
 }
 
-#searchInput:focus {
+QLineEdit#searchInput:hover {
+
+    border-color: #5A5A5A;
+}
+
+QLineEdit#searchInput:focus {
 
     border: 1px solid #4F8EF7;
 }
 
-#searchIcon {
 
-    color: #888;
+/* ==========================================================
+   SEARCH ICON
+========================================================== */
 
-    font-size: 16px;
+QLabel#searchIcon {
+
+    color: #8A8A8A;
+
+    font-size: 15px;
+}
+
+
+/* ==========================================================
+   CLEAR BUTTON
+========================================================== */
+
+QPushButton#searchClearButton {
+
+    background: transparent;
+
+    border: none;
+
+    min-width: 24px;
+
+    max-width: 24px;
+
+    min-height: 24px;
+
+    max-height: 24px;
+
+    border-radius: 12px;
+
+    color: #8A8A8A;
+}
+
+QPushButton#searchClearButton:hover {
+
+    background-color: #343434;
+
+    color: #FFFFFF;
 }

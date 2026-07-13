@@ -1,30 +1,38 @@
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   00_base.qss
+
+   Foundation styles only.
+========================================================== */
+
+
+/* ==========================================================
+   APPLICATION
+========================================================== */
+
 QMainWindow {
-    background: #1E1E1E;
+
+    background-color: #1E1E1E;
 }
 
+
+/* ==========================================================
+   GLOBAL WIDGET
+========================================================== */
+
 QWidget {
+
     color: #FFFFFF;
+
     font-size: 13px;
+
     font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-/* ===========================
-   Base Card
-=========================== */
 
-QWidget#baseCard {
-
-    background: #232323;
-
-    border: 1px solid #3B3B3B;
-
-    border-radius: 12px;
-}
-
-QWidget#baseCard:hover {
-
-    border: 1px solid #505050;
-}
+/* ==========================================================
+   LABEL RESET
+========================================================== */
 
 QLabel {
 
@@ -33,116 +41,27 @@ QLabel {
     border: none;
 }
 
-QPushButton {
 
-    background: #252525;
+/* ==========================================================
+   SCROLL AREA
+========================================================== */
 
-    border: 1px solid #3A3A3A;
+QScrollArea {
 
-    border-radius: 8px;
+    border: none;
 
-    padding: 8px 12px;
+    background: transparent;
 }
 
-QPushButton:hover {
+QScrollArea > QWidget > QWidget {
 
-    background: #303030;
+    background: transparent;
 }
 
-QPushButton:pressed {
 
-    background: #383838;
-}
-
-QLineEdit,
-QTextEdit,
-QSpinBox,
-QComboBox,
-QListWidget {
-
-    background: #252525;
-
-    border: 1px solid #3A3A3A;
-
-    border-radius: 8px;
-
-    padding: 8px;
-}
-
-/* ===========================
-   Statistic Card
-=========================== */
-
-#cardTitle {
-
-    color: #777;
-
-    font-size: 12px;
-
-    font-weight: 500;
-}
-
-#cardValue {
-
-    color: white;
-
-    font-size: 30px;
-
-    font-weight: bold;
-}
-
-/* ===========================
-   Page Title
-=========================== */
-
-#pageTitle {
-
-    font-size: 28px;
-
-    font-weight: bold;
-
-    color: white;
-}
-
-/* ===========================
-   Info Card
-=========================== */
-
-#infoCard {
-
-    background: #252525;
-
-    border: 1px solid #3a3a3a;
-
-    border-radius: 12px;
-
-    padding: 18px;
-}
-
-#cardSectionTitle {
-
-    font-size: 18px;
-
-    font-weight: bold;
-
-    color: white;
-}
-
-#cardSubtitle {
-
-    color: #9d9d9d;
-
-    font-size: 13px;
-}
-
-#cardContent {
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    color: white;
-}
+/* ==========================================================
+   LIST WIDGET
+========================================================== */
 
 QListWidget {
 

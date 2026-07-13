@@ -1,6 +1,14 @@
-/* ==========================================
-   Base Card
-========================================== */
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   04_card.qss
+
+   Card & container styles only.
+========================================================== */
+
+
+/* ==========================================================
+   BASE CARD
+========================================================== */
 
 QWidget#baseCard {
 
@@ -14,16 +22,24 @@ QWidget#baseCard {
 QWidget#baseCard:hover {
 
     background-color: #2C2C2C;
+
+    border-color: #4A4A4A;
 }
 
-/* ===========================
-   Info Card
-=========================== */
 
-#infoCard {
+/* ==========================================================
+   INFO CARD
+========================================================== */
+
+QWidget#infoCard {
 
     min-height: 140px;
 }
+
+
+/* ==========================================================
+   BOOK COVER
+========================================================== */
 
 QLabel#bookCover {
 
@@ -34,40 +50,20 @@ QLabel#bookCover {
     border-radius: 8px;
 
     color: #8E8E8E;
-
-    font-weight: 600;
 }
 
-QLabel#secondaryText {
 
-    color: #9F9F9F;
-}
-
-QLabel#cardTitle {
-
-    color: white;
-
-    font-size: 15px;
-
-    font-weight: 600;
-}
-
-QLabel#bookTitle {
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-    color: white;
-}
+/* ==========================================================
+   DIVIDER
+========================================================== */
 
 QFrame#divider {
 
-    background: #353535;
+    background-color: #353535;
 
-    max-height: 1px;
+    border: none;
 
     min-height: 1px;
 
-    border: none;
+    max-height: 1px;
 }

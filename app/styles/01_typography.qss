@@ -1,113 +1,57 @@
-#bookTitle {
+/* ==========================================================
+   INKWELL DESIGN SYSTEM
+   01_typography.qss
 
-    font-size:16px;
+   Typography only.
+========================================================== */
 
-    font-weight:bold;
-}
 
-#bookAuthor {
+/* ==========================================================
+   PAGE
+========================================================== */
 
-    color:#9c9c9c;
-
-    font-size:12px;
-}
-
-#bookProgress {
-
-    color:#6aa8ff;
-
-    font-size:12px;
-}
-
-#dashboardGreeting {
+QLabel#pageTitle {
 
     font-size: 28px;
 
-    font-weight: bold;
+    font-weight: 700;
 
-    color: white;
+    color: #FFFFFF;
 }
 
-#dashboardSubtitle {
+
+/* ==========================================================
+   DASHBOARD
+========================================================== */
+
+QLabel#dashboardGreeting {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: #FFFFFF;
+}
+
+QLabel#dashboardSubtitle {
 
     font-size: 15px;
 
-    color: #9d9d9d;
-
-    margin-bottom: 12px;
+    color: #9D9D9D;
 }
 
-#bookStatus {
 
-    color: #4F8EF7;
+/* ==========================================================
+   CARD
+========================================================== */
+
+QLabel#cardTitle {
 
     font-size: 12px;
 
-    font-weight: bold;
-}
+    font-weight: 500;
 
-/* ===========================
-   Reading Status
-=========================== */
-
-#statusReading {
-
-    background: #2B4C7E;
-
-    color: white;
-
-    border-radius: 8px;
-
-    padding: 4px 10px;
-
-    font-size: 11px;
-
-    font-weight: bold;
-}
-
-#statusFinished {
-
-    background: #2E7D32;
-
-    color: white;
-
-    border-radius: 8px;
-
-    padding: 4px 10px;
-
-    font-size: 11px;
-
-    font-weight: bold;
-}
-
-#statusWaiting {
-
-    background: #555555;
-
-    color: white;
-
-    border-radius: 8px;
-
-    padding: 4px 10px;
-
-    font-size: 11px;
-
-    font-weight: bold;
-}
-
-#statusUnknown {
-
-    background: #444444;
-
-    color: white;
-
-    border-radius: 8px;
-
-    padding: 4px 10px;
-
-    font-size: 11px;
-
-    font-weight: bold;
+    color: #B8B8B8;
 }
 
 QLabel#cardValue {
@@ -116,19 +60,66 @@ QLabel#cardValue {
 
     font-weight: 700;
 
-    color: white;
-}
-
-QLabel#cardTitle {
-
-    color: #B8B8B8;
-
-    font-size: 12px;
-
-    font-weight: 500;
+    color: #FFFFFF;
 }
 
 QLabel#cardIcon {
 
     font-size: 20px;
+}
+
+
+/* ==========================================================
+   BOOK
+========================================================== */
+
+QLabel#bookTitle {
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #FFFFFF;
+}
+
+QLabel#bookAuthor {
+
+    font-size: 12px;
+
+    color: #9C9C9C;
+}
+
+QLabel#bookProgress {
+
+    font-size: 12px;
+
+    color: #6AA8FF;
+}
+
+QLabel#bookStatus {
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #4F8EF7;
+}
+
+
+/* ==========================================================
+   COMMON TEXT
+========================================================== */
+
+QLabel#secondaryText {
+
+    font-size: 12px;
+
+    color: #B8B8B8;
+}
+
+QLabel#caption {
+
+    font-size: 11px;
+
+    color: #8A8A8A;
 }
