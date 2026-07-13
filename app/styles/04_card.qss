@@ -1,16 +1,19 @@
-/* ===========================
+/* ==========================================
    Base Card
-=========================== */
+========================================== */
 
-#baseCard {
+QWidget#baseCard {
 
-    background: #252525;
+    background-color: #262626;
 
-    border: 1px solid #343434;
+    border: 1px solid #3A3A3A;
 
-    border-radius: 12px;
+    border-radius: 14px;
+}
 
-    padding: 14px;
+QWidget#baseCard:hover {
+
+    background-color: #2C2C2C;
 }
 
 /* ===========================
@@ -24,16 +27,47 @@
 
 QLabel#bookCover {
 
-    background: #2B2B2B;
+    background-color: #2E2E2E;
 
-    border: 1px solid #3F3F3F;
+    border: 1px solid #444444;
 
     border-radius: 8px;
 
-    color: #9A9A9A;
+    color: #8E8E8E;
+
+    font-weight: 600;
 }
 
 QLabel#secondaryText {
 
-    color: #B5B5B5;
+    color: #9F9F9F;
+}
+
+QLabel#cardTitle {
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+QLabel#bookTitle {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: white;
+}
+
+QFrame#divider {
+
+    background: #353535;
+
+    max-height: 1px;
+
+    min-height: 1px;
+
+    border: none;
 }

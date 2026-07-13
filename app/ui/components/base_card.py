@@ -6,7 +6,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-
 class BaseCard(QWidget):
 
     def __init__(self, parent=None):
@@ -36,9 +35,6 @@ class BaseCard(QWidget):
 
         self.layout.setSpacing(16)
 
-        self.setLayout(
-            self.layout
-        )
 
         self.setSizePolicy(
             QSizePolicy.Policy.Expanding,

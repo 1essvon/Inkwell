@@ -1,15 +1,17 @@
-from PySide6.QtCore import Qt
-
 from PySide6.QtWidgets import (
-    QHBoxLayout,
     QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
+)
+
+from app.constants.book_status import (
+    BookStatus,
 )
 
 from app.services.book_service import (
     BookService,
+)
+
+from app.services.settings_service import (
+    SettingsService,
 )
 
 from app.ui.components.base_card import (
@@ -20,7 +22,7 @@ from app.ui.components.progress_bar import (
     ProgressBar,
 )
 
-class ContinueReadingWidget(QWidget):
+class ContinueReadingWidget(BaseCard):
 
     def __init__(self):
 
@@ -32,181 +34,81 @@ class ContinueReadingWidget(QWidget):
 
     def setup_ui(self):
 
-        root = QVBoxLayout(self)
-
-        root.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
+        self.title = QLabel(
+            "Reading Goal"
         )
 
-        self.card = BaseCard()
-
-        root.addWidget(
-            self.card
+        self.title.setObjectName(
+            "cardTitle"
         )
 
-        self.title_label = QLabel(
-            "Continue Reading"
+        self.layout.addWidget(
+            self.title
         )
 
-        font = self.title_label.font()
+        self.progress_text = QLabel()
 
-        font.setBold(True)
-
-        self.title_label.setFont(font)
-
-        self.card.layout.addWidget(
-            self.title_label
-        )
-
-        content = QHBoxLayout()
-
-        content.setSpacing(
-            16
-        )
-
-        self.card.layout.addLayout(
-            content
-        )
-
-        self.cover = QLabel(
-            "Cover"
-        )
-
-        self.cover.setAlignment(
-            Qt.AlignmentFlag.AlignCenter
-        )
-
-        self.cover.setFixedSize(
-            90,
-            130,
-        )
-
-        self.cover.setObjectName(
-            "bookCover"
-        )
-
-        content.addWidget(
-            self.cover
-        )
-
-        right = QVBoxLayout()
-
-        right.setSpacing(
-            8
-        )
-
-        content.addLayout(
-            right,
-            1,
-        )
-
-        self.book_title = QLabel()
-
-        font = self.book_title.font()
-
-        font.setPointSize(
-            12
-        )
-
-        font.setBold(
-            True
-        )
-
-        self.book_title.setFont(
-            font
-        )
-
-        right.addWidget(
-            self.book_title
-        )
-
-        self.author = QLabel()
-
-        self.author.setObjectName(
+        self.progress_text.setObjectName(
             "secondaryText"
         )
 
-        right.addWidget(
-            self.author
-        )
-
-        self.page = QLabel()
-
-        self.page.setObjectName(
-            "secondaryText"
-        )
-
-        right.addWidget(
-            self.page
+        self.layout.addWidget(
+            self.progress_text
         )
 
         self.progress = ProgressBar()
 
-        right.addWidget(
+        self.layout.addWidget(
             self.progress
         )
 
-        self.button = QPushButton(
-            "Continue Reading"
-        )
-
-        right.addWidget(
-            self.button,
-            alignment=Qt.AlignmentFlag.AlignLeft
-        )
+        self.layout.addStretch()
 
     def refresh(self):
 
-        book = BookService.get_current_reading()
+        settings = SettingsService.get()
 
-        if book is None:
+        goal = settings.reading_goal_books
 
-            self.book_title.setText(
-                "No active reading"
-            )
+        summary = BookService.get_status_summary()
 
-            self.author.clear()
+        completed = summary[
+            BookStatus.COMPLETED
+        ]
 
-            self.page.clear()
+        if goal <= 0:
 
-            self.cover.setText(
-                "No Cover"
+            self.progress_text.setText(
+                "No reading goal configured"
             )
 
             self.progress.set_value(
                 0
             )
 
-            self.button.setEnabled(
-                False
-            )
-
             return
 
-        self.button.setEnabled(
-            True
+        remaining = max(
+            goal - completed,
+            0,
         )
 
-        self.cover.setText(
-            "Cover"
-        )
+        if completed >= goal:
 
-        self.book_title.setText(
-            book.title
-        )
+            status = "🎉 Goal achieved!"
 
-        self.author.setText(
-            book.author
-        )
+        else:
 
-        self.page.setText(
-            f"Page {book.current_page} / {book.page_count}"
+            status = (
+                f"{remaining} books remaining"
+            )
+
+        self.progress_text.setText(
+            f"{completed} / {goal} books\n"
+            f"{status}"
         )
 
         self.progress.set_progress(
-            current=book.current_page,
-            total=book.page_count,
+            current=completed,
+            total=goal,
         )

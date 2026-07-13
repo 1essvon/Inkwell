@@ -1,6 +1,5 @@
 from PySide6.QtWidgets import (
     QLabel,
-    QVBoxLayout,
 )
 
 from app.services.statistics_service import (
@@ -10,7 +9,6 @@ from app.services.statistics_service import (
 from app.ui.components.base_card import (
     BaseCard,
 )
-
 
 class ReadingStreakCard(BaseCard):
 
@@ -25,33 +23,81 @@ class ReadingStreakCard(BaseCard):
     def setup_ui(self):
 
         self.title = QLabel(
-            "🔥 Reading Streak"
+            "Reading Streak"
         )
 
         self.title.setObjectName(
             "cardTitle"
         )
 
-        self.current_label = QLabel()
-
-        self.best_label = QLabel()
-
-        self.last_read_label = QLabel()
-
         self.layout.addWidget(
             self.title
         )
 
-        self.layout.addWidget(
-            self.current_label
+        self.current_title = QLabel(
+            "Current"
+        )
+
+        self.current_title.setObjectName(
+            "secondaryText"
         )
 
         self.layout.addWidget(
-            self.best_label
+            self.current_title
+        )
+
+        self.current_value = QLabel()
+
+        self.current_value.setObjectName(
+            "bookTitle"
         )
 
         self.layout.addWidget(
-            self.last_read_label
+            self.current_value
+        )
+
+        self.best_title = QLabel(
+            "Best"
+        )
+
+        self.best_title.setObjectName(
+            "secondaryText"
+        )
+
+        self.layout.addWidget(
+            self.best_title
+        )
+
+        self.best_value = QLabel()
+
+        self.best_value.setObjectName(
+            "bookTitle"
+        )
+
+        self.layout.addWidget(
+            self.best_value
+        )
+
+        self.last_title = QLabel(
+            "Last Read"
+        )
+
+        self.last_title.setObjectName(
+            "secondaryText"
+        )
+
+        self.layout.addWidget(
+            self.last_title
+        )
+
+        self.last_value = QLabel()
+
+        self.last_value.setObjectName(
+            "bookTitle"
+        )
+
+        self.layout.addWidget(
+            self.last_value
         )
 
         self.layout.addStretch()
@@ -60,36 +106,36 @@ class ReadingStreakCard(BaseCard):
 
         stats = StatisticsService.get_statistics()
 
-        current = stats["reading_streak"]
+        current = stats[
+            "reading_streak"
+        ]
 
-        best = stats["best_streak"]
+        best = stats[
+            "best_streak"
+        ]
 
-        last_read = stats["last_read"]
+        last_read = stats[
+            "last_read"
+        ]
 
-        if last_read is None:
-
-            last_text = "Never"
-
-        else:
+        if last_read:
 
             last_text = last_read.strftime(
                 "%d %b %Y"
             )
 
-        self.current_label.setText(
+        else:
 
-            f"Current : {current} day(s)"
+            last_text = "Never"
 
+        self.current_value.setText(
+            f"{current} day(s)"
         )
 
-        self.best_label.setText(
-
-            f"Best : {best} day(s)"
-
+        self.best_value.setText(
+            f"{best} day(s)"
         )
 
-        self.last_read_label.setText(
-
-            f"Last Read : {last_text}"
-
+        self.last_value.setText(
+            last_text
         )

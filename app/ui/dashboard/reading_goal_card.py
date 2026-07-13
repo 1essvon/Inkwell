@@ -1,8 +1,7 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QLabel,
-    QProgressBar,
+    QLabel
 )
 
 from app.services.book_service import (
@@ -15,6 +14,14 @@ from app.services.settings_service import (
 
 from app.constants.book_status import (
     BookStatus,
+)
+
+from app.ui.components.base_card import (
+    BaseCard,
+)
+
+from app.ui.components.progress_bar import (
+    ProgressBar,
 )
 
 
@@ -30,17 +37,19 @@ class ReadingGoalCard(QWidget):
 
     def setup_ui(self):
 
-        layout = QVBoxLayout()
+        root = QVBoxLayout(self)
 
-        layout.setContentsMargins(
+        root.setContentsMargins(
             0,
             0,
             0,
             0,
         )
 
-        layout.setSpacing(
-            8,
+        self.card = BaseCard()
+
+        root.addWidget(
+            self.card
         )
 
         self.title = QLabel(
@@ -51,24 +60,25 @@ class ReadingGoalCard(QWidget):
             "cardTitle"
         )
 
-        self.progress_text = QLabel()
-
-        self.progress = QProgressBar()
-
-        layout.addWidget(
+        self.card.layout.addWidget(
             self.title
         )
 
-        layout.addWidget(
+        self.progress_text = QLabel()
+
+        self.progress_text.setObjectName(
+            "secondaryText"
+        )
+
+        self.card.layout.addWidget(
             self.progress_text
         )
 
-        layout.addWidget(
+        self.progress = ProgressBar()
+
+        self.card.layout.addWidget(
             self.progress
         )
-
-        self.setLayout(
-            layout)
 
     def refresh(self):
 
@@ -82,23 +92,22 @@ class ReadingGoalCard(QWidget):
             BookStatus.COMPLETED
         ]
 
-        if goal > 0:
+        remaining = max(
+            goal - completed,
+            0,
+        )
 
-            percent = int(
-                completed / goal * 100
+        if goal <= 0:
+
+            self.progress_text.setText(
+                "No reading goal configured"
             )
 
-        else:
+            self.progress.set_value(
+                0
+            )
 
-            percent = 0
-
-        percent = max(
-            0,
-            min(
-                percent,
-                100,
-            ),
-        )
+            return
 
         if completed >= goal:
 
@@ -106,10 +115,8 @@ class ReadingGoalCard(QWidget):
 
         else:
 
-            remaining = goal - completed
-
             status = (
-                f"{remaining} books to go"
+                f"{remaining} books remaining"
             )
 
         self.progress_text.setText(
@@ -119,6 +126,7 @@ class ReadingGoalCard(QWidget):
 
         )
 
-        self.progress.setValue(
-            percent
+        self.progress.set_progress(
+            current=completed,
+            total=goal,
         )

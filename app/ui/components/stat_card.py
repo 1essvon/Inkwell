@@ -16,43 +16,62 @@ class StatCard(BaseCard):
         self,
         title: str,
         value: str,
+        icon: str = "",
     ):
 
         super().__init__()
 
+        self.layout.setSpacing(10)
+
+        if icon:
+
+            self.icon = QLabel(icon)
+
+            self.icon.setAlignment(
+                Qt.AlignmentFlag.AlignCenter
+            )
+
+            self.icon.setObjectName(
+                "cardIcon"
+            )
+
+            self.layout.addWidget(
+                self.icon
+            )
+
         self.title = QLabel(title)
 
         self.title.setAlignment(
-            Qt.AlignCenter
+            Qt.AlignmentFlag.AlignCenter
         )
 
         self.title.setObjectName(
             "cardTitle"
         )
 
+        self.layout.addWidget(
+            self.title
+        )
+
         self.value = QLabel(value)
 
         self.value.setAlignment(
-            Qt.AlignCenter
+            Qt.AlignmentFlag.AlignCenter
         )
 
         self.value.setObjectName(
             "cardValue"
         )
 
-        self.layout.setSpacing(8)
-
-        self.layout.addWidget(
-            self.title
-        )
-
         self.layout.addWidget(
             self.value
         )
 
+        self.layout.addStretch()
+
         self.setMinimumSize(
-            140,
-            100
+            150,
+            130,
         )
 
     def set_value(

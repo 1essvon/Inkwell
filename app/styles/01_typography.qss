@@ -109,3 +109,26 @@
 
     font-weight: bold;
 }
+
+QLabel#cardValue {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: white;
+}
+
+QLabel#cardTitle {
+
+    color: #B8B8B8;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+QLabel#cardIcon {
+
+    font-size: 20px;
+}

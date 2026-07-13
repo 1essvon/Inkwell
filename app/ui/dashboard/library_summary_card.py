@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
-    QVBoxLayout,
-    QWidget,
+    QGridLayout,
+    QLabel,
 )
 
 from app.constants.book_status import (
@@ -11,12 +11,11 @@ from app.services.book_service import (
     BookService,
 )
 
-from app.ui.components.info_card import (
-    InfoCard,
+from app.ui.components.base_card import (
+    BaseCard,
 )
 
-
-class LibrarySummaryCard(QWidget):
+class LibrarySummaryCard(BaseCard):
 
     def __init__(self):
 
@@ -28,57 +27,114 @@ class LibrarySummaryCard(QWidget):
 
     def setup_ui(self):
 
-        layout = QVBoxLayout()
+        self.title = QLabel(
+            "Library Summary"
+        )
 
-        layout.setContentsMargins(
-            0,
-            0,
+        self.title.setObjectName(
+            "cardTitle"
+        )
+
+        self.layout.addWidget(
+            self.title
+        )
+
+        self.grid = QGridLayout()
+
+        self.grid.setHorizontalSpacing(
+            20
+        )
+
+        self.grid.setVerticalSpacing(
+            12
+        )
+
+        self.layout.addLayout(
+            self.grid
+        )
+
+        self.reading = QLabel()
+
+        self.want = QLabel()
+
+        self.completed = QLabel()
+
+        self.paused = QLabel()
+
+        self.dropped = QLabel()
+
+        labels = [
+
+            self.reading,
+
+            self.want,
+
+            self.completed,
+
+            self.paused,
+
+            self.dropped,
+
+        ]
+
+        for label in labels:
+
+            label.setObjectName(
+                "summaryItem"
+            )
+
+        self.grid.addWidget(
+            self.reading,
             0,
             0,
         )
 
-        layout.setSpacing(
-            8,
+        self.grid.addWidget(
+            self.want,
+            1,
+            0,
         )
 
-        self.card = InfoCard()
-
-        layout.addWidget(
-            self.card
+        self.grid.addWidget(
+            self.completed,
+            2,
+            0,
         )
 
-        self.setLayout(
-            layout
+        self.grid.addWidget(
+            self.paused,
+            3,
+            0,
         )
+
+        self.grid.addWidget(
+            self.dropped,
+            4,
+            0,
+        )
+
+        self.layout.addStretch()
 
     def refresh(self):
 
         summary = BookService.get_status_summary()
 
-        details = "\n".join(
-
-            [
-
-                f"📖 Reading : {summary[BookStatus.READING]}",
-
-                f"📚 Want To Read : {summary[BookStatus.WANT_TO_READ]}",
-
-                f"✅ Completed : {summary[BookStatus.COMPLETED]}",
-
-                f"⏸ Paused : {summary[BookStatus.PAUSED]}",
-
-                f"❌ Dropped : {summary[BookStatus.DROPPED]}",
-
-            ]
-
+        self.reading.setText(
+            f"📖 Reading : {summary[BookStatus.READING]}"
         )
 
-        self.card.set_data(
+        self.want.setText(
+            f"📚 Want To Read : {summary[BookStatus.WANT_TO_READ]}"
+        )
 
-            "Library Summary",
+        self.completed.setText(
+            f"✅ Completed : {summary[BookStatus.COMPLETED]}"
+        )
 
-            "",
+        self.paused.setText(
+            f"⏸ Paused : {summary[BookStatus.PAUSED]}"
+        )
 
-            details,
-
+        self.dropped.setText(
+            f"❌ Dropped : {summary[BookStatus.DROPPED]}"
         )

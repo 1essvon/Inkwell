@@ -1,48 +1,47 @@
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
     QHBoxLayout,
-    QScrollArea
-)
-
-from app.ui.dashboard.greeting_widget import (
-    GreetingWidget
-)
-
-from app.ui.dashboard.continue_reading_widget import (
-    ContinueReadingWidget
-)
-
-from app.ui.dashboard.statistics_grid import (
-    StatisticsGrid
-)
-
-from app.ui.dashboard.library_summary_card import (
-    LibrarySummaryCard
-)
-
-from app.ui.dashboard.recent_books_card import (
-    RecentBooksCard
-)
-
-from app.ui.dashboard.reading_goal_card import (
-    ReadingGoalCard
+    QScrollArea,
+    QVBoxLayout,
+    QWidget,
 )
 
 from app.ui.components.page_header import (
-    PageHeader
+    PageHeader,
 )
 
-from app.ui.dashboard.reading_streak_card import (
-    ReadingStreakCard,
+from app.ui.dashboard.continue_reading_widget import (
+    ContinueReadingWidget,
+)
+
+from app.ui.dashboard.greeting_widget import (
+    GreetingWidget,
+)
+
+from app.ui.dashboard.library_summary_card import (
+    LibrarySummaryCard,
 )
 
 from app.ui.dashboard.quick_actions_widget import (
     QuickActionsWidget,
 )
 
-from PySide6.QtCore import Signal
+from app.ui.dashboard.reading_goal_card import (
+    ReadingGoalCard,
+)
 
+from app.ui.dashboard.reading_streak_card import (
+    ReadingStreakCard,
+)
+
+from app.ui.dashboard.recent_books_card import (
+    RecentBooksCard,
+)
+
+from app.ui.dashboard.statistics_grid import (
+    StatisticsGrid,
+)
 
 class DashboardView(QWidget):
 
@@ -52,10 +51,6 @@ class DashboardView(QWidget):
 
     new_note_requested = Signal()
 
-    # ----------------------------------
-    # Initialization
-    # ----------------------------------
-
     def __init__(self):
 
         super().__init__()
@@ -64,31 +59,46 @@ class DashboardView(QWidget):
 
         self.refresh()
 
-    # ----------------------------------
-    # UI
-    # ----------------------------------
-
     def setup_ui(self):
 
         root_layout = QVBoxLayout(self)
 
-        # ======================
-        # Scroll Area
-        # ======================
+        root_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
 
         scroll = QScrollArea()
 
-        scroll.setWidgetResizable(True)
+        scroll.setWidgetResizable(
+            True
+        )
 
         content = QWidget()
 
         layout = QVBoxLayout()
 
-        layout.setSpacing(18)
+        layout.setSpacing(
+            20
+        )
 
-        # ======================
-        # Widgets
-        # ======================
+        content.setLayout(
+            layout
+        )
+
+        scroll.setWidget(
+            content
+        )
+
+        root_layout.addWidget(
+            scroll
+        )
+
+        self.header = PageHeader(
+            "Dashboard"
+        )
 
         self.greeting = GreetingWidget()
 
@@ -96,19 +106,15 @@ class DashboardView(QWidget):
 
         self.continue_reading = ContinueReadingWidget()
 
-        self.library_summary = LibrarySummaryCard()
-
         self.reading_goal = ReadingGoalCard()
 
         self.reading_streak = ReadingStreakCard()
 
         self.statistics = StatisticsGrid()
 
-        self.recent_books = RecentBooksCard()
+        self.library_summary = LibrarySummaryCard()
 
-        # ======================
-        # Signals
-        # ======================
+        self.recent_books = RecentBooksCard()
 
         self.quick_actions.add_book_requested.connect(
             self.add_book_requested.emit
@@ -123,31 +129,56 @@ class DashboardView(QWidget):
         )
 
         # ======================
-        # Goal Row
+        # Hero Row
         # ======================
 
-        goal_row = QHBoxLayout()
+        hero_row = QHBoxLayout()
 
-        goal_row.setSpacing(16)
+        hero_row.setSpacing(
+            16
+        )
 
-        goal_row.addWidget(
+        hero_row.addWidget(
+            self.continue_reading,
+            2,
+        )
+
+        hero_row.addWidget(
             self.reading_goal,
             1,
         )
 
-        goal_row.addWidget(
+        hero_row.addWidget(
             self.reading_streak,
             1,
         )
 
         # ======================
-        # Layout
+        # Info Row
+        # ======================
+
+        info_row = QHBoxLayout()
+
+        info_row.setSpacing(
+            16
+        )
+
+        info_row.addWidget(
+            self.statistics,
+            3,
+        )
+
+        info_row.addWidget(
+            self.library_summary,
+            2,
+        )
+
+        # ======================
+        # Main Layout
         # ======================
 
         layout.addWidget(
-            PageHeader(
-                "Dashboard"
-            )
+            self.header
         )
 
         layout.addWidget(
@@ -158,20 +189,12 @@ class DashboardView(QWidget):
             self.quick_actions
         )
 
-        layout.addWidget(
-            self.continue_reading
-        )
-
-        layout.addWidget(
-            self.library_summary
+        layout.addLayout(
+            hero_row
         )
 
         layout.addLayout(
-            goal_row
-        )
-
-        layout.addWidget(
-            self.statistics
+            info_row
         )
 
         layout.addWidget(
@@ -180,34 +203,18 @@ class DashboardView(QWidget):
 
         layout.addStretch()
 
-        content.setLayout(
-            layout
-        )
-
-        scroll.setWidget(
-            content
-        )
-
-        root_layout.addWidget(
-            scroll
-        )
-
-    # ----------------------------------
-    # Data
-    # ----------------------------------
-
     def refresh(self):
 
         self.greeting.refresh()
 
         self.continue_reading.refresh()
 
-        self.library_summary.refresh()
-
-        self.statistics.refresh()
-
-        self.recent_books.refresh()
-
         self.reading_goal.refresh()
 
         self.reading_streak.refresh()
+
+        self.statistics.refresh()
+
+        self.library_summary.refresh()
+
+        self.recent_books.refresh()

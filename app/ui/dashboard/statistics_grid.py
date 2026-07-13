@@ -1,22 +1,3 @@
-"""
-File:
-    statistics_grid.py
-
-Purpose:
-    Menampilkan seluruh statistik Dashboard.
-
-Responsibilities:
-    - Mengambil statistik
-    - Membuat StatCard
-    - Menyusun Grid
-
-Does NOT:
-    - Greeting
-    - Continue Reading
-"""
-
-from operator import index
-
 from PySide6.QtWidgets import (
     QWidget,
     QGridLayout
@@ -76,13 +57,12 @@ class StatisticsGrid(QWidget):
             1,
         )
 
-        self.layout.setHorizontalSpacing(
-            24
-        )
+        self.layout.setRowStretch(0, 1)
+        self.layout.setRowStretch(1, 1)
 
-        self.layout.setVerticalSpacing(
-            24
-        )
+        self.layout.setHorizontalSpacing(20)
+
+        self.layout.setVerticalSpacing(20)
 
         self.setLayout(
             self.layout
@@ -105,15 +85,15 @@ class StatisticsGrid(QWidget):
         stats = StatisticsService.get_statistics()
 
         cards = [
-            ("Books", stats["books"]),
-            ("Notes", stats["notes"]),
-            ("Quotes", stats["quotes"]),
-            ("Sessions", stats["reading_sessions"]),
-            ("Pages", stats["pages_read"]),
-            ("Minutes", stats["reading_minutes"]),
+            ("📚", "Books", stats["books"]),
+            ("📝", "Notes", stats["notes"]),
+            ("💬", "Quotes", stats["quotes"]),
+            ("⏱", "Sessions", stats["reading_sessions"]),
+            ("📄", "Pages", stats["pages_read"]),
+            ("⌛", "Minutes", stats["reading_minutes"]),
         ]
 
-        for index, (title, value) in enumerate(cards):
+        for index, (icon, title, value) in enumerate(cards):
 
             row = index // self.COLUMNS
 
@@ -122,8 +102,9 @@ class StatisticsGrid(QWidget):
             self.layout.addWidget(
 
                 StatCard(
-                    title,
-                    str(value)
+                    title=title,
+                    value=str(value),
+                    icon=icon,
                 ),
 
                 row,

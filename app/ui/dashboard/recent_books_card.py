@@ -1,20 +1,22 @@
 from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QLabel
+    QFrame,
+    QLabel,
 )
 
-from app.services.book_service import BookService
+from app.services.book_service import (
+    BookService,
+)
 
-class RecentBooksCard(QWidget):
+from app.ui.components.base_card import (
+    BaseCard,
+)
+
+class RecentBooksCard(BaseCard):
 
     MAX_ITEMS = 5
 
-    # ----------------------------------
-    # Initialization
-    # ----------------------------------
-
     def __init__(self):
+
         super().__init__()
 
         self.setup_ui()
@@ -22,19 +24,6 @@ class RecentBooksCard(QWidget):
         self.refresh()
 
     def setup_ui(self):
-
-        layout = QVBoxLayout()
-
-        layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
-
-        layout.setSpacing(
-            8,
-        )
 
         self.title = QLabel(
             "Recent Books"
@@ -44,55 +33,91 @@ class RecentBooksCard(QWidget):
             "cardTitle"
         )
 
-        layout.addWidget(
+        self.layout.addWidget(
             self.title
         )
 
         self.items = []
 
-        for _ in range(self.MAX_ITEMS):
+        for index in range(
+            self.MAX_ITEMS
+        ):
 
-            label = QLabel()
+            title = QLabel()
 
-            label.setObjectName(
-                "summaryItem"
+            title.setObjectName(
+                "bookTitle"
             )
+
+            author = QLabel()
+
+            author.setObjectName(
+                "secondaryText"
+            )
+
+            self.layout.addWidget(
+                title
+            )
+
+            self.layout.addWidget(
+                author
+            )
+
+            if index < self.MAX_ITEMS - 1:
+
+                divider = QFrame()
+
+                divider.setFrameShape(
+                    QFrame.Shape.HLine
+                )
+
+                divider.setObjectName(
+                    "divider"
+                )
+
+                self.layout.addWidget(
+                    divider
+                )
 
             self.items.append(
-                label
+                (
+                    title,
+                    author,
+                )
             )
 
-            layout.addWidget(
-                label
-            )
-
-        layout.addStretch()
-
-        self.setLayout(
-            layout
-        )
+        self.layout.addStretch()
 
     def refresh(self):
 
         books = BookService.get_recent_books()
 
-        for label in self.items:
+        for title, author in self.items:
 
-            label.clear()
+            title.clear()
+
+            author.clear()
 
         if not books:
 
-            self.items[0].setText(
+            self.items[0][0].setText(
                 "No books yet."
             )
 
             return
 
-        for label, book in zip(
+        for (
+            title,
+            author,
+        ), book in zip(
             self.items,
             books,
         ):
 
-            label.setText(
-                f"📖 {book.title} — {book.author}"
+            title.setText(
+                f"📖 {book.title}"
+            )
+
+            author.setText(
+                book.author
             )
