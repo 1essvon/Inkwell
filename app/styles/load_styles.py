@@ -25,6 +25,8 @@ STYLE_FILES = [
 
     "10_toolbar.qss",
 
+    "11_lists.qss"
+
 ]
 
 

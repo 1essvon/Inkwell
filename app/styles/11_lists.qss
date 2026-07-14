@@ -1,0 +1,73 @@
+/* ==========================
+   List Widget
+========================== */
+
+QListWidget {
+
+    background: transparent;
+    border: none;
+    outline: none;
+
+}
+
+QListWidget::item {
+
+    background: transparent;
+
+    border-radius: 8px;
+
+    margin: 6px 0;
+
+}
+QListWidget::item:hover {
+
+    background: #2E2E2E;
+
+}
+
+QQListWidget::item:selected {
+
+    background: transparent;
+
+    border: none;
+
+}
+
+QListWidget::item:selected:active {
+
+    background: #343434;
+
+}
+
+QListView {
+
+    background: transparent;
+    border: none;
+    outline: none;
+
+}
+
+
+QListView::item:selected {
+
+    background: #343434;
+
+    color: white;
+
+}
+
+QTreeWidget {
+
+    background: transparent;
+
+    border: none;
+
+}
+
+QListWidget::item:selected {
+
+    background: #2F2F2F;
+
+    border-left: 3px solid white;
+
+}

@@ -66,13 +66,13 @@ class LibraryView(QWidget):
 
     def setup_ui(self):
 
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
 
         # ======================
         # Title
         # ======================
 
-        layout.addWidget(
+        main_layout.addWidget(
 
             PageHeader(
 
@@ -112,12 +112,16 @@ class LibraryView(QWidget):
             "Add Book"
         )
 
-        self.edit_button = QPushButton(
-            "Edit Book"
+        self.add_button.setObjectName(
+            "primaryButton"
         )
 
-        self.delete_button = QPushButton(
-            "Delete Book"
+        self.filter_box.setObjectName(
+            "filterCombo"
+        )
+
+        self.sort_box.setObjectName(
+            "sortCombo"
         )
 
         toolbar = Toolbar()
@@ -138,23 +142,11 @@ class LibraryView(QWidget):
         toolbar.add_stretch()
 
         toolbar.add_widget(
-            self.edit_button
-        )
-
-        toolbar.add_widget(
-            self.delete_button
-        )
-
-        toolbar.add_widget(
             self.add_button
         )
 
-        layout.addWidget(
+        main_layout.addWidget(
             toolbar
-        )
-
-        layout.addSpacing(
-            12
         )
 
         # ======================
@@ -192,17 +184,17 @@ class LibraryView(QWidget):
         )
 
         self.splitter.setSizes([
-            450,
-            650
+            420,
+            680
         ])
 
-        layout.addWidget(
+        main_layout.addWidget(
             self.splitter,
             1
         )
 
         self.setLayout(
-            layout
+            main_layout
         )
 
     # ----------------------------------
@@ -213,14 +205,6 @@ class LibraryView(QWidget):
 
         self.add_button.clicked.connect(
             self.show_add_book_dialog
-        )
-
-        self.edit_button.clicked.connect(
-            self.open_edit_dialog
-        )
-
-        self.delete_button.clicked.connect(
-            self.delete_selected_book
         )
 
         self.book_list.bookSelected.connect(
@@ -239,6 +223,14 @@ class LibraryView(QWidget):
             self.refresh
         )
 
+        self.detail_view.editRequested.connect(
+            self.open_edit_dialog
+        )
+
+        self.detail_view.deleteRequested.connect(
+            self.delete_selected_book
+        )
+
     # ----------------------------------
     # Events
     # ----------------------------------
@@ -247,10 +239,6 @@ class LibraryView(QWidget):
         self,
         book
     ):
-        """
-        Dipanggil saat user
-        memilih sebuah buku.
-        """
 
         self.selected_book = book
 
@@ -263,10 +251,7 @@ class LibraryView(QWidget):
         self,
         text
     ):
-        """
-        Dipanggil saat isi SearchBar berubah.
-        """
-
+        
         self.book_list.refresh(
             text
         )

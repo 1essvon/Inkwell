@@ -52,6 +52,13 @@ QLabel#bookCover {
     color: #8E8E8E;
 }
 
+QLabel#bookCover {
+
+    font-size: 64px;
+
+    qproperty-alignment: AlignCenter;
+
+}
 
 /* ==========================================================
    DIVIDER

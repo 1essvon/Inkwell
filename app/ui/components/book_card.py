@@ -1,34 +1,54 @@
 from PySide6.QtWidgets import (
     QLabel,
-    QProgressBar
+    QProgressBar,
+    QHBoxLayout
 )
 
-from app.constants.book_status import BookStatus
 from app.constants.book_status import BookStatus
 from app.models.book import Book
-
-from app.ui.components.base_card import (
-    BaseCard
-)
-
+from app.ui.components.base_card import BaseCard
 
 class BookCard(BaseCard):
 
+    STATUS_OBJECT_NAMES = {
+
+        BookStatus.READING:
+            "badgeReading",
+
+        BookStatus.COMPLETED:
+            "badgeFinished",
+
+        BookStatus.WANT_TO_READ:
+            "badgeWaiting",
+
+        BookStatus.PAUSED:
+            "badgePaused",
+
+        BookStatus.DROPPED:
+            "badgeDanger",
+
+    }
+
     def __init__(
         self,
-        book: Book
+        book: Book,
     ):
+
         super().__init__()
 
         self.book = book
+
+        self.setup_ui()
+
+        self.populate_data()
+
+    def setup_ui(self):
 
         # ======================
         # Title
         # ======================
 
-        self.title = QLabel(
-            f"📖 {book.title}"
-        )
+        self.title = QLabel()
 
         self.title.setObjectName(
             "bookTitle"
@@ -38,99 +58,45 @@ class BookCard(BaseCard):
         # Author
         # ======================
 
-        self.author = QLabel(
-            book.author
-        )
+        self.author = QLabel()
 
         self.author.setObjectName(
-            "bookAuthor"
-        )
-
-        # ======================
-        # Progress Text
-        # ======================
-
-        current = book.current_page or 0
-
-        total = book.page_count or 0
-
-        self.progress_text = QLabel(
-            f"{current} / {total}"
-        )
-
-        self.progress_text.setObjectName(
-            "bookProgress"
-        )
-
-        # ======================
-        # Progress Bar
-        # ======================
-
-        self.progress = QProgressBar()
-
-        if total > 0:
-
-            percent = int(
-                current / total * 100
-            )
-
-        else:
-
-            percent = 0
-
-        self.progress.setValue(
-            percent
+            "secondaryText"
         )
 
         # ======================
         # Status
         # ======================
 
-        status = book.status
+        self.status = QLabel()
 
-        self.status = QLabel(
-            status
+        self.status.adjustSize()
+
+        self.status.setMinimumWidth(90)
+
+        # ======================
+        # Progress
+        # ======================
+
+        self.progress = QProgressBar()
+
+        self.progress.setTextVisible(
+            False
         )
 
-        if status == BookStatus.READING:
+        self.progress_text = QLabel()
 
-            self.status.setObjectName(
-                "statusReading"
-            )
-
-        elif status == BookStatus.COMPLETED:
-
-            self.status.setObjectName(
-                "statusFinished"
-            )
-
-        elif status == BookStatus.WANT_TO_READ:
-
-            self.status.setObjectName(
-                "statusWaiting"
-            )
-
-        elif status == BookStatus.PAUSED:
-
-            self.status.setObjectName(
-                "statusPaused"
-            )
-
-        elif status == BookStatus.DROPPED:
-
-            self.status.setObjectName(
-                "statusDropped"
-            )
-
-        else:
-
-            self.status.setObjectName(
-                "statusUnknown"
-            )
+        self.progress_text.setObjectName(
+            "captionText"
+        )
 
         # ======================
         # Layout
         # ======================
+
+        self.layout.setSpacing(
+            10
+        )
 
         self.layout.addWidget(
             self.title
@@ -140,8 +106,23 @@ class BookCard(BaseCard):
             self.author
         )
 
-        self.layout.addWidget(
-            self.progress_text
+        self.status_layout = QHBoxLayout()
+
+        self.status_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        self.status_layout.addWidget(
+            self.status
+        )
+
+        self.status_layout.addStretch()
+
+        self.layout.addLayout(
+            self.status_layout
         )
 
         self.layout.addWidget(
@@ -149,5 +130,83 @@ class BookCard(BaseCard):
         )
 
         self.layout.addWidget(
-            self.status
+            self.progress_text
+        )
+
+    def populate_data(self):
+
+        # ======================
+        # Title
+        # ======================
+
+        self.title.setText(
+            self.book.title
+        )
+
+        # ======================
+        # Author
+        # ======================
+
+        self.author.setText(
+            self.book.author
+        )
+
+        # ======================
+        # Progress
+        # ======================
+
+        current = self.book.current_page or 0
+
+        total = self.book.page_count or 0
+
+        percent = self.calculate_progress(
+            current,
+            total,
+        )
+
+        self.progress.setValue(
+            percent
+        )
+
+        self.progress_text.setText(
+            f"{current} / {total} pages"
+        )
+
+        # ======================
+        # Status
+        # ======================
+
+        status = self.book.status
+
+        self.status.setText(
+            status
+        )
+
+    def calculate_progress(
+        self,
+        current,
+        total,
+    ):
+
+        if total <= 0:
+
+            return 0
+
+        return int(
+
+            current / total * 100
+
+        )
+    
+    def get_status_object_name(
+        self,
+        status,
+    ):
+
+        return self.STATUS_OBJECT_NAMES.get(
+
+            status,
+
+            "badgeDefault",
+
         )
