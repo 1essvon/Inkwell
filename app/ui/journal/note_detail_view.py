@@ -1,119 +1,242 @@
+from PySide6.QtCore import (
+    Signal,
+)
+
 from PySide6.QtWidgets import (
     QWidget,
     QLabel,
-    QVBoxLayout
+    QTextEdit,
+    QPushButton,
+    QHBoxLayout,
+    QVBoxLayout,
+    QFrame,
 )
-from PySide6.QtWidgets import QTextEdit
-from PySide6.QtWidgets import QPushButton
+
+from app.services.note_service import (
+    NoteService,
+)
 
 class NoteDetailView(QWidget):
 
+    note_deleted = Signal()
+
+    note_saved = Signal()
+
     def __init__(self):
+
         super().__init__()
 
-        layout = QVBoxLayout()
+        self.current_note = None
 
-        self.title_label = QLabel(
-            "No Note Selected"
-        )
-        self.title_label.setObjectName(
-            "detailTitle"
-        )
+        self.setup_ui()
 
-        self.content_label = QLabel(
-            ""
-        )
+    def setup_ui(self):
 
-        layout.addWidget(
-            self.title_label
+        self.main_layout = QVBoxLayout(self)
+
+        self.main_layout.setContentsMargins(
+            20,
+            20,
+            20,
+            20,
         )
 
-        layout.addWidget(
-            self.content_label
+        self.main_layout.setSpacing(
+            14
         )
 
-        self.setLayout(layout)
+        self.title = QLabel()
 
-        self.content_editor = QTextEdit()
-
-        self.content_editor.setPlaceholderText(
-            "Write your thoughts here..."
+        self.title.setObjectName(
+            "pageTitle"
         )
 
-        self.content_editor.setMinimumHeight(
-            400
+        self.main_layout.addWidget(
+            self.title
         )
+
+        self.book = QLabel()
+
+        self.book.setObjectName(
+            "secondaryText"
+        )
+
+        self.main_layout.addWidget(
+            self.book
+        )
+
+        divider = QFrame()
+
+        divider.setObjectName(
+            "divider"
+        )
+
+        self.main_layout.addWidget(
+            divider
+        )
+
+        self.created = QLabel()
+
+        self.created.setObjectName(
+            "captionText"
+        )
+
+        self.updated = QLabel()
+
+        self.updated.setObjectName(
+            "captionText"
+        )
+
+        self.main_layout.addWidget(
+            self.created
+        )
+
+        self.main_layout.addWidget(
+            self.updated
+        )
+
+        divider2 = QFrame()
+
+        divider2.setObjectName(
+            "divider"
+        )
+
+        self.main_layout.addWidget(
+            divider2
+        )
+
+        self.editor = QTextEdit()
+
+        self.editor.setPlaceholderText(
+            "Write your thoughts..."
+        )
+
+        self.main_layout.addWidget(
+            self.editor,
+            1,
+        ) 
+
+        button_row = QHBoxLayout()
+
+        button_row.addStretch()
 
         self.save_button = QPushButton(
-            "Save Note"
+            "Save"
         )
 
-        layout.addWidget(
-            self.content_editor
-        )
-
-        layout.addWidget(
+        button_row.addWidget(
             self.save_button
         )
 
-        self.current_note = None
+        self.delete_button = QPushButton(
+            "Delete"
+        )
+
+        self.delete_button.setObjectName(
+            "dangerButton"
+        )
+
+        button_row.addWidget(
+            self.delete_button
+        )
+
+        self.main_layout.addLayout(
+            button_row
+        )
 
         self.save_button.clicked.connect(
             self.save_note
         )
 
-    def display_note(self, note):
-
-        self.title_label.setText(
-            note.title
+        self.delete_button.clicked.connect(
+            self.delete_note
         )
 
-        self.content_label.setText(
-            note.content
-        )
+    def display_note(
+        self,
+        note,
+    ):
 
         self.current_note = note
 
-        self.save_button.setText(
-            "Save Note"
-        )
-
-        self.title_label.setText(
+        self.title.setText(
             note.title
         )
 
-        self.content_editor.setPlainText(
-            note.content
+        self.book.setText(
+            note.book.title
+        )
+
+        self.editor.setPlainText(
+            note.content or ""
+        )
+
+        self.created.setText(
+
+            "Created • "
+
+            + note.created_at.strftime(
+                "%d %b %Y"
+            )
+
+        )
+
+        self.updated.setText(
+
+            "Updated • "
+
+            + note.updated_at.strftime(
+                "%d %b %Y"
+            )
+
         )
 
     def clear(self):
 
-        self.title_label.setText(
+        self.current_note = None
+
+        self.title.setText(
             "No Note Selected"
         )
 
-        self.content_label.setText(
-            ""
-        )
+        self.book.clear()
 
-        self.content_editor.clear()
+        self.created.clear()
 
-        self.current_note = None
+        self.updated.clear()
+
+        self.editor.clear()
 
     def save_note(self):
 
-        if not self.current_note:
+        if self.current_note is None:
+
             return
 
-        from app.services.note_service import (
-            NoteService
-        )
-
         NoteService.update_note(
+
             self.current_note.id,
-            self.content_editor.toPlainText()
+
+            self.editor.toPlainText(),
+
         )
 
-        self.save_button.setText(
-            "Saved!"
+        self.note_saved.emit()
+
+    def delete_note(self):
+
+        if self.current_note is None:
+
+            return
+
+        NoteService.delete_note(
+
+            self.current_note.id
+
         )
+
+        self.current_note = None
+
+        self.note_deleted.emit()
+
+        self.clear()

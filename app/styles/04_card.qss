@@ -74,3 +74,61 @@ QFrame#divider {
 
     max-height: 1px;
 }
+
+/* ==========================================
+   Note Card
+========================================== */
+
+#noteCard {
+
+    background: #2B2B2B;
+
+    border: 1px solid #3B3B3B;
+
+    border-radius: 14px;
+
+}
+
+#noteCard:hover {
+
+    border: 1px solid #565656;
+
+}
+
+#noteCard[selected="true"] {
+
+    border: 1px solid #EAEAEA;
+
+}
+
+#noteIndicator {
+
+    background: transparent;
+
+    border-radius: 2px;
+
+}
+
+#noteCard[selected="true"] #noteIndicator {
+
+    background: #F5F5F5;
+
+}
+
+#noteCardTitle {
+
+    color: #FFFFFF;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+#noteCardBook {
+
+    color: #B8B8B8;
+
+    font-size: 13px;
+
+}

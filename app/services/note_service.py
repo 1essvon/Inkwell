@@ -2,6 +2,7 @@ from app.database.session import SessionLocal
 from app.models.note import Note
 from app.models.book import Book
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 class NoteService:
@@ -12,7 +13,25 @@ class NoteService:
         session = SessionLocal()
 
         try:
-            return session.query(Note).all()
+            return (
+
+                session.query(Note)
+
+                .options(
+
+                    joinedload(
+                        Note.book
+                    )
+
+                )
+
+                .order_by(
+                    Note.updated_at.desc()
+                )
+
+                .all()
+
+            )
         finally:
             session.close()
 
@@ -31,17 +50,29 @@ class NoteService:
 
                 session.query(Note)
 
+                .options(
+
+                    joinedload(
+                        Note.book
+                    )
+
+                )
+
                 .filter(
+
                     Note.book_id == book_id
+
                 )
 
                 .order_by(
+
                     Note.updated_at.desc()
+
                 )
 
                 .all()
 
-            )
+                            )
 
         finally:
 

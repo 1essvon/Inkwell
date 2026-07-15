@@ -1,95 +1,180 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QPushButton,
-    QListWidget,
-    QLabel,
     QComboBox,
     QScrollArea,
-    QListWidgetItem,
-    QHBoxLayout
+    QSplitter,
 )
 
-from app.services.note_service import NoteService
-from app.ui.dialogs.add_note_dialog import AddNoteDialog
-from app.ui.journal.note_detail_view import (
-    NoteDetailView
-)
 from app.services.book_service import (
-    BookService
+    BookService,
 )
 
-from app.ui.components.page_header import (
-    PageHeader,
-)
-
-from app.ui.components.toolbar import (
-    Toolbar,
+from app.services.note_service import (
+    NoteService,
 )
 
 from app.ui.components.empty_state import (
     EmptyState,
 )
 
+from app.ui.components.page_header import (
+    PageHeader,
+)
+
+from app.ui.components.search_bar import (
+    SearchBar,
+)
+
+from app.ui.components.toolbar import (
+    Toolbar,
+)
+
+from app.ui.dialogs.add_note_dialog import (
+    AddNoteDialog,
+)
+
+from app.ui.journal.note_detail_view import (
+    NoteDetailView,
+)
+
+from app.ui.journal.note_list_widget import (
+    NoteListWidget,
+)
+
 
 class NotesView(QWidget):
 
     def __init__(self):
+
         super().__init__()
 
-        root_layout = QVBoxLayout()
+        self.selected_note = None
 
-        scroll = QScrollArea()
+        self.setup_ui()
 
-        scroll.setWidgetResizable(True)
+        self.connect_signals()
 
-        content = QWidget()
+        self.refresh()
 
-        layout = QVBoxLayout()
+    def setup_ui(self):
 
-        layout.addWidget(
+        self.root_layout = QVBoxLayout(self)
 
-            PageHeader(
-
-                "Notes"
-
-            )
-
+        self.root_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        content.setLayout(layout)
+        # ======================
+        # Scroll Area
+        # ======================
 
-        scroll.setWidget(content)
+        self.scroll = QScrollArea()
 
-        root_layout.addWidget(scroll)
+        self.scroll.setWidgetResizable(
+            True
+        )
 
-        layout.addWidget(
-            QLabel("Book")
+        self.content = QWidget()
+
+        self.content_layout = QVBoxLayout()
+
+        self.content_layout.setSpacing(
+            20
+        )
+
+        self.content.setLayout(
+            self.content_layout
+        )
+
+        self.scroll.setWidget(
+            self.content
+        )
+
+        self.root_layout.addWidget(
+            self.scroll
+        )
+
+        # ======================
+        # Header
+        # ======================
+
+        self.header = PageHeader(
+            "Notes"
+        )
+
+        self.content_layout.addWidget(
+            self.header
+        )
+
+        # ======================
+        # Toolbar
+        # ======================
+
+        self.toolbar = Toolbar()
+
+        self.search = SearchBar(
+            "Search notes..."
         )
 
         self.book_filter = QComboBox()
 
-        layout.addWidget(
-            self.book_filter
+        self.sort_filter = QComboBox()
+
+        self.sort_filter.addItems(
+
+            [
+
+                "Newest",
+
+                "Oldest",
+
+                "Title",
+
+            ]
+
         )
 
         self.add_note_button = QPushButton(
             "Add Note"
         )
 
-        self.delete_note_button = QPushButton(
-            "Delete Note"
+        self.toolbar.add_widget(
+            self.search
         )
 
-        self.add_note_button.clicked.connect(
-            self.open_add_note_dialog
+        self.toolbar.add_widget(
+            self.book_filter
         )
 
-        self.delete_note_button.clicked.connect(
-            self.delete_selected_note
+        self.toolbar.add_widget(
+            self.sort_filter
         )
 
-        self.note_list = QListWidget()
+        self.toolbar.add_stretch()
+
+        self.toolbar.add_widget(
+            self.add_note_button
+        )
+
+        self.content_layout.addWidget(
+            self.toolbar
+        )
+
+        # ======================
+        # Main Content
+        # ======================
+
+        self.splitter = QSplitter()
+
+        self.note_list = NoteListWidget()
+
+        self.detail_view = NoteDetailView()
 
         self.empty_state = EmptyState(
 
@@ -106,68 +191,104 @@ class NotesView(QWidget):
 
         self.empty_state.hide()
 
-        self.note_list.itemClicked.connect(
-            self.show_note_details
+        # Left Panel
+
+        self.left_panel = QWidget()
+
+        self.left_layout = QVBoxLayout()
+
+        self.left_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        self.detail_view = NoteDetailView()
-
-        toolbar = Toolbar()
-
-        toolbar.add_stretch()
-
-        toolbar.add_widget(
-            self.add_note_button
+        self.left_layout.addWidget(
+            self.empty_state
         )
 
-        toolbar.add_widget(
-            self.delete_note_button
+        self.left_layout.addWidget(
+            self.note_list
         )
 
-        layout.addWidget(
-            toolbar
+        self.left_panel.setLayout(
+            self.left_layout
         )
 
-        content_layout = QHBoxLayout()
-
-        content_layout.addWidget(
-            self.note_list,
-            1
+        self.splitter.addWidget(
+            self.left_panel
         )
 
-        content_layout.addWidget(
-            self.empty_state,
-            1
+        self.splitter.addWidget(
+            self.detail_view
         )
 
-        content_layout.addWidget(
-            self.detail_view,
-            3
+        self.splitter.setStretchFactor(
+            0,
+            2,
         )
 
-        layout.addLayout(
-            content_layout
+        self.splitter.setStretchFactor(
+            1,
+            3,
         )
 
-        self.load_books()
+        self.content_layout.addWidget(
+            self.splitter
+        )
+
+    def connect_signals(self):
+
+        self.add_note_button.clicked.connect(
+            self.open_add_note_dialog
+        )
 
         self.book_filter.currentIndexChanged.connect(
             self.load_notes
         )
 
+        self.note_list.note_selected.connect(
+            self.show_note
+        )
+
+        self.detail_view.note_saved.connect(
+            self.refresh
+        )
+
+        self.detail_view.note_deleted.connect(
+            self.refresh
+        )
+
+        # Sprint berikutnya
+        # self.search.textChanged.connect(
+        #     self.filter_notes
+        # )
+
+        # Sprint berikutnya
+        # self.sort_filter.currentIndexChanged.connect(
+        #     self.sort_notes
+        # )
+
+    def refresh(self):
+
+        self.load_books()
+
         self.load_notes()
 
-        self.setLayout(root_layout)
-
-        self.selected_note = None
-
     def load_books(self):
+
+        current_book = self.book_filter.currentData()
+
+        self.book_filter.blockSignals(
+            True
+        )
 
         self.book_filter.clear()
 
         self.book_filter.addItem(
             "All Books",
-            None
+            None,
         )
 
         books = BookService.get_all_books()
@@ -175,16 +296,27 @@ class NotesView(QWidget):
         for book in books:
 
             self.book_filter.addItem(
-
                 book.title,
-
-                book.id
-
+                book.id,
             )
 
-    def load_notes(self):
+        if current_book is not None:
 
-        self.note_list.clear()
+            index = self.book_filter.findData(
+                current_book
+            )
+
+            if index >= 0:
+
+                self.book_filter.setCurrentIndex(
+                    index
+                )
+
+        self.book_filter.blockSignals(
+            False
+        )
+
+    def load_notes(self):
 
         book_id = self.book_filter.currentData()
 
@@ -198,31 +330,14 @@ class NotesView(QWidget):
                 book_id
             )
 
-        for note in notes:
-
-            item = QListWidgetItem(
-                note.title
-            )
-
-            item.setData(
-                1,
-                note.id
-            )
-
-            self.note_list.addItem(
-                item
-            )
+        self.note_list.set_notes(
+            notes
+        )
 
         if notes:
 
-            first_note = notes[0]
+            self.note_list.select_first()
 
-            self.selected_note = first_note
-
-            self.detail_view.display_note(
-                first_note
-            )
-            
         else:
 
             self.selected_note = None
@@ -231,64 +346,30 @@ class NotesView(QWidget):
 
         self.update_empty_state()
 
+    def show_note(
+        self,
+        note,
+    ):
+
+        self.selected_note = note
+
+        self.detail_view.display_note(
+            note
+        )
 
     def open_add_note_dialog(self):
 
-        book_id = self.book_filter.currentData()
-
-        if book_id is None:
-
-            books = BookService.get_all_books()
-
-            if not books:
-
-                return
-
-            book_id = books[0].id
-
         dialog = AddNoteDialog(
-            book_id
+            self
         )
 
         if dialog.exec():
 
-            self.load_notes()
-
-    def show_note_details(self, item):
-
-        note_id = item.data(1)
-
-        note = NoteService.get_note(
-            note_id
-        )
-
-        if note:
-            self.selected_note = note
-
-            self.detail_view.display_note(
-                note
-            )
-
-    def delete_selected_note(self):
-
-        if not self.selected_note:
-            return
-
-        NoteService.delete_note(
-            self.selected_note.id
-        )
-
-        self.selected_note = None
-
-        self.load_notes()
-
-        self.detail_view.clear()
+            self.refresh()
 
     def update_empty_state(self):
 
-        has_notes = (
-            self.note_list.count() > 0
-        )
+        has_notes = self.note_list.count() > 0
 
         self.note_list.setVisible(
             has_notes
