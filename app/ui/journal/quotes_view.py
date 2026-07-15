@@ -1,44 +1,47 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QPushButton,
-    QListWidget,
-    QLabel,
+    QScrollArea,
+    QSplitter,
     QComboBox,
-    QListWidgetItem,
-    QHBoxLayout,
-    QMessageBox,
-    QScrollArea
+    QPushButton,
 )
 
 from app.services.book_service import (
-    BookService
+    BookService,
 )
 
 from app.services.quote_service import (
-    QuoteService
-)
-
-from app.ui.dialogs.add_quote_dialog import (
-    AddQuoteDialog
-)
-
-from app.ui.journal.quote_detail_view import (
-    QuoteDetailView
-)
-
-from app.ui.components.page_header import (
-    PageHeader,
-)
-
-from app.ui.components.toolbar import (
-    Toolbar,
+    QuoteService,
 )
 
 from app.ui.components.empty_state import (
     EmptyState,
 )
 
+from app.ui.components.page_header import (
+    PageHeader,
+)
+
+from app.ui.components.search_bar import (
+    SearchBar,
+)
+
+from app.ui.components.toolbar import (
+    Toolbar,
+)
+
+from app.ui.dialogs.add_quote_dialog import (
+    AddQuoteDialog,
+)
+
+from app.ui.journal.quote_list_widget import (
+    QuoteListWidget,
+)
+
+from app.ui.journal.quote_detail_view import (
+    QuoteDetailView,
+)
 
 class QuotesView(QWidget):
 
@@ -48,131 +51,206 @@ class QuotesView(QWidget):
 
         self.selected_quote = None
 
-        root_layout = QVBoxLayout()
+        self.setup_ui()
 
-        scroll = QScrollArea()
+        self.connect_signals()
 
-        scroll.setWidgetResizable(True)
+        self.refresh()
 
-        content = QWidget()
+    def setup_ui(self):
 
-        layout = QVBoxLayout()
+        self.root_layout = QVBoxLayout(self)
 
-        layout.addWidget(
-
-            PageHeader(
-
-                "Quotes"
-
-            )
-
+        self.root_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        content.setLayout(
-            layout
+        self.scroll = QScrollArea()
+
+        self.scroll.setWidgetResizable(
+            True
         )
 
-        scroll.setWidget(
-            content
+        self.content = QWidget()
+
+        self.content_layout = QVBoxLayout()
+
+        self.content_layout.setSpacing(
+            20
         )
 
-        root_layout.addWidget(
-            scroll
+        self.content.setLayout(
+            self.content_layout
         )
 
-        layout.addWidget(
-            QLabel("Book")
+        self.scroll.setWidget(
+            self.content
+        )
+
+        self.root_layout.addWidget(
+            self.scroll
+        )
+
+        self.header = PageHeader(
+            "Quotes"
+        )
+
+        self.content_layout.addWidget(
+            self.header
+        )
+
+        self.toolbar = Toolbar()
+
+        self.search = SearchBar(
+            "Search quotes..."
         )
 
         self.book_filter = QComboBox()
 
-        layout.addWidget(
-            self.book_filter
+        self.sort_filter = QComboBox()
+
+        self.sort_filter.addItems(
+
+            [
+
+                "Newest",
+
+                "Oldest",
+
+                "Page",
+
+            ]
+
         )
 
         self.add_quote_button = QPushButton(
             "Add Quote"
         )
 
-        self.delete_quote_button = QPushButton(
-            "Delete Quote"
+        self.toolbar.add_widget(
+            self.search
         )
 
-        toolbar = Toolbar()
+        self.toolbar.add_widget(
+            self.book_filter
+        )
 
-        toolbar.add_stretch()
+        self.toolbar.add_widget(
+            self.sort_filter
+        )
 
-        toolbar.add_widget(
+        self.toolbar.add_stretch()
+
+        self.toolbar.add_widget(
             self.add_quote_button
         )
 
-        toolbar.add_widget(
-            self.delete_quote_button
+        self.content_layout.addWidget(
+            self.toolbar
         )
 
-        layout.addWidget(
-            toolbar
-        )
+        self.splitter = QSplitter()
 
-        self.quote_list = QListWidget()
+        self.quote_list = QuoteListWidget()
+
+        self.detail_view = QuoteDetailView()
 
         self.empty_state = EmptyState(
 
-            icon="💬",
+            icon="❝",
 
             title="No Quotes Yet",
 
             subtitle=(
-                "Save memorable quotes\n"
-                "from your reading."
+                "Save memorable passages\n"
+                "from the books you read."
             )
 
         )
 
         self.empty_state.hide()
 
-        self.detail_view = QuoteDetailView()
+        self.left_panel = QWidget()
 
-        content_layout = QHBoxLayout()
+        self.left_layout = QVBoxLayout()
 
-        content_layout.addWidget(
-            self.quote_list,
-            1
+        self.left_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        content_layout.addWidget(
-            self.empty_state,
-            1
+        self.left_layout.addWidget(
+            self.empty_state
         )
 
-        content_layout.addWidget(
-            self.detail_view,
-            3
+        self.left_layout.addWidget(
+            self.quote_list
         )
 
-        layout.addLayout(
-            content_layout
+        self.left_panel.setLayout(
+            self.left_layout
         )
 
-        self.setLayout(
-            root_layout
+        self.splitter.addWidget(
+            self.left_panel
         )
+
+        self.splitter.addWidget(
+            self.detail_view
+        )
+
+        self.splitter.setStretchFactor(
+            0,
+            2,
+        )
+
+        self.splitter.setStretchFactor(
+            1,
+            3,
+        )
+
+        self.content_layout.addWidget(
+            self.splitter
+        )
+
+    def connect_signals(self):
 
         self.add_quote_button.clicked.connect(
             self.open_add_quote_dialog
         )
 
-        self.delete_quote_button.clicked.connect(
-            self.delete_selected_quote
-        )
-
-        self.quote_list.itemClicked.connect(
-            self.show_quote_details
-        )
-
         self.book_filter.currentIndexChanged.connect(
             self.load_quotes
         )
+
+        self.quote_list.quote_selected.connect(
+            self.show_quote
+        )
+
+        self.detail_view.quote_saved.connect(
+            self.refresh
+        )
+
+        self.detail_view.quote_deleted.connect(
+            self.refresh
+        )
+
+        # Sprint berikutnya
+        # self.search.textChanged.connect(
+        #     self.filter_quotes
+        # )
+
+        # Sprint berikutnya
+        # self.sort_filter.currentIndexChanged.connect(
+        #     self.sort_quotes
+        # )
+
+    def refresh(self):
 
         self.load_books()
 
@@ -180,11 +258,17 @@ class QuotesView(QWidget):
 
     def load_books(self):
 
+        current_book = self.book_filter.currentData()
+
+        self.book_filter.blockSignals(
+            True
+        )
+
         self.book_filter.clear()
 
         self.book_filter.addItem(
             "All Books",
-            None
+            None,
         )
 
         books = BookService.get_all_books()
@@ -192,16 +276,27 @@ class QuotesView(QWidget):
         for book in books:
 
             self.book_filter.addItem(
-
                 book.title,
-
-                book.id
-
+                book.id,
             )
 
-    def load_quotes(self):
+        if current_book is not None:
 
-        self.quote_list.clear()
+            index = self.book_filter.findData(
+                current_book
+            )
+
+            if index >= 0:
+
+                self.book_filter.setCurrentIndex(
+                    index
+                )
+
+        self.book_filter.blockSignals(
+            False
+        )
+
+    def load_quotes(self):
 
         book_id = self.book_filter.currentData()
 
@@ -215,32 +310,13 @@ class QuotesView(QWidget):
                 book_id
             )
 
-        for quote in quotes:
-
-            text = (
-                f"Page {quote.page}"
-            )
-
-            item = QListWidgetItem(
-                text
-            )
-
-            item.setData(
-                1,
-                quote.id
-            )
-
-            self.quote_list.addItem(
-                item
-            )
+        self.quote_list.set_quotes(
+            quotes
+        )
 
         if quotes:
 
-            self.selected_quote = quotes[0]
-
-            self.detail_view.display_quote(
-                quotes[0]
-            )
+            self.quote_list.select_first()
 
         else:
 
@@ -250,78 +326,30 @@ class QuotesView(QWidget):
 
         self.update_empty_state()
 
+    def show_quote(
+        self,
+        quote,
+    ):
+
+        self.selected_quote = quote
+
+        self.detail_view.display_quote(
+            quote
+        )
+
     def open_add_quote_dialog(self):
 
-        book_id = self.book_filter.currentData()
-
-        if book_id is None:
-
-            return
-
         dialog = AddQuoteDialog(
-            book_id
+            self
         )
 
         if dialog.exec():
 
-            self.load_quotes()
-
-    def show_quote_details(
-        self,
-        item
-    ):
-
-        quote = QuoteService.get_quote(
-
-            item.data(1)
-
-        )
-
-        if quote:
-
-            self.selected_quote = quote
-
-            self.detail_view.display_quote(
-                quote
-            )
-
-    def delete_selected_quote(self):
-
-        if not self.selected_quote:
-
-            return
-
-        reply = QMessageBox.question(
-
-            self,
-
-            "Delete Quote",
-
-            "Delete selected quote?",
-
-            QMessageBox.Yes | QMessageBox.No
-
-        )
-
-        if reply == QMessageBox.Yes:
-
-            QuoteService.delete_quote(
-
-                self.selected_quote.id
-
-            )
-
-            self.selected_quote = None
-
-            self.load_quotes()
-
-            self.detail_view.clear()
+            self.refresh()
 
     def update_empty_state(self):
 
-        has_quotes = (
-            self.quote_list.count() > 0
-        )
+        has_quotes = self.quote_list.count() > 0
 
         self.quote_list.setVisible(
             has_quotes

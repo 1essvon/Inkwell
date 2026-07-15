@@ -1,6 +1,7 @@
 from app.database.session import SessionLocal
 from app.models.quote import Quote
 from app.models.book import Book
+from sqlalchemy.orm import joinedload
 
 class QuoteService:
 
@@ -10,9 +11,25 @@ class QuoteService:
         session = SessionLocal()
 
         try:
-            return session.query(
-                Quote
-            ).all()
+            return (
+
+                session.query(Quote)
+
+                .options(
+
+                    joinedload(
+                        Quote.book
+                    )
+
+                )
+
+                .order_by(
+                    Quote.updated_at.desc()
+                )
+
+                .all()
+
+            )
 
         finally:
             session.close()
@@ -32,12 +49,20 @@ class QuoteService:
 
                 session.query(Quote)
 
+                .options(
+
+                    joinedload(
+                        Quote.book
+                    )
+
+                )
+
                 .filter(
                     Quote.book_id == book_id
                 )
 
                 .order_by(
-                    Quote.created_at.desc()
+                    Quote.updated_at.desc()
                 )
 
                 .all()
@@ -56,9 +81,24 @@ class QuoteService:
         session = SessionLocal()
 
         try:
-            return session.get(
-                Quote,
-                quote_id
+            return (
+
+                session.query(Quote)
+
+                .options(
+
+                    joinedload(
+                        Quote.book
+                    )
+
+                )
+
+                .filter(
+                    Quote.id == quote_id
+                )
+
+                .first()
+
             )
 
         finally:
@@ -76,13 +116,17 @@ class QuoteService:
         try:
             quote = Quote(
 
-            book_id=book_id,
+                book_id=book_id,
 
-            content=content,
+                content=content,
 
-            page=page
+                page=page,
 
-        )
+                note="",
+
+                tags="",
+
+            )
 
             session.add(
                 quote
@@ -141,6 +185,42 @@ class QuoteService:
         finally:
             session.close()
 
-    
+    @staticmethod
+    def update_quote(
 
-    
+        quote_id: int,
+
+        note: str,
+
+        tags: str,
+
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            quote = session.get(
+                Quote,
+                quote_id,
+            )
+
+            if quote is None:
+
+                return None
+
+            quote.note = note
+
+            quote.tags = tags
+
+            session.commit()
+
+            session.refresh(
+                quote
+            )
+
+            return quote
+
+        finally:
+
+            session.close()

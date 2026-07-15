@@ -5,13 +5,14 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
-    Text
+    String,
+    Text,
 )
 
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
-    relationship
+    relationship,
 )
 
 from app.database.base import Base
@@ -27,7 +28,7 @@ class Quote(Base):
 
     id: Mapped[int] = mapped_column(
         Integer,
-        primary_key=True
+        primary_key=True,
     )
 
     book_id: Mapped[int] = mapped_column(
@@ -42,10 +43,38 @@ class Quote(Base):
         Integer
     )
 
+    # ======================
+    # Reflection
+    # ======================
+
+    note: Mapped[str] = mapped_column(
+        Text,
+        default="",
+    )
+
+    tags: Mapped[str] = mapped_column(
+        String(255),
+        default="",
+    )
+
+    # ======================
+    # Timestamps
+    # ======================
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
     )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+    )
+
+    # ======================
+    # Relationship
+    # ======================
 
     book: Mapped["Book"] = relationship(
         back_populates="quotes"
