@@ -21,16 +21,16 @@ class QuoteCard(QFrame):
     def setup_ui(self):
 
         self.setFixedHeight(
-            72
+            78
         )
 
         root_layout = QHBoxLayout(self)
 
         root_layout.setContentsMargins(
-            14,
-            10,
-            14,
-            10,
+            16,
+            12,
+            16,
+            12,
         )
 
         root_layout.setSpacing(
@@ -62,7 +62,7 @@ class QuoteCard(QFrame):
         content_layout = QVBoxLayout()
 
         content_layout.setSpacing(
-            4
+            8
         )
 
         self.page = QLabel()
@@ -86,7 +86,8 @@ class QuoteCard(QFrame):
         )
 
         root_layout.addLayout(
-            content_layout
+            content_layout,
+            1,
         )
 
     def set_quote(

@@ -1,12 +1,13 @@
 from PySide6.QtCore import (
     Qt,
     Signal,
+    QSize
 )
 
 from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
-    QAbstractItemView,
+    QAbstractItemView
 )
 
 from app.ui.components.quote_card import (
@@ -34,7 +35,7 @@ class QuoteListWidget(QListWidget):
         )
 
         self.setSpacing(
-            10
+            12
         )
 
         self.setContentsMargins(
@@ -85,7 +86,10 @@ class QuoteListWidget(QListWidget):
             )
 
             item.setSizeHint(
-                card.sizeHint()
+                QSize(
+                    0,
+                    78,
+                )
             )
 
             self.addItem(

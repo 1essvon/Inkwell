@@ -132,3 +132,17 @@ QFrame#divider {
     font-size: 13px;
 
 }
+
+#quoteCardPage{
+
+    color:#ffffff;
+
+    font-weight:600;
+
+}
+
+#quoteIcon{
+
+    color:#777;
+
+}
