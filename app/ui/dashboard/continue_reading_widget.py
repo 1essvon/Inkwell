@@ -1,5 +1,8 @@
+from PySide6.QtCore import Signal
+
 from PySide6.QtWidgets import (
     QLabel,
+    QPushButton,
 )
 
 from app.constants.book_status import (
@@ -10,10 +13,6 @@ from app.services.book_service import (
     BookService,
 )
 
-from app.services.settings_service import (
-    SettingsService,
-)
-
 from app.ui.components.base_card import (
     BaseCard,
 )
@@ -22,7 +21,10 @@ from app.ui.components.progress_bar import (
     ProgressBar,
 )
 
+
 class ContinueReadingWidget(BaseCard):
+
+    continue_requested = Signal()
 
     def __init__(self):
 
@@ -35,7 +37,7 @@ class ContinueReadingWidget(BaseCard):
     def setup_ui(self):
 
         self.title = QLabel(
-            "Reading Goal"
+            "Continue Reading"
         )
 
         self.title.setObjectName(
@@ -46,14 +48,24 @@ class ContinueReadingWidget(BaseCard):
             self.title
         )
 
-        self.progress_text = QLabel()
+        self.book_title = QLabel()
 
-        self.progress_text.setObjectName(
+        self.book_title.setObjectName(
+            "bookTitle"
+        )
+
+        self.layout.addWidget(
+            self.book_title
+        )
+
+        self.author = QLabel()
+
+        self.author.setObjectName(
             "secondaryText"
         )
 
         self.layout.addWidget(
-            self.progress_text
+            self.author
         )
 
         self.progress = ProgressBar()
@@ -62,53 +74,114 @@ class ContinueReadingWidget(BaseCard):
             self.progress
         )
 
+        self.progress_text = QLabel()
+
+        self.progress_text.setObjectName(
+            "captionText"
+        )
+
+        self.layout.addWidget(
+            self.progress_text
+        )
+
+        self.button = QPushButton(
+            "Continue Reading"
+        )
+
+        self.button.setObjectName(
+            "primaryButton"
+        )
+
+        self.button.clicked.connect(
+            self.continue_requested.emit
+        )
+
+        self.layout.addWidget(
+            self.button
+        )
+
         self.layout.addStretch()
 
     def refresh(self):
 
-        settings = SettingsService.get()
+        books = [
 
-        goal = settings.reading_goal_books
+            book
 
-        summary = BookService.get_status_summary()
+            for book in BookService.get_all_books()
 
-        completed = summary[
-            BookStatus.COMPLETED
+            if book.status == BookStatus.READING
+
         ]
 
-        if goal <= 0:
+        if not books:
 
-            self.progress_text.setText(
-                "No reading goal configured"
+            self.book_title.setText(
+                "No active book"
             )
 
-            self.progress.set_value(
-                0
+            self.author.setText(
+                "Start reading from your library."
+            )
+
+            self.progress.set_progress(
+                current=0,
+                total=1,
+            )
+
+            self.progress_text.setText(
+                "0 / 0 pages"
+            )
+
+            self.button.setText(
+                "Browse Library"
+            )
+
+            self.button.setEnabled(
+                False
             )
 
             return
 
-        remaining = max(
-            goal - completed,
+        book = max(
+
+            books,
+
+            key=lambda item: item.current_page,
+
+        )
+
+        self.book_title.setText(
+            book.title
+        )
+
+        self.author.setText(
+            book.author
+        )
+
+        current = max(
+            book.current_page or 0,
             0,
         )
 
-        if completed >= goal:
-
-            status = "🎉 Goal achieved!"
-
-        else:
-
-            status = (
-                f"{remaining} books remaining"
-            )
-
-        self.progress_text.setText(
-            f"{completed} / {goal} books\n"
-            f"{status}"
+        total = max(
+            book.page_count or 0,
+            1,
         )
 
         self.progress.set_progress(
-            current=completed,
-            total=goal,
+            current=current,
+            total=total,
+        )
+
+        self.progress_text.setText(
+            f"{current} / {total} pages"
+        )
+
+        self.button.setText(
+            "Continue Reading"
+        )
+
+        self.button.setEnabled(
+            True
         )

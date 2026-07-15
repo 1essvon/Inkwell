@@ -36,10 +36,6 @@ from app.ui.history.reading_history_view import (
     ReadingHistoryView
 )
 
-from app.ui.journal.scratchpad_view import (
-    ScratchpadView
-)
-
 from app.ui.settings_view import (
     SettingsView
 )
@@ -126,10 +122,6 @@ class MainWindow(QMainWindow):
             "History"
         )
 
-        self.scratchpad_button = QPushButton(
-            "Scratchpad"
-        )
-
         self.settings_button = QPushButton(
             "Settings"
         )
@@ -160,10 +152,6 @@ class MainWindow(QMainWindow):
 
         sidebar.addWidget(
             self.history_button
-        )
-
-        sidebar.addWidget(
-            self.scratchpad_button
         )
 
         sidebar.addWidget(
@@ -220,8 +208,6 @@ class MainWindow(QMainWindow):
 
         self.history_page = ReadingHistoryView()
 
-        self.scratchpad_page = ScratchpadView()
-
         self.settings_page = SettingsView()
 
         self.pages.addWidget(
@@ -250,10 +236,6 @@ class MainWindow(QMainWindow):
 
         self.pages.addWidget(
             self.history_page
-        )
-
-        self.pages.addWidget(
-            self.scratchpad_page
         )
 
         self.pages.addWidget(
@@ -290,10 +272,6 @@ class MainWindow(QMainWindow):
 
         self.history_button.clicked.connect(
             self.show_history
-        )
-
-        self.scratchpad_button.clicked.connect(
-            self.show_scratchpad
         )
 
         self.settings_button.clicked.connect(
@@ -368,14 +346,6 @@ class MainWindow(QMainWindow):
 
         self.pages.setCurrentWidget(
             self.history_page
-        )
-
-        self.refresh_current_page()
-
-    def show_scratchpad(self):
-
-        self.pages.setCurrentWidget(
-            self.scratchpad_page
         )
 
         self.refresh_current_page()
