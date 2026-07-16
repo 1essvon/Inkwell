@@ -1,21 +1,44 @@
-from PySide6.QtGui import (
-    QKeySequence,
-    QShortcut
-)
-
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QLabel,
-    QTextEdit,
+    QScrollArea,
+    QSplitter,
+    QComboBox,
     QPushButton,
-    QMessageBox
+)
+
+from PySide6.QtGui import (
+    QShortcut,
+    QKeySequence,
 )
 
 from app.services.scratchpad_service import (
-    ScratchpadService
+    ScratchpadService,
 )
 
+from app.ui.components.empty_state import (
+    EmptyState,
+)
+
+from app.ui.components.page_header import (
+    PageHeader,
+)
+
+from app.ui.components.search_bar import (
+    SearchBar,
+)
+
+from app.ui.components.toolbar import (
+    Toolbar,
+)
+
+from app.ui.journal.scratchpad_list_widget import (
+    ScratchpadListWidget,
+)
+
+from app.ui.journal.scratchpad_detail_view import (
+    ScratchpadDetailView,
+)
 
 class ScratchpadView(QWidget):
 
@@ -23,114 +46,303 @@ class ScratchpadView(QWidget):
 
         super().__init__()
 
+        self.selected_entry = None
+
         self.setup_ui()
 
-        self.load()
+        self.connect_signals()
 
-    # ==========================
-    # UI
-    # ==========================
+        self.refresh()
 
     def setup_ui(self):
 
-        layout = QVBoxLayout()
+        self.root_layout = QVBoxLayout(self)
 
-        title = QLabel("Scratchpad")
-
-        title.setObjectName(
-            "pageTitle"
+        self.root_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        layout.addWidget(
-            title
+        self.scroll = QScrollArea()
+
+        self.scroll.setWidgetResizable(
+            True
         )
 
-        self.editor = QTextEdit()
+        self.content = QWidget()
 
-        self.editor.setPlaceholderText(
+        self.content_layout = QVBoxLayout()
 
-            "Write anything..."
-
+        self.content_layout.setSpacing(
+            20
         )
 
-        layout.addWidget(
-            self.editor
+        self.content.setLayout(
+            self.content_layout
         )
 
-        self.save_button = QPushButton(
-            "Save"
+        self.scroll.setWidget(
+            self.content
         )
 
-        self.save_button.clicked.connect(
-            self.save
+        self.root_layout.addWidget(
+            self.scroll
         )
 
-        layout.addWidget(
-            self.save_button
+        self.header = PageHeader(
+            "Scratchpad"
         )
 
-        shortcut = QShortcut(
-
-            QKeySequence(
-                "Ctrl+S"
-            ),
-
-            self
-
+        self.content_layout.addWidget(
+            self.header
         )
 
-        shortcut.activated.connect(
-            self.save
+        self.toolbar = Toolbar()
+
+        self.search = SearchBar(
+            "Search scratchpads..."
         )
 
-        self.setLayout(
-            layout
-        )
+        self.sort_filter = QComboBox()
 
-    # ==========================
-    # Load
-    # ==========================
+        self.sort_filter.addItems(
 
-    def load(self):
+            [
 
-        scratchpad = (
+                "Newest",
 
-            ScratchpadService.get()
+                "Oldest",
 
-        )
+                "Title",
 
-        self.editor.setPlainText(
-
-            scratchpad.content
+            ]
 
         )
 
-    # ==========================
-    # Save
-    # ==========================
+        self.new_button = QPushButton(
+            "New Scratchpad"
+        )
 
-    def save(self):
+        self.toolbar.add_widget(
+            self.search
+        )
 
-        ScratchpadService.save(
+        self.toolbar.add_widget(
+            self.sort_filter
+        )
 
-            self.editor.toPlainText()
+        self.toolbar.add_stretch()
+
+        self.toolbar.add_widget(
+            self.new_button
+        )
+
+        self.content_layout.addWidget(
+            self.toolbar
+        )
+
+        self.splitter = QSplitter()
+
+        self.list_widget = ScratchpadListWidget()
+
+        self.detail_view = ScratchpadDetailView()
+
+        self.empty_state = EmptyState(
+
+            icon="📝",
+
+            title="No Scratchpads Yet",
+
+            subtitle=(
+                "Create a scratchpad\n"
+                "for your thoughts and ideas."
+            )
 
         )
 
-        QMessageBox.information(
+        self.empty_state.hide()
 
+        self.left_panel = QWidget()
+
+        self.left_layout = QVBoxLayout()
+
+        self.left_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        self.left_layout.addWidget(
+            self.empty_state
+        )
+
+        self.left_layout.addWidget(
+            self.list_widget
+        )
+
+        self.left_panel.setLayout(
+            self.left_layout
+        )
+
+        self.splitter.addWidget(
+            self.left_panel
+        )
+
+        self.splitter.addWidget(
+            self.detail_view
+        )
+
+        self.splitter.setStretchFactor(
+            0,
+            2,
+        )
+
+        self.splitter.setStretchFactor(
+            1,
+            3,
+        )
+
+        self.content_layout.addWidget(
+            self.splitter
+        )
+
+        new_shortcut = QShortcut(
+            QKeySequence("Ctrl+N"),
             self,
-
-            "Scratchpad",
-
-            "Scratchpad saved."
-
         )
 
-    # ==========================
-    # Refresh
-    # ==========================
+        new_shortcut.activated.connect(
+            self.create_entry
+        )
+
+
+    def connect_signals(self):
+
+        self.new_button.clicked.connect(
+            self.create_entry
+        )
+
+        self.list_widget.entry_selected.connect(
+            self.show_entry
+        )
+
+        self.detail_view.entry_saved.connect(
+            self.refresh
+        )
+
+        self.detail_view.entry_deleted.connect(
+            self.refresh
+        )
+
+        # Sprint berikutnya
+        # self.search.textChanged.connect(
+        #     self.filter_entries
+        # )
+
+        # Sprint berikutnya
+        # self.sort_filter.currentIndexChanged.connect(
+        #     self.sort_entries
+        # )
 
     def refresh(self):
 
-        self.load()
+        current_id = None
+
+        if self.selected_entry:
+
+            current_id = self.selected_entry.id
+
+        self.load_entries()
+
+        if current_id:
+
+            self.select_entry(current_id)
+
+    def load_entries(self):
+
+        entries = ScratchpadService.get_all_entries()
+
+        self.list_widget.set_entries(
+            entries
+        )
+
+        if entries and self.selected_entry is None:
+
+            self.list_widget.select_first()
+
+        else:
+
+            self.selected_entry = None
+
+            self.detail_view.clear()
+
+        self.update_empty_state()
+
+    def show_entry(
+        self,
+        entry,
+    ):
+
+        self.selected_entry = entry
+
+        self.detail_view.display_entry(
+            entry
+        )
+
+        self.detail_view.entry_saved.connect(
+            self.refresh
+        )
+
+    def create_entry(self):
+
+        entry = ScratchpadService.create_entry()
+
+        self.refresh()
+
+        self.select_entry(
+            entry.id
+        )
+
+        self.detail_view.title.setFocus()
+
+        self.detail_view.title.selectAll()
+
+    def select_entry(
+        self,
+        entry_id,
+    ):
+
+        for row in range(
+            self.list_widget.count()
+        ):
+
+            item = self.list_widget.item(
+                row
+            )
+
+            if item.entry.id == entry_id:
+
+                self.list_widget.setCurrentRow(
+                    row
+                )
+
+                break
+
+    def update_empty_state(self):
+
+        has_entries = self.list_widget.count() > 0
+
+        self.list_widget.setVisible(
+            has_entries
+        )
+
+        self.detail_view.setVisible(
+            has_entries
+        )
+
+        self.empty_state.setVisible(
+            not has_entries
+        )

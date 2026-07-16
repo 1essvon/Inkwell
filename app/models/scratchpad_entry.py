@@ -1,34 +1,58 @@
 from datetime import datetime
 
-from sqlalchemy import Integer
-from sqlalchemy import Text
-from sqlalchemy import DateTime
+from sqlalchemy import (
+    DateTime,
+    Integer,
+    String,
+    Text,
+)
 
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+)
 
 from app.database.base import Base
 
 
 class ScratchpadEntry(Base):
+
     __tablename__ = "scratchpad_entries"
+
+    # ======================
+    # Primary Key
+    # ======================
 
     id: Mapped[int] = mapped_column(
         Integer,
-        primary_key=True
+        primary_key=True,
+    )
+
+    # ======================
+    # Content
+    # ======================
+
+    title: Mapped[str] = mapped_column(
+        String(255),
+        default="Untitled",
     )
 
     content: Mapped[str] = mapped_column(
-        Text
+        Text,
+        default="",
     )
+
+    # ======================
+    # Timestamps
+    # ======================
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        onupdate=datetime.utcnow,
     )

@@ -146,3 +146,25 @@ QFrame#divider {
     color:#777;
 
 }
+
+#pageTitleEditor {
+
+    background: transparent;
+    border: none;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    padding: 0px;
+    margin: 0px;
+
+    color: white;
+
+}
+
+#pageTitleEditor:focus {
+
+    border: none;
+    background: transparent;
+
+}
