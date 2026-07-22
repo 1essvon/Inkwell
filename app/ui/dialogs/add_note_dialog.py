@@ -1,76 +1,145 @@
 from PySide6.QtWidgets import (
+    QComboBox,
     QDialog,
-    QVBoxLayout,
-    QLabel,
+    QFormLayout,
     QLineEdit,
+    QPushButton,
+    QSpinBox,
     QTextEdit,
-    QPushButton
+    QVBoxLayout,
 )
 
+from app.services.book_service import BookService
 from app.services.note_service import NoteService
 
 
 class AddNoteDialog(QDialog):
 
-    def __init__(
-        self,
-        book_id
-    ):
-        super().__init__()
+    def __init__(self, parent=None):
 
-        self.book_id = book_id
+        super().__init__(parent)
 
-        self.setWindowTitle("Add Note")
+        self.setWindowTitle(
+            "Add Note"
+        )
 
-        layout = QVBoxLayout()
+        self.resize(
+            500,
+            420,
+        )
 
-        layout.addWidget(
-            QLabel("Title")
+        self.setup_ui()
+
+        self.load_books()
+
+    # ======================================
+    # UI
+    # ======================================
+
+    def setup_ui(self):
+
+        layout = QVBoxLayout(self)
+
+        form = QFormLayout()
+
+        self.book_combo = QComboBox()
+
+        form.addRow(
+            "Book",
+            self.book_combo,
+        )
+
+        self.page_input = QSpinBox()
+
+        self.page_input.setMinimum(
+            1
+        )
+
+        self.page_input.setMaximum(
+            9999
+        )
+
+        form.addRow(
+            "Page",
+            self.page_input,
         )
 
         self.title_input = QLineEdit()
 
-        layout.addWidget(
-            QLabel("Content")
+        form.addRow(
+            "Title",
+            self.title_input,
         )
 
         self.content_input = QTextEdit()
 
-        layout.addWidget(
-            self.content_input
+        form.addRow(
+            "Content",
+            self.content_input,
         )
 
-        layout.addWidget(
-            self.title_input
+        layout.addLayout(
+            form
         )
 
-        save_button = QPushButton(
+        self.save_button = QPushButton(
             "Save"
         )
 
-        save_button.clicked.connect(
+        self.save_button.clicked.connect(
             self.save_note
         )
 
         layout.addWidget(
-            save_button
+            self.save_button
         )
 
-        self.setLayout(layout)
+    # ======================================
+    # Data
+    # ======================================
+
+    def load_books(self):
+
+        self.book_combo.clear()
+
+        books = BookService.get_all_books()
+
+        for book in books:
+
+            self.book_combo.addItem(
+
+                book.title,
+
+                book.id,
+
+            )
+
+    # ======================================
+    # Actions
+    # ======================================
 
     def save_note(self):
 
-        title = self.title_input.text().strip()
+        if self.book_combo.currentIndex() == -1:
 
-        content = self.content_input.toPlainText().strip()
-
-        if not title:
             return
 
+        title = self.title_input.text().strip()
+
+        if not title:
+
+            title = "Untitled"
+
         NoteService.create_note(
-            book_id=self.book_id,
+
+            book_id=self.book_combo.currentData(),
+
+            page=self.page_input.value(),
+
             title=title,
-            content=content
+
+            content=self.content_input.toPlainText().strip(),
+
         )
 
         self.accept()

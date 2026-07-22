@@ -1,36 +1,67 @@
 from PySide6.QtWidgets import (
+    QComboBox,
     QDialog,
-    QLabel,
-    QTextEdit,
+    QFormLayout,
+    QLineEdit,
     QPushButton,
     QSpinBox,
-    QVBoxLayout
+    QTextEdit,
+    QVBoxLayout,
 )
 
-from app.services.quote_service import (
-    QuoteService
-)
+from app.services.book_service import BookService
+from app.services.quote_service import QuoteService
 
 
 class AddQuoteDialog(QDialog):
 
-    def __init__(
-        self,
-        book_id
-    ):
+    def __init__(self, parent=None):
 
-        super().__init__()
-
-        self.book_id = book_id
+        super().__init__(parent)
 
         self.setWindowTitle(
             "Add Quote"
         )
 
-        layout = QVBoxLayout()
+        self.resize(
+            550,
+            500,
+        )
 
-        layout.addWidget(
-            QLabel("Quote")
+        self.setup_ui()
+
+        self.load_books()
+
+    # ======================================
+    # UI
+    # ======================================
+
+    def setup_ui(self):
+
+        layout = QVBoxLayout(self)
+
+        form = QFormLayout()
+
+        self.book_combo = QComboBox()
+
+        form.addRow(
+            "Book",
+            self.book_combo,
+        )
+
+        self.page_input = QSpinBox()
+
+        self.page_input.setMinimum(
+            1
+        )
+
+        self.page_input.setMaximum(
+            9999
+        )
+
+        form.addRow(
+            "Page",
+            self.page_input,
         )
 
         self.quote_input = QTextEdit()
@@ -39,20 +70,35 @@ class AddQuoteDialog(QDialog):
             "Enter quote..."
         )
 
-        layout.addWidget(
-            self.quote_input
+        form.addRow(
+            "Quote",
+            self.quote_input,
         )
 
-        layout.addWidget(
-            QLabel("Page")
+        self.note_input = QTextEdit()
+
+        self.note_input.setPlaceholderText(
+            "Personal reflection..."
         )
 
-        self.page_input = QSpinBox()
+        form.addRow(
+            "Reflection",
+            self.note_input,
+        )
 
-        self.page_input.setMinimum(1)
+        self.tags_input = QLineEdit()
 
-        layout.addWidget(
-            self.page_input
+        self.tags_input.setPlaceholderText(
+            "productivity, habits, mindset"
+        )
+
+        form.addRow(
+            "Tags",
+            self.tags_input,
+        )
+
+        layout.addLayout(
+            form
         )
 
         self.save_button = QPushButton(
@@ -67,29 +113,67 @@ class AddQuoteDialog(QDialog):
             self.save_button
         )
 
-        self.setLayout(
-            layout
-        )
+    # ======================================
+    # Data
+    # ======================================
+
+    def load_books(self):
+
+        self.book_combo.clear()
+
+        books = BookService.get_all_books()
+
+        for book in books:
+
+            self.book_combo.addItem(
+
+                book.title,
+
+                book.id,
+
+            )
+
+    # ======================================
+    # Actions
+    # ======================================
 
     def save_quote(self):
 
+        if self.book_combo.currentIndex() == -1:
+
+            return
+
         content = (
+
             self.quote_input
+
             .toPlainText()
+
             .strip()
+
         )
 
         if not content:
 
             return
 
-        QuoteService.create_quote(
+        quote = QuoteService.create_quote(
 
-            book_id=self.book_id,
+            book_id=self.book_combo.currentData(),
+
+            page=self.page_input.value(),
 
             content=content,
 
-            page=self.page_input.value()
+        )
+
+        QuoteService.update_quote(
+
+            quote_id=quote.id,
+
+            note=self.note_input.toPlainText().strip(),
+
+            tags=self.tags_input.text().strip(),
 
         )
 

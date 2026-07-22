@@ -106,9 +106,17 @@ class QuoteService:
 
     @staticmethod
     def create_quote(
+
         book_id: int,
+
+        page: int,
+
         content: str,
-        page: int
+
+        note: str = "",
+
+        tags: str = "",
+
     ):
 
         session = SessionLocal()
@@ -116,23 +124,27 @@ class QuoteService:
         try:
             quote = Quote(
 
-                book_id=book_id,
+            book_id=book_id,
 
-                content=content,
+            page=page,
 
-                page=page,
+            content=content,
 
-                note="",
+            note=note,
 
-                tags="",
+            tags=tags,
 
-            )
+        )
 
             session.add(
                 quote
             )
 
             session.commit()
+
+            session.refresh(
+                quote
+            )
 
             return quote
 
@@ -154,9 +166,9 @@ class QuoteService:
 
             book_id=book_id,
 
-            content=content,
+            page=page,
 
-            page=page
+            content=content,
 
         )
 

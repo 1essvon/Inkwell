@@ -80,25 +80,47 @@ class NoteService:
 
     @staticmethod
     def create_note(
+
         book_id: int,
+
+        page: int,
+
         title: str,
-        content: str = ""
+
+        content: str = "",
+
     ):
+
         session = SessionLocal()
 
         try:
-            note = Note(
-            book_id=book_id,
-            title=title,
-            content=content
-        )
 
-            session.add(note)
+            note = Note(
+
+                book_id=book_id,
+
+                page=page,
+
+                title=title,
+
+                content=content,
+
+            )
+
+            session.add(
+                note
+            )
+
             session.commit()
+
+            session.refresh(
+                note
+            )
 
             return note
 
         finally:
+
             session.close()
 
     @staticmethod
@@ -108,7 +130,7 @@ class NoteService:
 
         content: str,
 
-        current_page: int
+        current_page: int,
 
     ):
 
@@ -120,46 +142,85 @@ class NoteService:
 
             book_id=book_id,
 
+            page=current_page,
+
             title=title,
 
-            content=content
+            content=content,
 
         )
 
     @staticmethod
-    def get_note(note_id: int):
-
-        session = SessionLocal()
-
-        try:
-            return session.get(Note, note_id)
-        finally:
-            session.close()
-
-    @staticmethod
-    def update_note(
+    def get_note(
         note_id: int,
-        content: str
     ):
 
         session = SessionLocal()
 
         try:
-            note = session.get(
-                Note,
-                note_id
+
+            return (
+
+                session.query(Note)
+
+                .options(
+
+                    joinedload(
+                        Note.book
+                    )
+
+                )
+
+                .filter(
+                    Note.id == note_id
+                )
+
+                .first()
+
             )
 
-            if not note:
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def update_note(
+
+        note_id: int,
+
+        title: str,
+
+        content: str,
+
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            note = session.get(
+                Note,
+                note_id,
+            )
+
+            if note is None:
+
                 return None
+
+            note.title = title
 
             note.content = content
 
             session.commit()
 
+            session.refresh(
+                note
+            )
+
             return note
 
         finally:
+
             session.close()
         
     @staticmethod

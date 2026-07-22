@@ -328,6 +328,7 @@ NOTES = [
     dict(
         book="Atomic Habits",
         title="Identity Before Outcome",
+        page=27,
         content=(
             "Real change starts from identity. "
             "Instead of chasing goals, become the type of "
@@ -338,6 +339,7 @@ NOTES = [
     dict(
         book="Atomic Habits",
         title="Environment Beats Motivation",
+        page=61,
         content=(
             "Design the environment first. "
             "Good habits become easier when the cue "
@@ -348,6 +350,7 @@ NOTES = [
     dict(
         book="Atomic Habits",
         title="Small Improvements",
+        page=104,
         content=(
             "Improving one percent every day compounds "
             "into remarkable long-term results."
@@ -357,6 +360,7 @@ NOTES = [
     dict(
         book="Atomic Habits",
         title="Habit Tracking",
+        page=198,
         content=(
             "A visible habit tracker gives immediate "
             "feedback and encourages consistency."
@@ -366,6 +370,7 @@ NOTES = [
     dict(
         book="Atomic Habits",
         title="Never Miss Twice",
+        page=235,
         content=(
             "Missing one day is normal. "
             "Missing twice starts a new habit."
@@ -379,6 +384,7 @@ NOTES = [
     dict(
         book="Deep Work",
         title="Focus Is Valuable",
+        page=31,
         content=(
             "The ability to focus without distraction "
             "is becoming increasingly rare and valuable."
@@ -388,6 +394,7 @@ NOTES = [
     dict(
         book="Deep Work",
         title="Eliminate Distractions",
+        page=75,
         content=(
             "Notifications interrupt concentration far "
             "more than expected."
@@ -397,6 +404,7 @@ NOTES = [
     dict(
         book="Deep Work",
         title="Schedule Deep Work",
+        page=143,
         content=(
             "Treat deep work like a meeting on the calendar."
         ),
@@ -405,6 +413,7 @@ NOTES = [
     dict(
         book="Deep Work",
         title="Shutdown Ritual",
+        page=218,
         content=(
             "Ending the workday intentionally reduces "
             "mental fatigue."
@@ -418,6 +427,7 @@ NOTES = [
     dict(
         book="The Pragmatic Programmer",
         title="Broken Windows",
+        page=23,
         content=(
             "Fix small issues early before they become "
             "accepted as normal."
@@ -427,6 +437,7 @@ NOTES = [
     dict(
         book="The Pragmatic Programmer",
         title="DRY Principle",
+        page=45,
         content=(
             "Every piece of knowledge should have a "
             "single authoritative representation."
@@ -436,6 +447,7 @@ NOTES = [
     dict(
         book="The Pragmatic Programmer",
         title="Tracer Bullets",
+        page=67,
         content=(
             "Deliver something small that works before "
             "building everything."
@@ -449,6 +461,7 @@ NOTES = [
     dict(
         book="The Psychology of Money",
         title="Behavior Matters",
+        page=45,
         content=(
             "Financial success depends more on behavior "
             "than intelligence."
@@ -458,6 +471,7 @@ NOTES = [
     dict(
         book="The Psychology of Money",
         title="Compounding",
+        page=78,
         content=(
             "Long-term consistency beats short-term brilliance."
         ),
@@ -466,6 +480,7 @@ NOTES = [
     dict(
         book="The Psychology of Money",
         title="Enough",
+        page=112,
         content=(
             "Knowing when you have enough is one of the "
             "most valuable financial skills."
@@ -479,6 +494,7 @@ NOTES = [
     dict(
         book="Animal Farm",
         title="Power Changes Language",
+        page=12,
         content=(
             "The manipulation of language slowly changes "
             "how people perceive reality."
@@ -488,6 +504,7 @@ NOTES = [
     dict(
         book="Animal Farm",
         title="Equality",
+        page=34,
         content=(
             "Some are always tempted to rewrite the rules "
             "once they gain power."
@@ -501,6 +518,7 @@ NOTES = [
     dict(
         book="Almond",
         title="Emotional Growth",
+        page=56,
         content=(
             "The protagonist learns emotions through "
             "relationships rather than instinct."
@@ -523,24 +541,32 @@ QUOTES = [
         book="Atomic Habits",
         page=27,
         content="You do not rise to the level of your goals. You fall to the level of your systems.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Atomic Habits",
         page=61,
         content="Habits are the compound interest of self-improvement.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Atomic Habits",
         page=104,
         content="Every action you take is a vote for the type of person you wish to become.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Atomic Habits",
         page=198,
         content="Success is the product of daily habits, not once-in-a-lifetime transformations.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -551,18 +577,24 @@ QUOTES = [
         book="Deep Work",
         page=31,
         content="Clarity about what matters provides clarity about what does not.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Deep Work",
         page=143,
         content="Who you are, what you think, feel, and do is the sum of what you focus on.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Deep Work",
         page=218,
         content="A distracted mind is rarely a productive mind.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -573,18 +605,24 @@ QUOTES = [
         book="The Psychology of Money",
         page=45,
         content="Doing well with money has little to do with how smart you are.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="The Psychology of Money",
         page=78,
         content="The highest form of wealth is the ability to wake up every morning and say, I can do whatever I want today.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="The Psychology of Money",
         page=112,
         content="Enough is realizing that an insatiable appetite will push you to regret.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -595,18 +633,24 @@ QUOTES = [
         book="The Pragmatic Programmer",
         page=23,
         content="Care about your craft.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="The Pragmatic Programmer",
         page=45,
         content="Don't live with broken windows.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="The Pragmatic Programmer",
         page=67,
         content="Program close to the problem domain.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -617,12 +661,16 @@ QUOTES = [
         book="Animal Farm",
         page=12,
         content="All animals are equal, but some animals are more equal than others.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Animal Farm",
         page=34,
         content="The creatures outside looked from pig to man, and from man to pig.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -633,12 +681,16 @@ QUOTES = [
         book="Almond",
         page=56,
         content="Not every emotion can be explained with words.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="Almond",
         page=89,
         content="Sometimes understanding another person begins with listening.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -649,6 +701,8 @@ QUOTES = [
         book="Educated",
         page=102,
         content="An education is not so much about making a living as making a person.",
+        note="",
+        tags=""
     ),
 
     # ----------------------------------------------
@@ -659,12 +713,16 @@ QUOTES = [
         book="The Little Prince",
         page=45,
         content="It is only with the heart that one can see rightly.",
+        note="",
+        tags=""
     ),
 
     dict(
         book="The Little Prince",
         page=67,
         content="What is essential is invisible to the eye.",
+        note="",
+        tags=""
     ),
 
 ]
@@ -870,6 +928,8 @@ def seed_notes(
 
                 book_id=book.id,
 
+                page=data["page"],
+
                 title=data["title"],
 
                 content=data["content"],
@@ -926,9 +986,13 @@ def seed_quotes(
 
                 book_id=book.id,
 
+                page=data["page"],
+
                 content=data["content"],
 
-                page=data["page"],
+                note=data.get("note", ""),
+
+                tags=data.get("tags", ""),
 
             )
 
