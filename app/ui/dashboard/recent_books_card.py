@@ -1,40 +1,85 @@
 from PySide6.QtWidgets import (
     QFrame,
     QLabel,
+    QVBoxLayout,
+    QWidget,
 )
 
-from app.services.book_service import (
-    BookService,
-)
+from app.ui.components.base_card import BaseCard
+from app.ui.components.book_list_item import BookListItem
+from app.ui.components.empty_state import EmptyState
+from app.ui.components.section_header import SectionHeader
 
-from app.ui.components.base_card import (
-    BaseCard,
-)
 
 class RecentBooksCard(BaseCard):
 
     MAX_ITEMS = 5
 
     def __init__(self):
-
         super().__init__()
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data([])
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        self.title = QLabel(
+        #
+        # Header
+        #
+
+        self.header = SectionHeader(
             "Recent Books"
         )
 
-        self.title.setObjectName(
-            "cardTitle"
+        self.layout.addWidget(
+            self.header
+        )
+
+        #
+        # Empty State
+        #
+
+        self.empty = EmptyState(
+
+            icon="📚",
+
+            title="No recent books",
+
+            subtitle=(
+                "Books you add will\n"
+                "appear here."
+            ),
+
         )
 
         self.layout.addWidget(
-            self.title
+            self.empty
+        )
+
+        #
+        # Content
+        #
+
+        self.content = QWidget()
+
+        content_layout = QVBoxLayout(
+            self.content
+        )
+
+        content_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        content_layout.setSpacing(
+            10
         )
 
         self.items = []
@@ -43,24 +88,14 @@ class RecentBooksCard(BaseCard):
             self.MAX_ITEMS
         ):
 
-            title = QLabel()
+            item = BookListItem()
 
-            title.setObjectName(
-                "bookTitle"
+            content_layout.addWidget(
+                item
             )
 
-            author = QLabel()
-
-            author.setObjectName(
-                "secondaryText"
-            )
-
-            self.layout.addWidget(
-                title
-            )
-
-            self.layout.addWidget(
-                author
+            self.items.append(
+                item
             )
 
             if index < self.MAX_ITEMS - 1:
@@ -75,49 +110,64 @@ class RecentBooksCard(BaseCard):
                     "divider"
                 )
 
-                self.layout.addWidget(
+                content_layout.addWidget(
                     divider
                 )
 
-            self.items.append(
-                (
-                    title,
-                    author,
-                )
-            )
+        self.footer = QLabel()
+
+        self.footer.setObjectName(
+            "secondaryText"
+        )
+
+        content_layout.addWidget(
+            self.footer
+        )
+
+        self.layout.addWidget(
+            self.content
+        )
 
         self.layout.addStretch()
 
-    def refresh(self):
+    # ==================================================
+    # Public API
+    # ==================================================
 
-        books = BookService.get_recent_books()
+    def set_data(
+        self,
+        books,
+    ):
 
-        for title, author in self.items:
+        has_books = bool(
+            books
+        )
 
-            title.clear()
+        self.toggle_empty_state(
+            has_books
+        )
 
-            author.clear()
-
-        if not books:
-
-            self.items[0][0].setText(
-                "No books yet."
-            )
-
+        if not has_books:
             return
 
-        for (
-            title,
-            author,
-        ), book in zip(
+        for item in self.items:
+            item.hide()
+
+        for item, book in zip(
             self.items,
             books,
         ):
 
-            title.setText(
-                f"📖 {book.title}"
+            item.set_data(
+
+                title=book["title"],
+
+                subtitle=book["author"],
+
             )
 
-            author.setText(
-                book.author
-            )
+            item.show()
+
+        self.footer.setText(
+            f"{len(books)} recent books"
+        )    

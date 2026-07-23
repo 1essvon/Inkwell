@@ -1,141 +1,178 @@
 from PySide6.QtWidgets import (
     QLabel,
+    QFrame,
+    QWidget,
+    QVBoxLayout,
 )
 
-from app.services.statistics_service import (
-    StatisticsService,
-)
+from app.ui.components.base_card import BaseCard
+from app.ui.components.empty_state import EmptyState
+from app.ui.components.section_header import SectionHeader
 
-from app.ui.components.base_card import (
-    BaseCard,
-)
 
 class ReadingStreakCard(BaseCard):
 
     def __init__(self):
-
         super().__init__()
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data(None)
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        self.title = QLabel(
+        #
+        # Header
+        #
+
+        self.header = SectionHeader(
             "Reading Streak"
         )
 
-        self.title.setObjectName(
-            "cardTitle"
+        self.layout.addWidget(
+            self.header
+        )
+
+        #
+        # Empty State
+        #
+
+        self.empty = EmptyState(
+
+            icon="🔥",
+
+            title="No reading streak",
+
+            subtitle=(
+                "Read today to begin\n"
+                "your first streak."
+            ),
+
         )
 
         self.layout.addWidget(
-            self.title
+            self.empty
         )
 
-        self.current_title = QLabel(
-            "Current"
+        #
+        # Content
+        #
+
+        self.content = QWidget()
+
+        content_layout = QVBoxLayout(
+            self.content
         )
 
-        self.current_title.setObjectName(
+        content_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        content_layout.setSpacing(
+            12
+        )
+
+        def add_section(title):
+
+            title_label = QLabel(title)
+            title_label.setObjectName(
+                "secondaryText"
+            )
+
+            value_label = QLabel()
+            value_label.setObjectName(
+                "bookTitle"
+            )
+
+            content_layout.addWidget(
+                title_label
+            )
+
+            content_layout.addWidget(
+                value_label
+            )
+
+            divider = QFrame()
+
+            divider.setFrameShape(
+                QFrame.Shape.HLine
+            )
+
+            content_layout.addWidget(
+                divider
+            )
+
+            return value_label
+
+        self.current_value = add_section(
+            "🔥 Current"
+        )
+
+        self.best_value = add_section(
+            "🏆 Best"
+        )
+
+        self.last_value = add_section(
+            "📅 Last Reading"
+        )
+
+        self.status = QLabel()
+
+        self.status.setObjectName(
             "secondaryText"
         )
 
-        self.layout.addWidget(
-            self.current_title
+        self.status.setWordWrap(
+            True
         )
 
-        self.current_value = QLabel()
-
-        self.current_value.setObjectName(
-            "bookTitle"
-        )
-
-        self.layout.addWidget(
-            self.current_value
-        )
-
-        self.best_title = QLabel(
-            "Best"
-        )
-
-        self.best_title.setObjectName(
-            "secondaryText"
+        content_layout.addWidget(
+            self.status
         )
 
         self.layout.addWidget(
-            self.best_title
-        )
-
-        self.best_value = QLabel()
-
-        self.best_value.setObjectName(
-            "bookTitle"
-        )
-
-        self.layout.addWidget(
-            self.best_value
-        )
-
-        self.last_title = QLabel(
-            "Last Read"
-        )
-
-        self.last_title.setObjectName(
-            "secondaryText"
-        )
-
-        self.layout.addWidget(
-            self.last_title
-        )
-
-        self.last_value = QLabel()
-
-        self.last_value.setObjectName(
-            "bookTitle"
-        )
-
-        self.layout.addWidget(
-            self.last_value
+            self.content
         )
 
         self.layout.addStretch()
 
-    def refresh(self):
+    # ==================================================
+    # Public API
+    # ==================================================
 
-        stats = StatisticsService.get_statistics()
+    def set_data(
+        self,
+        data,
+    ):
 
-        current = stats[
-            "reading_streak"
-        ]
+        has_data = data is not None
 
-        best = stats[
-            "best_streak"
-        ]
+        self.toggle_empty_state(
+            has_data
+        )
 
-        last_read = stats[
-            "last_read"
-        ]
-
-        if last_read:
-
-            last_text = last_read.strftime(
-                "%d %b %Y"
-            )
-
-        else:
-
-            last_text = "Never"
+        if not has_data:
+            return
 
         self.current_value.setText(
-            f"{current} day(s)"
+            data["current"]
         )
 
         self.best_value.setText(
-            f"{best} day(s)"
+            data["best"]
         )
 
         self.last_value.setText(
-            last_text
+            data["last_read"]
+        )
+
+        self.status.setText(
+            data["status"]
         )

@@ -1,51 +1,84 @@
-from PySide6.QtCore import Signal
-
 from PySide6.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
     QLabel,
-    QPushButton,
+    QVBoxLayout,
+    QWidget,
 )
 
-from app.constants.book_status import (
-    BookStatus,
-)
-
-from app.services.book_service import (
-    BookService,
-)
-
-from app.ui.components.base_card import (
-    BaseCard,
-)
-
-from app.ui.components.progress_bar import (
-    ProgressBar,
-)
+from app.ui.components.base_card import BaseCard
+from app.ui.components.empty_state import EmptyState
+from app.ui.components.progress_bar import ProgressBar
+from app.ui.components.section_header import SectionHeader
 
 
 class ContinueReadingWidget(BaseCard):
 
-    continue_requested = Signal()
-
     def __init__(self):
-
         super().__init__()
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data(None)
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        self.title = QLabel(
+        #
+        # Header
+        #
+
+        self.header = SectionHeader(
             "Continue Reading"
         )
 
-        self.title.setObjectName(
-            "cardTitle"
+        self.layout.addWidget(
+            self.header
+        )
+
+        #
+        # Empty State
+        #
+
+        self.empty = EmptyState(
+
+            icon="📚",
+
+            title="No active book",
+
+            subtitle=(
+                "Start reading a book "
+                "to continue your journey."
+            ),
+
         )
 
         self.layout.addWidget(
-            self.title
+            self.empty
+        )
+
+        #
+        # Content
+        #
+
+        self.content = QWidget()
+
+        content_layout = QVBoxLayout(
+            self.content
+        )
+
+        content_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        content_layout.setSpacing(
+            8
         )
 
         self.book_title = QLabel()
@@ -54,7 +87,7 @@ class ContinueReadingWidget(BaseCard):
             "bookTitle"
         )
 
-        self.layout.addWidget(
+        content_layout.addWidget(
             self.book_title
         )
 
@@ -64,15 +97,17 @@ class ContinueReadingWidget(BaseCard):
             "secondaryText"
         )
 
-        self.layout.addWidget(
+        content_layout.addWidget(
             self.author
         )
 
         self.progress = ProgressBar()
 
-        self.layout.addWidget(
+        content_layout.addWidget(
             self.progress
         )
+
+        progress_info = QHBoxLayout()
 
         self.progress_text = QLabel()
 
@@ -80,108 +115,91 @@ class ContinueReadingWidget(BaseCard):
             "captionText"
         )
 
-        self.layout.addWidget(
+        progress_info.addWidget(
             self.progress_text
         )
 
-        self.button = QPushButton(
-            "Continue Reading"
+        content_layout.addLayout(
+            progress_info
         )
 
-        self.button.setObjectName(
-            "primaryButton"
+
+        divider = QFrame()
+
+        divider.setFrameShape(
+            QFrame.Shape.HLine
         )
 
-        self.button.clicked.connect(
-            self.continue_requested.emit
+        content_layout.addSpacing(
+            4
+        )
+
+        content_layout.addWidget(
+            divider
+        )
+
+        self.status = QLabel()
+
+        self.status.setObjectName(
+            "secondaryText"
+        )
+
+        self.status.setContentsMargins(
+            0,
+            4,
+            0,
+            0,
+        )
+
+        self.status.setWordWrap(
+            True
+        )
+
+        content_layout.addWidget(
+            self.status
         )
 
         self.layout.addWidget(
-            self.button
+            self.content
         )
 
         self.layout.addStretch()
 
-    def refresh(self):
+    # ==================================================
+    # Public API
+    # ==================================================
 
-        books = [
+    def set_data(
+        self,
+        data,
+    ):
 
-            book
+        has_book = data is not None
 
-            for book in BookService.get_all_books()
-
-            if book.status == BookStatus.READING
-
-        ]
-
-        if not books:
-
-            self.book_title.setText(
-                "No active book"
-            )
-
-            self.author.setText(
-                "Start reading from your library."
-            )
-
-            self.progress.set_progress(
-                current=0,
-                total=1,
-            )
-
-            self.progress_text.setText(
-                "0 / 0 pages"
-            )
-
-            self.button.setText(
-                "Browse Library"
-            )
-
-            self.button.setEnabled(
-                False
-            )
-
-            return
-
-        book = max(
-
-            books,
-
-            key=lambda item: item.current_page,
-
+        self.toggle_empty_state(
+            has_book
         )
 
+        if not has_book:
+            return
+
         self.book_title.setText(
-            book.title
+            data["title"]
         )
 
         self.author.setText(
-            book.author
-        )
-
-        current = max(
-            book.current_page or 0,
-            0,
-        )
-
-        total = max(
-            book.page_count or 0,
-            1,
+            data["author"]
         )
 
         self.progress.set_progress(
-            current=current,
-            total=total,
+            data["current_page"],
+            data["total_pages"],
         )
 
         self.progress_text.setText(
-            f"{current} / {total} pages"
+            data["progress_text"]
         )
 
-        self.button.setText(
-            "Continue Reading"
-        )
-
-        self.button.setEnabled(
-            True
+        self.status.setText(
+            data["status"]
         )

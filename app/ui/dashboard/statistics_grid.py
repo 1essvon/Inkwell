@@ -3,13 +3,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.services.statistics_service import (
-    StatisticsService,
-)
-
 from app.ui.components.metric_card import (
     MetricCard,
 )
+
 
 class StatisticsGrid(QWidget):
 
@@ -21,7 +18,20 @@ class StatisticsGrid(QWidget):
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data(
+            {
+                "books": 0,
+                "notes": 0,
+                "quotes": 0,
+                "sessions": 0,
+                "pages_read": 0,
+                "reading_minutes": 0,
+            }
+        )
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
@@ -42,7 +52,9 @@ class StatisticsGrid(QWidget):
             20,
         )
 
-        for column in range(self.COLUMNS):
+        for column in range(
+            self.COLUMNS
+        ):
 
             self.grid_layout.setColumnStretch(
                 column,
@@ -60,86 +72,117 @@ class StatisticsGrid(QWidget):
             self.grid_layout
         )
 
-    def refresh(self):
+        self.books_card = MetricCard(
+            title="Books",
+            value="0",
+            subtitle="In Library",
+        )
 
-        while self.grid_layout.count():
+        self.notes_card = MetricCard(
+            title="Notes",
+            value="0",
+            subtitle="Saved",
+        )
 
-            item = self.grid_layout.takeAt(0)
+        self.quotes_card = MetricCard(
+            title="Quotes",
+            value="0",
+            subtitle="Collected",
+        )
 
-            if item.widget():
+        self.sessions_card = MetricCard(
+            title="Sessions",
+            value="0",
+            subtitle="Completed",
+        )
 
-                item.widget().deleteLater()
+        self.pages_card = MetricCard(
+            title="Pages",
+            value="0",
+            subtitle="Read",
+        )
 
-        stats = StatisticsService.get_statistics()
+        self.minutes_card = MetricCard(
+            title="Minutes",
+            value="0",
+            subtitle="Reading Time",
+        )
 
-        metrics = [
+        cards = [
 
-            (
-                "Books",
-                stats["books"],
-                "In Library",
-            ),
+            self.books_card,
 
-            (
-                "Notes",
-                stats["notes"],
-                "Saved",
-            ),
+            self.notes_card,
 
-            (
-                "Quotes",
-                stats["quotes"],
-                "Collected",
-            ),
+            self.quotes_card,
 
-            (
-                "Sessions",
-                stats["reading_sessions"],
-                "Completed",
-            ),
+            self.sessions_card,
 
-            (
-                "Pages",
-                stats["pages_read"],
-                "Read",
-            ),
+            self.pages_card,
 
-            (
-                "Minutes",
-                stats["reading_minutes"],
-                "Reading Time",
-            ),
+            self.minutes_card,
 
         ]
 
-        for index, (
-
-            title,
-
-            value,
-
-            subtitle,
-
-        ) in enumerate(metrics):
+        for index, card in enumerate(cards):
 
             row = index // self.COLUMNS
 
             column = index % self.COLUMNS
 
             self.grid_layout.addWidget(
-
-                MetricCard(
-
-                    title=title,
-
-                    value=str(value),
-
-                    subtitle=subtitle,
-
-                ),
-
+                card,
                 row,
-
                 column,
-
             )
+
+    # ==================================================
+    # Public API
+    # ==================================================
+
+    def set_data(
+        self,
+        summary: dict,
+    ):
+
+        self.books_card.set_value(
+            summary.get(
+                "books",
+                0,
+            )
+        )
+
+        self.notes_card.set_value(
+            summary.get(
+                "notes",
+                0,
+            )
+        )
+
+        self.quotes_card.set_value(
+            summary.get(
+                "quotes",
+                0,
+            )
+        )
+
+        self.sessions_card.set_value(
+            summary.get(
+                "sessions",
+                0,
+            )
+        )
+
+        self.pages_card.set_value(
+            summary.get(
+                "pages_read",
+                0,
+            )
+        )
+
+        self.minutes_card.set_value(
+            summary.get(
+                "reading_minutes",
+                0,
+            )
+        )

@@ -1,31 +1,16 @@
 from PySide6.QtWidgets import (
-    QWidget,
+    QLabel,
     QVBoxLayout,
-    QLabel
+    QWidget,
 )
 
-from app.services.book_service import (
-    BookService,
-)
-
-from app.services.settings_service import (
-    SettingsService,
-)
-
-from app.constants.book_status import (
-    BookStatus,
-)
-
-from app.ui.components.base_card import (
-    BaseCard,
-)
-
-from app.ui.components.progress_bar import (
-    ProgressBar,
-)
+from app.ui.components.base_card import BaseCard
+from app.ui.components.empty_state import EmptyState
+from app.ui.components.progress_bar import ProgressBar
+from app.ui.components.section_header import SectionHeader
 
 
-class ReadingGoalCard(QWidget):
+class ReadingGoalCard(BaseCard):
 
     def __init__(self):
 
@@ -33,36 +18,81 @@ class ReadingGoalCard(QWidget):
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data(None)
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        root = QVBoxLayout(self)
+        #
+        # Header
+        #
 
-        root.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
-
-        self.card = BaseCard()
-
-        root.addWidget(
-            self.card
-        )
-
-        self.title = QLabel(
+        self.header = SectionHeader(
             "Reading Goal"
         )
 
-        self.title.setObjectName(
-            "cardTitle"
+        self.layout.addWidget(
+            self.header
         )
 
-        self.card.layout.addWidget(
-            self.title
+        #
+        # Empty State
+        #
+
+        self.empty = EmptyState(
+
+            icon="🎯",
+
+            title="No reading goal",
+
+            subtitle=(
+                "Set a yearly reading goal "
+                "to track your progress."
+            ),
+
         )
+
+        self.layout.addWidget(
+            self.empty
+        )
+
+        #
+        # Content
+        #
+
+        self.content = QWidget()
+
+        content_layout = QVBoxLayout(
+            self.content
+        )
+
+        content_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        content_layout.setSpacing(
+            8
+        )
+
+        #
+        # Progress
+        #
+
+        self.progress = ProgressBar()
+
+        content_layout.addWidget(
+            self.progress
+        )
+
+        #
+        # Progress Text
+        #
 
         self.progress_text = QLabel()
 
@@ -70,63 +100,68 @@ class ReadingGoalCard(QWidget):
             "secondaryText"
         )
 
-        self.card.layout.addWidget(
+        content_layout.addWidget(
             self.progress_text
         )
 
-        self.progress = ProgressBar()
+        #
+        # Status
+        #
 
-        self.card.layout.addWidget(
-            self.progress
+        self.status = QLabel()
+
+        self.status.setObjectName(
+            "captionText"
         )
 
-    def refresh(self):
-
-        settings = SettingsService.get()
-
-        goal = settings.reading_goal_books
-
-        summary = BookService.get_status_summary()
-
-        completed = summary[
-            BookStatus.COMPLETED
-        ]
-
-        remaining = max(
-            goal - completed,
-            0,
+        self.status.setWordWrap(
+            True
         )
 
-        if goal <= 0:
+        content_layout.addWidget(
+            self.status
+        )
 
-            self.progress_text.setText(
-                "No reading goal configured"
-            )
+        self.layout.addWidget(
+            self.content
+        )
 
-            self.progress.set_value(
-                0
-            )
+        self.layout.addStretch()
 
+    # ==================================================
+    # Public API
+    # ==================================================
+
+    def set_data(
+        self,
+        data,
+    ):
+
+        has_goal = (
+            data is not None
+            and data["goal"] > 0
+        )
+
+        self.toggle_empty_state(
+            has_goal
+        )
+
+        if not has_goal:
             return
 
-        if completed >= goal:
+        completed = data["completed"]
 
-            status = "🎉 Goal achieved!"
-
-        else:
-
-            status = (
-                f"{remaining} books remaining"
-            )
-
-        self.progress_text.setText(
-
-            f"{completed} / {goal} books\n"
-            f"{status}"
-
-        )
+        goal = data["goal"]
 
         self.progress.set_progress(
-            current=completed,
-            total=goal,
+            completed,
+            goal,
+        )
+
+        self.progress_text.setText(
+            f"{completed} of {goal} books"
+        )
+
+        self.status.setText(
+            data["status"]
         )

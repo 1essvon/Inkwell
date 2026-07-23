@@ -1,25 +1,15 @@
-from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QLabel
 
-from PySide6.QtWidgets import (
-    QLabel,
-)
+from app.ui.components.base_card import BaseCard
 
-from app.ui.components.base_card import (
-    BaseCard,
-)
 
 class MetricCard(BaseCard):
 
     def __init__(
-
         self,
-
         title: str,
-
-        value: str,
-
+        value: str = "0",
         subtitle: str = "",
-
     ):
 
         super().__init__()
@@ -27,14 +17,14 @@ class MetricCard(BaseCard):
         self.setup_ui()
 
         self.set_data(
-
-            title,
-
-            value,
-
-            subtitle,
-
+            title=title,
+            value=value,
+            subtitle=subtitle,
         )
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
@@ -74,62 +64,44 @@ class MetricCard(BaseCard):
 
         self.layout.addStretch()
 
+    # ==================================================
+    # Public API
+    # ==================================================
+
     def set_data(
-
         self,
-
-        title,
-
+        title: str,
         value,
+        subtitle: str = "",
+    ):
 
-        subtitle="",
+        self.set_title(title)
+        self.set_value(value)
+        self.set_subtitle(subtitle)
 
+    def set_title(
+        self,
+        title: str,
     ):
 
         self.title_label.setText(
             title
         )
 
-        self.value_label.setText(
-            value
-        )
-
-        self.subtitle_label.setText(
-            subtitle
-        )
-
-    def update_value(
-
+    def set_value(
         self,
-
         value,
-
     ):
 
         self.value_label.setText(
             str(value)
         )
 
-    def update_subtitle(
-
+    def set_subtitle(
         self,
-
-        subtitle,
-
+        subtitle: str,
     ):
 
         self.subtitle_label.setText(
             subtitle
-        )
-
-    def update_title(
-
-        self,
-
-        title,
-
-    ):
-
-        self.title_label.setText(
-            title
         )

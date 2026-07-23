@@ -1,19 +1,12 @@
 from PySide6.QtWidgets import (
-    QGridLayout,
-    QLabel,
+    QVBoxLayout,
+    QWidget,
 )
 
-from app.constants.book_status import (
-    BookStatus,
-)
+from app.ui.components.base_card import BaseCard
+from app.ui.components.section_header import SectionHeader
+from app.ui.components.status_row import StatusRow
 
-from app.services.book_service import (
-    BookService,
-)
-
-from app.ui.components.base_card import (
-    BaseCard,
-)
 
 class LibrarySummaryCard(BaseCard):
 
@@ -23,51 +16,89 @@ class LibrarySummaryCard(BaseCard):
 
         self.setup_ui()
 
-        self.refresh()
+        self.set_data(
+            {
+                "reading": 0,
+                "want_to_read": 0,
+                "completed": 0,
+                "paused": 0,
+                "dropped": 0,
+            }
+        )
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        self.title = QLabel(
+        #
+        # Header
+        #
+
+        self.header = SectionHeader(
             "Library Summary"
         )
 
-        self.title.setObjectName(
-            "cardTitle"
-        )
-
         self.layout.addWidget(
-            self.title
+            self.header
         )
 
-        self.grid = QGridLayout()
+        #
+        # Content
+        #
 
-        self.grid.setHorizontalSpacing(
-            20
+        self.content = QWidget()
+
+        content_layout = QVBoxLayout(
+            self.content
         )
 
-        self.grid.setVerticalSpacing(
-            12
+        content_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
         )
 
-        self.layout.addLayout(
-            self.grid
+        content_layout.setSpacing(
+            8
         )
 
-        self.reading = QLabel()
+        #
+        # Status Rows
+        #
 
-        self.want = QLabel()
+        self.reading = StatusRow(
+            "📖",
+            "Reading",
+        )
 
-        self.completed = QLabel()
+        self.want_to_read = StatusRow(
+            "📚",
+            "Want To Read",
+        )
 
-        self.paused = QLabel()
+        self.completed = StatusRow(
+            "✅",
+            "Completed",
+        )
 
-        self.dropped = QLabel()
+        self.paused = StatusRow(
+            "⏸",
+            "Paused",
+        )
 
-        labels = [
+        self.dropped = StatusRow(
+            "❌",
+            "Dropped",
+        )
+
+        rows = [
 
             self.reading,
 
-            self.want,
+            self.want_to_read,
 
             self.completed,
 
@@ -77,64 +108,43 @@ class LibrarySummaryCard(BaseCard):
 
         ]
 
-        for label in labels:
+        for row in rows:
 
-            label.setObjectName(
-                "summaryItem"
+            content_layout.addWidget(
+                row
             )
 
-        self.grid.addWidget(
-            self.reading,
-            0,
-            0,
-        )
-
-        self.grid.addWidget(
-            self.want,
-            1,
-            0,
-        )
-
-        self.grid.addWidget(
-            self.completed,
-            2,
-            0,
-        )
-
-        self.grid.addWidget(
-            self.paused,
-            3,
-            0,
-        )
-
-        self.grid.addWidget(
-            self.dropped,
-            4,
-            0,
+        self.layout.addWidget(
+            self.content
         )
 
         self.layout.addStretch()
 
-    def refresh(self):
+    # ==================================================
+    # Public API
+    # ==================================================
 
-        summary = BookService.get_status_summary()
+    def set_data(
+        self,
+        data,
+    ):
 
-        self.reading.setText(
-            f"📖 Reading : {summary[BookStatus.READING]}"
+        self.reading.set_count(
+            data["reading"]
         )
 
-        self.want.setText(
-            f"📚 Want To Read : {summary[BookStatus.WANT_TO_READ]}"
+        self.want_to_read.set_count(
+            data["want_to_read"]
         )
 
-        self.completed.setText(
-            f"✅ Completed : {summary[BookStatus.COMPLETED]}"
+        self.completed.set_count(
+            data["completed"]
         )
 
-        self.paused.setText(
-            f"⏸ Paused : {summary[BookStatus.PAUSED]}"
+        self.paused.set_count(
+            data["paused"]
         )
 
-        self.dropped.setText(
-            f"❌ Dropped : {summary[BookStatus.DROPPED]}"
+        self.dropped.set_count(
+            data["dropped"]
         )

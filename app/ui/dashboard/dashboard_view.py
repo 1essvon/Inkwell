@@ -43,6 +43,10 @@ from app.ui.dashboard.statistics_grid import (
     StatisticsGrid,
 )
 
+from app.services.dashboard_service import (
+    DashboardService,
+)
+
 class DashboardView(QWidget):
 
     add_book_requested = Signal()
@@ -57,44 +61,17 @@ class DashboardView(QWidget):
 
         self.setup_ui()
 
+        self.connect_signals()
+
         self.refresh()
 
     def setup_ui(self):
 
-        root_layout = QVBoxLayout(self)
+        self._create_widgets()
 
-        root_layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
-
-        scroll = QScrollArea()
-
-        scroll.setWidgetResizable(
-            True
-        )
-
-        content = QWidget()
-
-        layout = QVBoxLayout()
-
-        layout.setSpacing(
-            20
-        )
-
-        content.setLayout(
-            layout
-        )
-
-        scroll.setWidget(
-            content
-        )
-
-        root_layout.addWidget(
-            scroll
-        )
+        self._create_layout()
+    
+    def _create_widgets(self):
 
         self.header = PageHeader(
             "Dashboard"
@@ -116,6 +93,8 @@ class DashboardView(QWidget):
 
         self.recent_books = RecentBooksCard()
 
+    def connect_signals(self):
+
         self.quick_actions.add_book_requested.connect(
             self.add_book_requested.emit
         )
@@ -128,93 +107,152 @@ class DashboardView(QWidget):
             self.new_note_requested.emit
         )
 
-        # ======================
-        # Hero Row
-        # ======================
+    def _create_layout(self):
 
-        hero_row = QHBoxLayout()
+        self.root_layout = QVBoxLayout(
+            self
+        )
 
-        hero_row.setSpacing(
+        self.root_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        self.scroll = QScrollArea()
+
+        self.scroll.setWidgetResizable(
+            True
+        )
+
+        self.content = QWidget()
+
+        self.layout = QVBoxLayout(
+            self.content
+        )
+
+        self.layout.setSpacing(
+            20
+        )
+
+        self.scroll.setWidget(
+            self.content
+        )
+
+        self.root_layout.addWidget(
+            self.scroll
+        )
+
+        self.layout.addWidget(
+            self.header
+        )
+
+        self.layout.addWidget(
+            self.greeting
+        )
+
+        self.layout.addWidget(
+            self.quick_actions
+        )
+
+        self.layout.addLayout(
+            self._create_hero_row()
+        )
+
+        self.layout.addLayout(
+            self._create_info_row()
+        )
+
+        self.layout.addWidget(
+            self.recent_books
+        )
+
+        self.layout.addStretch()
+
+    def _create_hero_row(self):
+
+        layout = QHBoxLayout()
+
+        layout.setSpacing(
             16
         )
 
-        hero_row.addWidget(
+        layout.addWidget(
             self.continue_reading,
             2,
         )
 
-        hero_row.addWidget(
+        layout.addWidget(
             self.reading_goal,
             1,
         )
 
-        hero_row.addWidget(
+        layout.addWidget(
             self.reading_streak,
             1,
         )
 
-        # ======================
-        # Info Row
-        # ======================
+        return layout
+    
+    def _create_info_row(self):
 
-        info_row = QHBoxLayout()
+        layout = QHBoxLayout()
 
-        info_row.setSpacing(
+        layout.setSpacing(
             16
         )
 
-        info_row.addWidget(
+        layout.addWidget(
             self.statistics,
             3,
         )
 
-        info_row.addWidget(
+        layout.addWidget(
             self.library_summary,
             2,
         )
 
-        # ======================
-        # Main Layout
-        # ======================
-
-        layout.addWidget(
-            self.header
-        )
-
-        layout.addWidget(
-            self.greeting
-        )
-
-        layout.addWidget(
-            self.quick_actions
-        )
-
-        layout.addLayout(
-            hero_row
-        )
-
-        layout.addLayout(
-            info_row
-        )
-
-        layout.addWidget(
-            self.recent_books
-        )
-
-        layout.addStretch()
+        return layout
 
     def refresh(self):
 
+        dashboard = DashboardService.get_dashboard_data()
+
+        summary = dashboard["summary"]
+
+        continue_reading = dashboard["continue_reading"]
+
+        reading_goal = dashboard["reading_goal"]
+
+        reading_streak = dashboard["reading_streak"]
+
+        library_summary = dashboard["library_summary"]
+
+        recent_books = dashboard["recent_books"]
+
         self.greeting.refresh()
 
-        self.continue_reading.refresh()
+        self.statistics.set_data(
+            summary
+        )
 
-        self.reading_goal.refresh()
+        self.continue_reading.set_data(
+            continue_reading
+        )
 
-        self.reading_streak.refresh()
+        self.reading_goal.set_data(
+            reading_goal
+        )
 
-        self.statistics.refresh()
+        self.reading_streak.set_data(
+            reading_streak
+        )
 
-        self.library_summary.refresh()
+        self.library_summary.set_data(
+            library_summary
+        )
 
-        self.recent_books.refresh()
+        self.recent_books.set_data(
+            recent_books
+        )
