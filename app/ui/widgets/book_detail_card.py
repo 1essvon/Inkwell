@@ -1,8 +1,13 @@
-from PySide6.QtWidgets import QWidget
-from PySide6.QtWidgets import QLabel
-from PySide6.QtWidgets import QVBoxLayout
+from PySide6.QtWidgets import (
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 
 from app.models.book import Book
+
+from app.ui.components.status_badge import StatusBadge
+from app.ui.components.book_progress import BookProgress
 
 
 class BookDetailCard(QWidget):
@@ -10,78 +15,143 @@ class BookDetailCard(QWidget):
     def __init__(self):
         super().__init__()
 
-        layout = QVBoxLayout()
+        self.setup_ui()
 
-        self.title_label = QLabel("No Book Selected")
-        self.author_label = QLabel("")
-        self.status_label = QLabel("")
-        self.page_label = QLabel("")
-        self.isbn_label = QLabel("")
-        self.publisher_label = QLabel("")
-        self.genre_label = QLabel("")
-        self.rating_label = QLabel("")
+        self.clear()
 
-        self.title_label.setObjectName(
+    # ==================================================
+    # UI
+    # ==================================================
+
+    def setup_ui(self):
+
+        layout = QVBoxLayout(self)
+
+        layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        layout.setSpacing(8)
+
+        # ----------------------------------
+        # Title
+        # ----------------------------------
+
+        self.title = QLabel()
+        self.title.setObjectName(
             "bookTitle"
         )
 
-        layout.addWidget(self.title_label)
-        layout.addWidget(self.author_label)
+        self.author = QLabel()
+        self.author.setObjectName(
+            "secondaryText"
+        )
 
-        layout.addSpacing(10)
+        # ----------------------------------
+        # Status
+        # ----------------------------------
 
-        layout.addWidget(self.isbn_label)
-        layout.addWidget(self.publisher_label)
-        layout.addWidget(self.genre_label)
+        self.status = StatusBadge()
 
-        layout.addWidget(self.status_label)
-        layout.addWidget(self.page_label)
+        # ----------------------------------
+        # Progress
+        # ----------------------------------
 
-        layout.addWidget(self.rating_label)
+        self.progress = BookProgress()
 
-        self.setLayout(layout)
+        # ----------------------------------
+        # Metadata
+        # ----------------------------------
 
-    def set_book(self, book: Book):
+        self.isbn = QLabel()
 
-        self.title_label.setText(book.title)
+        self.publisher = QLabel()
 
-        self.author_label.setText(book.author)
+        self.genre = QLabel()
 
-        self.isbn_label.setText(
+        self.rating = QLabel()
+
+        # ----------------------------------
+        # Layout
+        # ----------------------------------
+
+        layout.addWidget(self.title)
+        layout.addWidget(self.author)
+
+        layout.addSpacing(8)
+
+        layout.addWidget(self.status)
+
+        layout.addWidget(self.progress)
+
+        layout.addSpacing(8)
+
+        layout.addWidget(self.isbn)
+        layout.addWidget(self.publisher)
+        layout.addWidget(self.genre)
+        layout.addWidget(self.rating)
+
+    # ==================================================
+    # Public API
+    # ==================================================
+
+    def set_book(
+        self,
+        book: Book,
+    ):
+
+        self.title.setText(
+            book.title
+        )
+
+        self.author.setText(
+            book.author
+        )
+
+        self.status.set_status(
+            book.status
+        )
+
+        self.progress.set_progress(
+            book.current_page,
+            book.page_count,
+        )
+
+        self.isbn.setText(
             f"ISBN: {book.isbn or '-'}"
         )
 
-        self.publisher_label.setText(
+        self.publisher.setText(
             f"Publisher: {book.publisher or '-'}"
         )
 
-        self.genre_label.setText(
+        self.genre.setText(
             f"Genre: {book.genre or '-'}"
         )
 
-        self.status_label.setText(
-            f"Status: {book.status}"
-        )
-
-        self.page_label.setText(
-            f"Current Page: {book.current_page}"
-        )
-
-        self.rating_label.setText(
+        self.rating.setText(
             f"Rating: {book.rating or '-'}"
         )
 
     def clear(self):
 
-        self.title_label.setText(
+        self.title.setText(
             "No Book Selected"
         )
 
-        self.author_label.setText("")
-        self.status_label.setText("")
-        self.page_label.setText("")
+        self.author.clear()
 
-        self.isbn_label.setText("")
-        self.publisher_label.setText("")
-        self.genre_label.setText("")
-        self.rating_label.setText("")
+        self.status.clear()
+
+        self.progress.clear()
+
+        self.isbn.clear()
+
+        self.publisher.clear()
+
+        self.genre.clear()
+
+        self.rating.clear()

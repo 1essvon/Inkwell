@@ -1,212 +1,109 @@
 from PySide6.QtWidgets import (
     QLabel,
-    QProgressBar,
-    QHBoxLayout
+    QHBoxLayout,
 )
 
-from app.constants.book_status import BookStatus
 from app.models.book import Book
+
 from app.ui.components.base_card import BaseCard
+from app.ui.components.status_badge import StatusBadge
+from app.ui.components.book_progress import BookProgress
+
 
 class BookCard(BaseCard):
-
-    STATUS_OBJECT_NAMES = {
-
-        BookStatus.READING:
-            "badgeReading",
-
-        BookStatus.COMPLETED:
-            "badgeFinished",
-
-        BookStatus.WANT_TO_READ:
-            "badgeWaiting",
-
-        BookStatus.PAUSED:
-            "badgePaused",
-
-        BookStatus.DROPPED:
-            "badgeDanger",
-
-    }
 
     def __init__(
         self,
         book: Book,
     ):
-
         super().__init__()
 
         self.book = book
 
         self.setup_ui()
 
-        self.populate_data()
+        self.set_book(book)
+
+    # ==================================================
+    # UI
+    # ==================================================
 
     def setup_ui(self):
 
-        # ======================
+        self.layout.setSpacing(8)
+
+        # --------------------------
         # Title
-        # ======================
+        # --------------------------
 
         self.title = QLabel()
+        self.title.setObjectName("bookTitle")
 
-        self.title.setObjectName(
-            "bookTitle"
-        )
-
-        # ======================
+        # --------------------------
         # Author
-        # ======================
+        # --------------------------
 
         self.author = QLabel()
+        self.author.setObjectName("secondaryText")
 
-        self.author.setObjectName(
-            "secondaryText"
-        )
-
-        # ======================
+        # --------------------------
         # Status
-        # ======================
+        # --------------------------
 
-        self.status = QLabel()
-
-        self.status.adjustSize()
-
-        self.status.setMinimumWidth(90)
-
-        # ======================
-        # Progress
-        # ======================
-
-        self.progress = QProgressBar()
-
-        self.progress.setTextVisible(
-            False
-        )
-
-        self.progress_text = QLabel()
-
-        self.progress_text.setObjectName(
-            "captionText"
-        )
-
-        # ======================
-        # Layout
-        # ======================
-
-        self.layout.setSpacing(
-            10
-        )
-
-        self.layout.addWidget(
-            self.title
-        )
-
-        self.layout.addWidget(
-            self.author
-        )
+        self.status = StatusBadge()
 
         self.status_layout = QHBoxLayout()
+        self.status_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.status_layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
-
-        self.status_layout.addWidget(
-            self.status
-        )
-
+        self.status_layout.addWidget(self.status)
         self.status_layout.addStretch()
 
-        self.layout.addLayout(
-            self.status_layout
+        # --------------------------
+        # Progress
+        # --------------------------
+
+        self.progress = BookProgress()
+
+        # --------------------------
+        # Layout
+        # --------------------------
+
+        self.layout.addWidget(self.title)
+        self.layout.addWidget(self.author)
+        self.layout.addLayout(self.status_layout)
+        self.layout.addWidget(self.progress)
+        self.layout.addStretch()
+
+        self.adjustSize()
+
+        self.setMinimumHeight(
+            self.sizeHint().height()
         )
 
-        self.layout.addWidget(
-            self.progress
-        )
+    # ==================================================
+    # Public API
+    # ==================================================
 
-        self.layout.addWidget(
-            self.progress_text
-        )
+    def set_book(
+        self,
+        book: Book,
+    ):
 
-    def populate_data(self):
-
-        # ======================
-        # Title
-        # ======================
+        self.book = book
 
         self.title.setText(
-            self.book.title
+            book.title
         )
-
-        # ======================
-        # Author
-        # ======================
 
         self.author.setText(
-            self.book.author
+            book.author
         )
 
-        # ======================
-        # Progress
-        # ======================
-
-        current = self.book.current_page or 0
-
-        total = self.book.page_count or 0
-
-        percent = self.calculate_progress(
-            current,
-            total,
+        self.status.set_status(
+            book.status
         )
 
-        self.progress.setValue(
-            percent
-        )
-
-        self.progress_text.setText(
-            f"{current} / {total} pages"
-        )
-
-        # ======================
-        # Status
-        # ======================
-
-        status = self.book.status
-
-        self.status.setText(
-            status
-        )
-
-    def calculate_progress(
-        self,
-        current,
-        total,
-    ):
-
-        if total <= 0:
-
-            return 0
-
-        return int(
-
-            current / total * 100
-
-        )
-    
-    def get_status_object_name(
-        self,
-        status,
-    ):
-
-        return self.STATUS_OBJECT_NAMES.get(
-
-            status,
-
-            "badgeDefault",
-
+        self.progress.set_progress(
+            book.current_page,
+            book.page_count,
         )
