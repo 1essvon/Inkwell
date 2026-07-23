@@ -32,7 +32,7 @@ class BookProgress(QWidget):
 
         self.progress_bar.setTextVisible(False)
 
-        self.progress_bar.setFixedHeight(8)
+        self.progress_bar.setFixedHeight(6)
 
         self.progress_text = QLabel()
 
@@ -49,7 +49,7 @@ class BookProgress(QWidget):
             0,
         )
 
-        layout.setSpacing(6)
+        layout.setSpacing(8)
 
         layout.addWidget(
             self.progress_bar

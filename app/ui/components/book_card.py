@@ -30,54 +30,80 @@ class BookCard(BaseCard):
 
     def setup_ui(self):
 
-        self.layout.setSpacing(8)
+        self.layout.setContentsMargins(
+            20,
+            20,
+            20,
+            20,
+        )
 
-        # --------------------------
+        self.layout.setSpacing(12)
+
+        # ----------------------------------
         # Title
-        # --------------------------
+        # ----------------------------------
 
         self.title = QLabel()
-        self.title.setObjectName("bookTitle")
 
-        # --------------------------
+        self.title.setObjectName(
+            "bookTitle"
+        )
+
+        # ----------------------------------
         # Author
-        # --------------------------
+        # ----------------------------------
 
         self.author = QLabel()
-        self.author.setObjectName("secondaryText")
 
-        # --------------------------
+        self.author.setObjectName(
+            "secondaryText"
+        )
+
+        # ----------------------------------
         # Status
-        # --------------------------
+        # ----------------------------------
 
         self.status = StatusBadge()
 
-        self.status_layout = QHBoxLayout()
-        self.status_layout.setContentsMargins(0, 0, 0, 0)
+        status_layout = QHBoxLayout()
 
-        self.status_layout.addWidget(self.status)
-        self.status_layout.addStretch()
+        status_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
 
-        # --------------------------
+        status_layout.addWidget(
+            self.status
+        )
+
+        status_layout.addStretch()
+
+        # ----------------------------------
         # Progress
-        # --------------------------
+        # ----------------------------------
 
         self.progress = BookProgress()
 
-        # --------------------------
+        # ----------------------------------
         # Layout
-        # --------------------------
+        # ----------------------------------
 
-        self.layout.addWidget(self.title)
-        self.layout.addWidget(self.author)
-        self.layout.addLayout(self.status_layout)
-        self.layout.addWidget(self.progress)
-        self.layout.addStretch()
+        self.layout.addWidget(
+            self.title
+        )
 
-        self.adjustSize()
+        self.layout.addWidget(
+            self.author
+        )
 
-        self.setMinimumHeight(
-            self.sizeHint().height()
+        self.layout.addLayout(
+            status_layout
+        )
+
+        self.layout.addWidget(
+            self.progress
         )
 
     # ==================================================

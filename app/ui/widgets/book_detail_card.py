@@ -1,13 +1,17 @@
 from PySide6.QtWidgets import (
-    QLabel,
-    QVBoxLayout,
     QWidget,
+    QLabel,
+    QHBoxLayout,
+    QVBoxLayout,
+    QGridLayout,
+    QFrame,
 )
 
 from app.models.book import Book
 
-from app.ui.components.status_badge import StatusBadge
+from app.ui.components.book_cover import BookCover
 from app.ui.components.book_progress import BookProgress
+from app.ui.components.status_badge import StatusBadge
 
 
 class BookDetailCard(QWidget):
@@ -25,46 +29,152 @@ class BookDetailCard(QWidget):
 
     def setup_ui(self):
 
-        layout = QVBoxLayout(self)
+        root = QVBoxLayout(self)
 
-        layout.setContentsMargins(
+        root.setContentsMargins(
             0,
             0,
             0,
             0,
         )
 
-        layout.setSpacing(8)
+        root.setSpacing(20)
 
-        # ----------------------------------
-        # Title
-        # ----------------------------------
+        # -------------------------------------------------
+        # Header
+        # -------------------------------------------------
+
+        header = QHBoxLayout()
+
+        header.setSpacing(20)
+
+        self.cover = BookCover(
+            size="large"
+        )
+
+        info_layout = QVBoxLayout()
+
+        info_layout.setSpacing(8)
 
         self.title = QLabel()
+
         self.title.setObjectName(
             "bookTitle"
         )
 
         self.author = QLabel()
+
         self.author.setObjectName(
             "secondaryText"
         )
 
-        # ----------------------------------
-        # Status
-        # ----------------------------------
-
         self.status = StatusBadge()
 
-        # ----------------------------------
+        status_layout = QHBoxLayout()
+
+        status_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        status_layout.addWidget(
+            self.status
+        )
+
+        status_layout.addStretch()
+
+        info_layout.addStretch()
+
+        info_layout.addWidget(
+            self.title
+        )
+
+        info_layout.addWidget(
+            self.author
+        )
+
+        info_layout.addLayout(
+            status_layout
+        )
+
+        info_layout.addStretch()
+
+        header.addWidget(
+            self.cover
+        )
+
+        header.addLayout(
+            info_layout,
+            1,
+        )
+
+        # -------------------------------------------------
         # Progress
-        # ----------------------------------
+        # -------------------------------------------------
 
         self.progress = BookProgress()
 
-        # ----------------------------------
+        # -------------------------------------------------
+        # Divider
+        # -------------------------------------------------
+
+        divider = QFrame()
+
+        divider.setFrameShape(
+            QFrame.Shape.HLine
+        )
+
+        divider.setObjectName(
+            "divider"
+        )
+
+        # -------------------------------------------------
         # Metadata
-        # ----------------------------------
+        # -------------------------------------------------
+
+        metadata = QGridLayout()
+
+        metadata.setHorizontalSpacing(
+            40
+        )
+
+        metadata.setVerticalSpacing(
+            14
+        )
+
+        self.isbn_title = QLabel(
+            "ISBN"
+        )
+
+        self.publisher_title = QLabel(
+            "Publisher"
+        )
+
+        self.genre_title = QLabel(
+            "Genre"
+        )
+
+        self.rating_title = QLabel(
+            "Rating"
+        )
+
+        for label in (
+
+            self.isbn_title,
+
+            self.publisher_title,
+
+            self.genre_title,
+
+            self.rating_title,
+
+        ):
+
+            label.setObjectName(
+                "secondaryText"
+            )
 
         self.isbn = QLabel()
 
@@ -74,25 +184,75 @@ class BookDetailCard(QWidget):
 
         self.rating = QLabel()
 
-        # ----------------------------------
-        # Layout
-        # ----------------------------------
+        metadata.addWidget(
+            self.isbn_title,
+            0,
+            0,
+        )
 
-        layout.addWidget(self.title)
-        layout.addWidget(self.author)
+        metadata.addWidget(
+            self.publisher_title,
+            0,
+            1,
+        )
 
-        layout.addSpacing(8)
+        metadata.addWidget(
+            self.isbn,
+            1,
+            0,
+        )
 
-        layout.addWidget(self.status)
+        metadata.addWidget(
+            self.publisher,
+            1,
+            1,
+        )
 
-        layout.addWidget(self.progress)
+        metadata.addWidget(
+            self.genre_title,
+            2,
+            0,
+        )
 
-        layout.addSpacing(8)
+        metadata.addWidget(
+            self.rating_title,
+            2,
+            1,
+        )
 
-        layout.addWidget(self.isbn)
-        layout.addWidget(self.publisher)
-        layout.addWidget(self.genre)
-        layout.addWidget(self.rating)
+        metadata.addWidget(
+            self.genre,
+            3,
+            0,
+        )
+
+        metadata.addWidget(
+            self.rating,
+            3,
+            1,
+        )
+
+        # -------------------------------------------------
+        # Assemble
+        # -------------------------------------------------
+
+        root.addLayout(
+            header
+        )
+
+        root.addWidget(
+            self.progress
+        )
+
+        root.addWidget(
+            divider
+        )
+
+        root.addLayout(
+            metadata
+        )
+
+        root.addStretch()
 
     # ==================================================
     # Public API
@@ -102,6 +262,10 @@ class BookDetailCard(QWidget):
         self,
         book: Book,
     ):
+
+        self.cover.set_cover(
+            book.cover_path
+        )
 
         self.title.setText(
             book.title
@@ -121,22 +285,24 @@ class BookDetailCard(QWidget):
         )
 
         self.isbn.setText(
-            f"ISBN: {book.isbn or '-'}"
+            book.isbn or "-"
         )
 
         self.publisher.setText(
-            f"Publisher: {book.publisher or '-'}"
+            book.publisher or "-"
         )
 
         self.genre.setText(
-            f"Genre: {book.genre or '-'}"
+            book.genre or "-"
         )
 
         self.rating.setText(
-            f"Rating: {book.rating or '-'}"
+            str(book.rating or "-")
         )
 
     def clear(self):
+
+        self.cover.clear()
 
         self.title.setText(
             "No Book Selected"
@@ -148,10 +314,10 @@ class BookDetailCard(QWidget):
 
         self.progress.clear()
 
-        self.isbn.clear()
+        self.isbn.setText("-")
 
-        self.publisher.clear()
+        self.publisher.setText("-")
 
-        self.genre.clear()
+        self.genre.setText("-")
 
-        self.rating.clear()
+        self.rating.setText("-")

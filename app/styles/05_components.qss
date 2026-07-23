@@ -136,3 +136,24 @@ QLabel#badgeDefault {
     font-size: 12px;
 
 }
+
+/* ==========================================================
+   Book Cover
+   ========================================================== */
+
+#bookCover {
+
+    background: #353535;
+
+    border: 1px solid #4A4A4A;
+
+    border-radius: 8px;
+
+}
+
+#divider {
+    background: #3b3b3b;
+    min-height: 1px;
+    max-height: 1px;
+    border: none;
+}
