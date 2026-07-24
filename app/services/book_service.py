@@ -8,6 +8,8 @@ from app.constants.book_status import (
     BookStatus
 )
 
+from app.services.cover_service import CoverService
+
 
 class BookService:
 
@@ -53,24 +55,20 @@ class BookService:
     # Create
     # ----------------------------------
 
-    @staticmethod
     def create_book(
-
-        title: str,
-
-        author: str,
-
-        isbn: str = "",
-
-        publisher: str = "",
-
-        genre: str = "",
-
-        page_count: int = 0,
-
-        status: str = BookStatus.WANT_TO_READ
-
+        cls,
+        title,
+        author,
+        isbn="",
+        publisher="",
+        published_year=None,
+        genre="",
+        description="",
+        page_count=None,
+        cover_path=None,
+        status=BookStatus.WANT_TO_READ,
     ):
+    
 
         session = SessionLocal()
 
@@ -343,3 +341,47 @@ class BookService:
         finally:
 
             session.close()
+
+    @classmethod
+    def create_from_google_book(
+        cls,
+        google_book,
+    ):
+
+        author = ""
+
+        if google_book.authors:
+
+            author = ", ".join(
+                google_book.authors
+            )
+
+        cover_path = None
+
+        if google_book.thumbnail:
+
+            cover_path = CoverService.download(
+                google_book.thumbnail
+            )
+
+        return cls.create_book(
+
+            title=google_book.title,
+
+            author=author,
+
+            isbn=google_book.isbn,
+
+            publisher=google_book.publisher,
+
+            published_year=google_book.published_year,
+
+            genre=google_book.genre,
+
+            description=google_book.description,
+
+            page_count=google_book.page_count,
+
+            cover_path=cover_path,
+
+        )
