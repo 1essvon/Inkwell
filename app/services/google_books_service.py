@@ -17,6 +17,8 @@ from dataclasses import dataclass
 
 import requests
 
+from requests import RequestException
+
 
 API_URL = "https://www.googleapis.com/books/v1/volumes"
 
@@ -57,38 +59,64 @@ class GoogleBooksService:
         query = query.strip()
 
         if not query:
+            return []
+
+        try:
+
+            response = requests.get(
+
+                API_URL,
+
+                params={
+                    "q": query,
+                    "maxResults": limit,
+                },
+
+                timeout=cls.TIMEOUT,
+
+            )
+
+            response.raise_for_status()
+
+        except RequestException as error:
+
+            print(
+                f"[GoogleBooksService] {error}"
+            )
 
             return []
 
-        response = requests.get(
+        try:
 
-            API_URL,
+            payload = response.json()
 
-            params={
-                "q": query,
-                "maxResults": limit,
-            },
+        except ValueError:
 
-            timeout=cls.TIMEOUT,
+            return []
 
-        )
+        items = payload.get("items")
 
-        response.raise_for_status()
+        if not items:
 
-        payload = response.json()
+            return []
 
-        items = payload.get(
-            "items",
-            [],
-        )
+        books = []
 
-        return [
+        for item in items:
 
-            cls._parse(item)
+            try:
 
-            for item in items
+                books.append(
+                    cls._parse(item)
+                )
 
-        ]
+            except Exception as error:
+
+                print(
+                    f"[GoogleBooksService] Failed to parse book: {error}"
+                )
+
+        return books
 
     @staticmethod
     def _parse(
@@ -180,3 +208,5 @@ class GoogleBooksService:
             ),
 
         )
+
+    

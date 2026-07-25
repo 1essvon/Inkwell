@@ -10,6 +10,10 @@ from app.constants.book_status import (
 
 from app.services.cover_service import CoverService
 
+from app.services.google_books_service import (
+    GoogleBooksService,
+)
+
 
 class BookService:
 
@@ -385,3 +389,135 @@ class BookService:
             cover_path=cover_path,
 
         )
+
+    @classmethod
+    def refresh_metadata(
+        cls,
+        book_id: int,
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            book = session.get(
+                Book,
+                book_id,
+            )
+
+            if book is None:
+
+                return None
+
+            results = GoogleBooksService.search(
+                book.title
+            )
+
+            if not results:
+
+                return book
+
+            google_book = results[0]
+
+            author = ""
+
+            if google_book.authors:
+
+                author = ", ".join(
+                    google_book.authors
+                )
+
+            cover_path = book.cover_path
+
+            if google_book.thumbnail:
+
+                cover_path = CoverService.download(
+                    google_book.thumbnail
+                )
+
+            book.title = google_book.title
+
+            book.author = author
+
+            book.isbn = google_book.isbn
+
+            book.publisher = google_book.publisher
+
+            book.published_year = (
+                google_book.published_year
+            )
+
+            book.genre = google_book.genre
+
+            book.description = (
+                google_book.description
+            )
+
+            book.page_count = (
+                google_book.page_count
+            )
+
+            book.cover_path = cover_path
+
+            session.commit()
+
+            return book
+
+        finally:
+
+            session.close()
+
+    @staticmethod
+    def find_duplicate(
+        google_book,
+    ):
+
+        session = SessionLocal()
+
+        try:
+
+            # ------------------------------
+            # Check ISBN
+            # ------------------------------
+
+            if google_book.isbn:
+
+                book = (
+                    session.query(Book)
+                    .filter(
+                        Book.isbn == google_book.isbn
+                    )
+                    .first()
+                )
+
+                if book:
+
+                    return book
+
+            # ------------------------------
+            # Check Title + Author
+            # ------------------------------
+
+            author = ", ".join(
+                google_book.authors
+            )
+
+            return (
+
+                session.query(Book)
+
+                .filter(
+
+                    Book.title == google_book.title,
+
+                    Book.author == author,
+
+                )
+
+                .first()
+
+            )
+
+        finally:
+
+            session.close()
