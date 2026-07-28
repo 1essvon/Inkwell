@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import (
     QLabel,
     QHBoxLayout,
+    QVBoxLayout
 )
 
 from app.models.book import Book
@@ -8,7 +9,7 @@ from app.models.book import Book
 from app.ui.components.base_card import BaseCard
 from app.ui.components.status_badge import StatusBadge
 from app.ui.components.book_progress import BookProgress
-
+from app.ui.components.book_cover import BookCover
 
 class BookCard(BaseCard):
 
@@ -60,6 +61,12 @@ class BookCard(BaseCard):
         )
 
         # ----------------------------------
+        # Cover
+        # ----------------------------------
+
+        self.cover = BookCover("small")
+
+        # ----------------------------------
         # Status
         # ----------------------------------
 
@@ -87,23 +94,79 @@ class BookCard(BaseCard):
         self.progress = BookProgress()
 
         # ----------------------------------
-        # Layout
+        # Progress Text
         # ----------------------------------
 
-        self.layout.addWidget(
+        self.progress_text = QLabel()
+
+        self.progress_text.setObjectName(
+            "secondaryText"
+        )
+
+        # ----------------------------------
+        # Info Layout
+        # ----------------------------------
+
+        info_layout = QVBoxLayout()
+
+        info_layout.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        info_layout.setSpacing(6)
+
+        info_layout.addWidget(
             self.title
         )
 
-        self.layout.addWidget(
+        info_layout.addWidget(
             self.author
         )
 
-        self.layout.addLayout(
+        info_layout.addSpacing(4)
+
+        info_layout.addLayout(
             status_layout
         )
 
-        self.layout.addWidget(
+        info_layout.addWidget(
             self.progress
+        )
+
+        info_layout.addWidget(
+            self.progress_text
+        )
+
+        info_layout.addStretch()
+
+        # ----------------------------------
+        # Root Layout
+        # ----------------------------------
+
+        root = QHBoxLayout()
+
+        root.setContentsMargins(
+            0,
+            0,
+            0,
+            0,
+        )
+
+        root.setSpacing(16)
+
+        root.addWidget(
+            self.cover
+        )
+
+        root.addLayout(
+            info_layout,
+        )
+
+        self.layout.addLayout(
+            root
         )
 
     # ==================================================
@@ -125,6 +188,10 @@ class BookCard(BaseCard):
             book.author
         )
 
+        self.cover.set_cover(
+            book.cover_path
+        )
+
         self.status.set_status(
             book.status
         )
@@ -132,4 +199,11 @@ class BookCard(BaseCard):
         self.progress.set_progress(
             book.current_page,
             book.page_count,
+        )
+
+        current = book.current_page or 0
+        total = book.page_count or 0
+
+        self.progress_text.setText(
+            f"{current} / {total} pages"
         )

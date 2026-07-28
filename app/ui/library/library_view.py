@@ -17,8 +17,8 @@ from app.ui.library.book_list_widget import (
     BookListWidget
 )
 
-from app.ui.library.book_detail_widget import (
-    BookDetailWidget
+from app.ui.book_detail_view import (
+    BookDetailView
 )
 
 from app.ui.dialogs.add_book_dialog import (
@@ -59,6 +59,8 @@ class LibraryView(QWidget):
         self.setup_connections()
 
         self.refresh()
+
+        
 
     # ----------------------------------
     # UI
@@ -155,7 +157,7 @@ class LibraryView(QWidget):
 
         self.book_list = BookListWidget()
 
-        self.detail_view = BookDetailWidget()
+        self.detail_view = BookDetailView()
 
         self.splitter = QSplitter(
             Qt.Horizontal
@@ -242,10 +244,9 @@ class LibraryView(QWidget):
 
         self.selected_book = book
 
-        self.detail_view.set_book(
+        self.detail_view.display_book(
             book
         )
-        
 
     def on_search_changed(
         self,

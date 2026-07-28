@@ -1,3 +1,4 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
     QLabel,
@@ -5,6 +6,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QGridLayout,
     QFrame,
+    QScrollArea
 )
 
 from app.models.book import Book
@@ -31,226 +33,164 @@ class BookDetailCard(QWidget):
 
         root = QVBoxLayout(self)
 
-        root.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
-
+        root.setContentsMargins(16, 16, 16, 16)
         root.setSpacing(20)
 
-        # -------------------------------------------------
-        # Header
-        # -------------------------------------------------
+        # ==================================================
+        # Cover
+        # ==================================================
 
-        header = QHBoxLayout()
+        self.cover = BookCover("large")
 
-        header.setSpacing(20)
-
-        self.cover = BookCover(
-            size="large"
-        )
-
-        info_layout = QVBoxLayout()
-
-        info_layout.setSpacing(8)
+        # ==================================================
+        # Title
+        # ==================================================
 
         self.title = QLabel()
-
-        self.title.setObjectName(
-            "bookTitle"
-        )
+        self.title.setObjectName("bookTitle")
 
         self.author = QLabel()
+        self.author.setObjectName("secondaryText")
 
-        self.author.setObjectName(
-            "secondaryText"
-        )
+        # ==================================================
+        # Status
+        # ==================================================
 
         self.status = StatusBadge()
 
-        status_layout = QHBoxLayout()
+        status_row = QHBoxLayout()
+        status_row.setContentsMargins(0, 0, 0, 0)
 
-        status_layout.setContentsMargins(
-            0,
-            0,
-            0,
-            0,
-        )
+        status_row.addWidget(self.status)
+        status_row.addStretch()
 
-        status_layout.addWidget(
-            self.status
-        )
-
-        status_layout.addStretch()
-
-        info_layout.addStretch()
-
-        info_layout.addWidget(
-            self.title
-        )
-
-        info_layout.addWidget(
-            self.author
-        )
-
-        info_layout.addLayout(
-            status_layout
-        )
-
-        info_layout.addStretch()
-
-        header.addWidget(
-            self.cover
-        )
-
-        header.addLayout(
-            info_layout,
-            1,
-        )
-
-        # -------------------------------------------------
+        # ==================================================
         # Progress
-        # -------------------------------------------------
+        # ==================================================
 
         self.progress = BookProgress()
 
-        # -------------------------------------------------
-        # Divider
-        # -------------------------------------------------
+        self.progress_text = QLabel()
+        self.progress_text.setObjectName("secondaryText")
 
-        divider = QFrame()
-
-        divider.setFrameShape(
-            QFrame.Shape.HLine
-        )
-
-        divider.setObjectName(
-            "divider"
-        )
-
-        # -------------------------------------------------
+        # ==================================================
         # Metadata
-        # -------------------------------------------------
+        # ==================================================
 
-        metadata = QGridLayout()
+        metadata_title = QLabel("Book Information")
+        metadata_title.setObjectName("secondaryText")
 
-        metadata.setHorizontalSpacing(
-            40
-        )
+        form = QGridLayout()
+        form.setHorizontalSpacing(20)
+        form.setVerticalSpacing(8)
 
-        metadata.setVerticalSpacing(
-            14
-        )
-
-        self.isbn_title = QLabel(
-            "ISBN"
-        )
-
-        self.publisher_title = QLabel(
-            "Publisher"
-        )
-
-        self.genre_title = QLabel(
-            "Genre"
-        )
-
-        self.rating_title = QLabel(
-            "Rating"
-        )
-
-        for label in (
-
-            self.isbn_title,
-
-            self.publisher_title,
-
-            self.genre_title,
-
-            self.rating_title,
-
-        ):
-
-            label.setObjectName(
-                "secondaryText"
-            )
-
-        self.isbn = QLabel()
+        labels = [
+            "Publisher",
+            "Year",
+            "Pages",
+            "ISBN",
+            "Genre",
+            "Rating",
+        ]
 
         self.publisher = QLabel()
-
+        self.year = QLabel()
+        self.pages = QLabel()
+        self.isbn = QLabel()
         self.genre = QLabel()
-
         self.rating = QLabel()
 
-        metadata.addWidget(
-            self.isbn_title,
-            0,
-            0,
-        )
-
-        metadata.addWidget(
-            self.publisher_title,
-            0,
-            1,
-        )
-
-        metadata.addWidget(
-            self.isbn,
-            1,
-            0,
-        )
-
-        metadata.addWidget(
+        values = [
             self.publisher,
-            1,
-            1,
-        )
-
-        metadata.addWidget(
-            self.genre_title,
-            2,
-            0,
-        )
-
-        metadata.addWidget(
-            self.rating_title,
-            2,
-            1,
-        )
-
-        metadata.addWidget(
+            self.year,
+            self.pages,
+            self.isbn,
             self.genre,
-            3,
-            0,
-        )
-
-        metadata.addWidget(
             self.rating,
-            3,
-            1,
+        ]
+
+        for row, (label_text, value) in enumerate(zip(labels, values)):
+
+            label = QLabel(label_text)
+            label.setObjectName("secondaryText")
+
+            form.addWidget(label, row, 0)
+            form.addWidget(value, row, 1)
+
+        # ==================================================
+        # Info Layout
+        # ==================================================
+
+        info = QVBoxLayout()
+        info.setSpacing(8)
+
+        info.addWidget(self.title)
+        info.addWidget(self.author)
+        info.addLayout(status_row)
+
+        info.addSpacing(8)
+
+        info.addWidget(self.progress)
+        info.addWidget(self.progress_text)
+
+        info.addSpacing(12)
+
+        info.addWidget(metadata_title)
+        info.addLayout(form)
+
+        info.addStretch()
+
+        # ==================================================
+        # Header
+        # ==================================================
+
+        header = QHBoxLayout()
+        header.setSpacing(24)
+
+        header.addWidget(
+            self.cover,
+            0,
+            Qt.AlignmentFlag.AlignTop,
         )
 
-        # -------------------------------------------------
+        header.addLayout(info, 1)
+
+        # ==================================================
+        # Divider
+        # ==================================================
+
+        divider = QFrame()
+        divider.setFrameShape(QFrame.Shape.HLine)
+        divider.setObjectName("divider")
+
+        # ==================================================
+        # Description
+        # ==================================================
+
+        self.description_title = QLabel("Description")
+        self.description_title.setObjectName("secondaryText")
+
+        self.description = QLabel()
+        self.description.setWordWrap(True)
+        self.description.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.description.setMargin(8)
+
+        description_scroll = QScrollArea()
+        description_scroll.setWidgetResizable(True)
+        description_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        description_scroll.setMinimumHeight(140)
+        description_scroll.setMaximumHeight(180)
+        description_scroll.setWidget(self.description)
+
+        # ==================================================
         # Assemble
-        # -------------------------------------------------
+        # ==================================================
 
-        root.addLayout(
-            header
-        )
+        root.addLayout(header)
+        root.addWidget(divider)
 
-        root.addWidget(
-            self.progress
-        )
-
-        root.addWidget(
-            divider
-        )
-
-        root.addLayout(
-            metadata
-        )
+        root.addWidget(self.description_title)
+        root.addWidget(self.description)
 
         root.addStretch()
 
@@ -284,12 +224,27 @@ class BookDetailCard(QWidget):
             book.page_count,
         )
 
+        current = book.current_page or 0
+        total = book.page_count or 0
+
+        self.progress_text.setText(
+            f"{current} / {total} pages"
+        )
+
         self.isbn.setText(
             book.isbn or "-"
         )
 
         self.publisher.setText(
             book.publisher or "-"
+        )
+
+        self.year.setText(
+            str(book.published_year or "-")
+        )
+
+        self.pages.setText(
+            str(book.page_count or "-")
         )
 
         self.genre.setText(
@@ -300,6 +255,10 @@ class BookDetailCard(QWidget):
             str(book.rating or "-")
         )
 
+        self.description.setText(
+            book.description or "-"
+        )
+
     def clear(self):
 
         self.cover.clear()
@@ -308,16 +267,28 @@ class BookDetailCard(QWidget):
             "No Book Selected"
         )
 
-        self.author.clear()
+        self.author.setText(
+            "Select a book to view its details."
+        )
 
         self.status.clear()
 
         self.progress.clear()
 
-        self.isbn.setText("-")
+        self.progress_text.clear()
 
         self.publisher.setText("-")
 
+        self.year.setText("-")
+
+        self.pages.setText("-")
+
+        self.isbn.setText("-")
+        
         self.genre.setText("-")
 
         self.rating.setText("-")
+
+        self.description.setText(
+            "Select a book to view its description."
+        )
