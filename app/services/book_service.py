@@ -59,8 +59,8 @@ class BookService:
     # Create
     # ----------------------------------
 
+    @staticmethod
     def create_book(
-        cls,
         title,
         author,
         isbn="",
