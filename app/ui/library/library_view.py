@@ -11,6 +11,11 @@ from PySide6.QtWidgets import (
     QComboBox
 )
 
+from PySide6.QtGui import (
+    QShortcut,
+    QKeySequence,
+)
+
 from app.services.book_service import BookService
 
 from app.ui.library.book_list_widget import (
@@ -57,6 +62,8 @@ class LibraryView(QWidget):
         self.setup_ui()
 
         self.setup_connections()
+
+        self.setup_shortcuts()
 
         self.refresh()
 
@@ -232,6 +239,79 @@ class LibraryView(QWidget):
         self.detail_view.deleteRequested.connect(
             self.delete_selected_book
         )
+
+    def setup_shortcuts(self):
+
+        self.search_shortcut = QShortcut(
+            QKeySequence("Ctrl+F"),
+            self,
+        )
+
+        self.search_shortcut.setContext(
+            Qt.ApplicationShortcut
+        )
+
+        self.search_shortcut.activated.connect(
+            self.search_bar.focus
+        )
+
+        self.add_shortcut = QShortcut(
+            QKeySequence("Ctrl+N"),
+            self,
+        )
+
+        self.add_shortcut.setContext(
+            Qt.ApplicationShortcut
+        )
+
+        self.add_shortcut.activated.connect(
+            self.show_add_book_dialog
+        )
+
+        self.delete_shortcut = QShortcut(
+            QKeySequence("Ctrl+D"),
+            self,
+        )
+
+        self.delete_shortcut.setContext(
+            Qt.ApplicationShortcut
+        )
+
+        self.delete_shortcut.activated.connect(
+            self.on_delete_shortcut
+        )
+
+        self.escape_shortcut = QShortcut(
+            QKeySequence("Esc"),
+            self,
+        )
+
+        self.escape_shortcut.setContext(
+            Qt.ApplicationShortcut
+        )
+
+        self.escape_shortcut.activated.connect(
+            self.on_escape_shortcut
+        )
+
+    def on_delete_shortcut(self):
+
+        book = self.book_list.current_book()
+
+        if book is None:
+            return
+
+        self.selected_book = book
+
+        self.delete_selected_book()
+
+    def on_escape_shortcut(self):
+
+        self.selected_book = None
+
+        self.book_list.list_widget.clearSelection()
+
+        self.detail_view.clear()
 
     # ----------------------------------
     # Events
