@@ -98,12 +98,16 @@ class BookListWidget(QWidget):
         keyword="",
         status="All",
         selected_id=None,
-        sort_by="Title"
+        sort_by="Title",
     ):
 
         self.list_widget.clear()
 
         books = BookService.get_all_books()
+
+        # ----------------------------
+        # Sort
+        # ----------------------------
 
         if sort_by == "Title":
 
@@ -121,17 +125,21 @@ class BookListWidget(QWidget):
 
             books.sort(
                 key=lambda b: b.id,
-                reverse=True
+                reverse=True,
             )
 
         elif sort_by == "Recently Updated":
 
             books.sort(
                 key=lambda b: b.updated_at,
-                reverse=True
+                reverse=True,
             )
 
         keyword = keyword.lower().strip()
+
+        # ----------------------------
+        # Populate List
+        # ----------------------------
 
         for book in books:
 
@@ -141,13 +149,33 @@ class BookListWidget(QWidget):
 
             if keyword:
 
-                if (
+                search_fields = [
 
-                    keyword not in book.title.lower()
+                    book.title,
 
-                    and
+                    book.author,
 
-                    keyword not in book.author.lower()
+                    book.publisher,
+
+                    book.genre,
+
+                    book.isbn,
+
+                ]
+
+                search_fields = [
+
+                    (field or "").lower()
+
+                    for field in search_fields
+
+                ]
+
+                if not any(
+
+                    keyword in field
+
+                    for field in search_fields
 
                 ):
 
@@ -157,11 +185,17 @@ class BookListWidget(QWidget):
             # Status Filter
             # ----------------------------
 
-            if status != "All":
+            if (
 
-                if book.status != status:
+                status != "All"
 
-                    continue
+                and
+
+                book.status != status
+
+            ):
+
+                continue
 
             # ----------------------------
             # Add Book

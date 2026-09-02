@@ -46,6 +46,8 @@ from app.ui.components.toolbar import (
     Toolbar
 )
 
+from app.ui.components.toast import Toast
+
 
 class LibraryView(QWidget):
 
@@ -379,6 +381,11 @@ class LibraryView(QWidget):
 
             self.refresh()
 
+            Toast.show_message(
+                self,
+                "Book added successfully."
+            )
+
     def open_edit_dialog(self):
 
         if self.selected_book is None:
@@ -392,6 +399,11 @@ class LibraryView(QWidget):
         if dialog.exec():
 
             self.refresh()
+
+            Toast.show_message(
+                self,
+                "Book updated successfully."
+            )
 
     # ----------------------------------
     # Delete
@@ -423,3 +435,8 @@ class LibraryView(QWidget):
         self.detail_view.clear()
 
         self.refresh()
+
+        Toast.show_message(
+            self,
+            "Book deleted successfully."
+        )
