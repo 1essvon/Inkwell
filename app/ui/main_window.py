@@ -40,6 +40,18 @@ from app.ui.settings_view import (
     SettingsView
 )
 
+from app.services.book_service import (
+    BookService
+)
+
+from app.services.note_service import (
+    NoteService
+)
+
+from app.services.quote_service import (
+    QuoteService
+)
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -54,6 +66,8 @@ class MainWindow(QMainWindow):
             1280,
             720
         )
+
+        self.setup_status_bar()
 
         root = QWidget()
 
@@ -301,6 +315,10 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
+        self.update_status_bar(
+            "Ready"
+        )
+
     def show_library(self):
 
         self.pages.setCurrentWidget(
@@ -308,6 +326,8 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
+
+        self.update_library_status()
         
 
     def show_reading(self):
@@ -318,6 +338,10 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
+        self.update_status_bar(
+            "Reading session"
+        )
+
     def show_journal(self):
 
         self.pages.setCurrentWidget(
@@ -325,6 +349,8 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
+
+        self.update_journal_status()
 
     def show_statistics(self):
 
@@ -334,6 +360,10 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
+        self.update_status_bar(
+            "Statistics"
+        )
+
     def show_focus(self):
 
         self.pages.setCurrentWidget(
@@ -341,6 +371,10 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
+
+        self.update_status_bar(
+            "Focus mode"
+        )
 
     def show_history(self):
 
@@ -350,6 +384,10 @@ class MainWindow(QMainWindow):
 
         self.refresh_current_page()
 
+        self.update_status_bar(
+            "Reading history"
+        )
+
     def show_settings(self):
 
         self.pages.setCurrentWidget(
@@ -357,6 +395,10 @@ class MainWindow(QMainWindow):
         )
 
         self.refresh_current_page()
+
+        self.update_status_bar(
+            "Settings"
+        )
 
     # ==========================
     # Refresh
@@ -388,3 +430,41 @@ class MainWindow(QMainWindow):
         self.show_journal()
 
         self.journal_page.show_add_note_dialog()
+
+    def setup_status_bar(self):
+
+        self.statusBar().showMessage(
+            "Ready"
+        )
+
+    def update_status_bar(
+        self,
+        message,
+    ):
+
+        self.statusBar().showMessage(
+            message
+        )
+
+    def update_library_status(self):
+
+        books = BookService.get_all_books()
+
+        count = len(books)
+
+        self.update_status_bar(
+            f"{count} book"
+            if count == 1
+            else f"{count} books"
+        )
+
+    def update_journal_status(self):
+
+        notes = NoteService.get_all_notes()
+
+        quotes = QuoteService.get_all_quotes()
+
+        self.update_status_bar(
+            f"{len(notes)} notes · "
+            f"{len(quotes)} quotes"
+        )

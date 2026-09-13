@@ -167,7 +167,11 @@ class QuotesView(QWidget):
             subtitle=(
                 "Save memorable passages\n"
                 "from the books you read."
-            )
+            ),
+
+            button_text="Add Quote",
+
+            button_callback=self.open_add_quote_dialog,
 
         )
 

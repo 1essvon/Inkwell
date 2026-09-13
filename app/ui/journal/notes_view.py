@@ -185,7 +185,11 @@ class NotesView(QWidget):
             subtitle=(
                 "Create your first note\n"
                 "to keep track of your ideas."
-            )
+            ),
+
+            button_text="Add Note",
+
+            button_callback=self.open_add_note_dialog,
 
         )
 

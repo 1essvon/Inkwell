@@ -158,7 +158,11 @@ class ScratchpadView(QWidget):
             subtitle=(
                 "Create a scratchpad\n"
                 "for your thoughts and ideas."
-            )
+            ),
+
+            button_text="New Scratchpad",
+
+            button_callback=self.create_entry,
 
         )
 
