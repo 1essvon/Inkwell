@@ -46,9 +46,6 @@ from app.ui.components.toolbar import (
     Toolbar
 )
 
-from app.ui.components.toast import Toast
-
-
 class LibraryView(QWidget):
 
     # ----------------------------------
@@ -381,8 +378,7 @@ class LibraryView(QWidget):
 
             self.refresh()
 
-            Toast.show_message(
-                self,
+            self.window().statusBar().showMessage(
                 "Book added successfully."
             )
 
@@ -400,8 +396,7 @@ class LibraryView(QWidget):
 
             self.refresh()
 
-            Toast.show_message(
-                self,
+            self.window().statusBar().showMessage(
                 "Book updated successfully."
             )
 
@@ -436,7 +431,6 @@ class LibraryView(QWidget):
 
         self.refresh()
 
-        Toast.show_message(
-            self,
+        self.window().statusBar().showMessage(
             "Book deleted successfully."
         )

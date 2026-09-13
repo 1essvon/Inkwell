@@ -5,6 +5,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QPushButton,
+    QSizePolicy
 )
 
 from app.models.book import Book
@@ -53,6 +54,11 @@ class BookDetailView(QWidget):
         root.setSpacing(16)
 
         self.card = BookDetailCard()
+
+        self.setSizePolicy(
+            QSizePolicy.Expanding,
+            QSizePolicy.Ignored,
+        )
 
         root.addWidget(
             self.card,

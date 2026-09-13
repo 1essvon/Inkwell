@@ -58,14 +58,8 @@ class MainWindow(QMainWindow):
 
         super().__init__()
 
-        self.setWindowTitle(
-            "The Inkwell"
-        )
-
-        self.resize(
-            1280,
-            720
-        )
+        self.setWindowTitle("The Inkwell")
+        self.resize(1280, 720)
 
         self.setup_status_bar()
 
@@ -189,6 +183,7 @@ class MainWindow(QMainWindow):
         # ==========================
 
         self.pages = QStackedWidget()
+
 
         self.dashboard_page = DashboardView()
 

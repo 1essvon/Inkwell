@@ -60,6 +60,10 @@ class BookCover(QFrame):
             Qt.AlignmentFlag.AlignCenter
         )
 
+        self.label.setObjectName(
+            "bookCoverPlaceholder"
+        )
+
         layout = QVBoxLayout(self)
 
         layout.setContentsMargins(
@@ -122,7 +126,9 @@ class BookCover(QFrame):
             QPixmap()
         )
 
-        self.label.setText("📘")
+        self.label.setText(
+            "No\nCover"
+        )
 
     def cover_path(self):
 

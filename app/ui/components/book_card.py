@@ -40,6 +40,8 @@ class BookCard(BaseCard):
 
         self.layout.setSpacing(12)
 
+        self.setMinimumHeight(160)
+
         # ----------------------------------
         # Title
         # ----------------------------------
@@ -94,16 +96,6 @@ class BookCard(BaseCard):
         self.progress = BookProgress()
 
         # ----------------------------------
-        # Progress Text
-        # ----------------------------------
-
-        self.progress_text = QLabel()
-
-        self.progress_text.setObjectName(
-            "secondaryText"
-        )
-
-        # ----------------------------------
         # Info Layout
         # ----------------------------------
 
@@ -135,12 +127,6 @@ class BookCard(BaseCard):
         info_layout.addWidget(
             self.progress
         )
-
-        info_layout.addWidget(
-            self.progress_text
-        )
-
-        info_layout.addStretch()
 
         # ----------------------------------
         # Root Layout
@@ -199,11 +185,4 @@ class BookCard(BaseCard):
         self.progress.set_progress(
             book.current_page,
             book.page_count,
-        )
-
-        current = book.current_page or 0
-        total = book.page_count or 0
-
-        self.progress_text.setText(
-            f"{current} / {total} pages"
         )

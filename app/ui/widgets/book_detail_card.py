@@ -70,9 +70,6 @@ class BookDetailCard(QWidget):
 
         self.progress = BookProgress()
 
-        self.progress_text = QLabel()
-        self.progress_text.setObjectName("secondaryText")
-
         # ==================================================
         # Metadata
         # ==================================================
@@ -131,7 +128,6 @@ class BookDetailCard(QWidget):
         info.addSpacing(8)
 
         info.addWidget(self.progress)
-        info.addWidget(self.progress_text)
 
         info.addSpacing(12)
 
@@ -190,7 +186,8 @@ class BookDetailCard(QWidget):
         root.addWidget(divider)
 
         root.addWidget(self.description_title)
-        root.addWidget(self.description)
+
+        root.addWidget(description_scroll)
 
         root.addStretch()
 
@@ -222,13 +219,6 @@ class BookDetailCard(QWidget):
         self.progress.set_progress(
             book.current_page,
             book.page_count,
-        )
-
-        current = book.current_page or 0
-        total = book.page_count or 0
-
-        self.progress_text.setText(
-            f"{current} / {total} pages"
         )
 
         self.isbn.setText(
@@ -274,8 +264,6 @@ class BookDetailCard(QWidget):
         self.status.clear()
 
         self.progress.clear()
-
-        self.progress_text.clear()
 
         self.publisher.setText("-")
 
