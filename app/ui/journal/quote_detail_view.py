@@ -150,8 +150,8 @@ class QuoteDetailView(QWidget):
 
         self.quote_content = QTextEdit()
 
-        self.quote_content.setReadOnly(
-            True
+        self.quote_content.setPlaceholderText(
+            "Enter quote..."
         )
 
         self.main_layout.addWidget(
@@ -342,13 +342,15 @@ class QuoteDetailView(QWidget):
 
             self.current_quote.id,
 
+            self.quote_content.toPlainText(),
+
             self.notes_editor.toPlainText(),
 
             self.tags.text(),
 
         )
 
-        self.note_saved.emit()
+        self.quote_saved.emit()
 
     def delete_quote(self):
 

@@ -44,7 +44,6 @@ from app.ui.journal.note_list_widget import (
     NoteListWidget,
 )
 
-
 class NotesView(QWidget):
 
     def __init__(self):
@@ -257,22 +256,20 @@ class NotesView(QWidget):
         )
 
         self.detail_view.note_saved.connect(
-            self.refresh
+            self.on_note_saved
         )
 
         self.detail_view.note_deleted.connect(
-            self.refresh
+            self.on_note_deleted
         )
 
-        # Sprint berikutnya
-        # self.search.textChanged.connect(
-        #     self.filter_notes
-        # )
+        self.search.textChanged.connect(
+            self.load_notes
+        )
 
-        # Sprint berikutnya
-        # self.sort_filter.currentIndexChanged.connect(
-        #     self.sort_notes
-        # )
+        self.sort_filter.currentIndexChanged.connect(
+            self.load_notes
+        )
 
     def refresh(self):
 
@@ -320,6 +317,7 @@ class NotesView(QWidget):
             False
         )
 
+   
     def load_notes(self):
 
         book_id = self.book_filter.currentData()
@@ -333,6 +331,83 @@ class NotesView(QWidget):
             notes = NoteService.get_notes_for_book(
                 book_id
             )
+
+        keyword = self.search.text().lower().strip()
+
+        # ----------------------------
+        # Search
+        # ----------------------------
+
+        if keyword:
+
+            filtered_notes = []
+
+            for note in notes:
+
+                search_fields = [
+
+                    note.title,
+
+                    note.content,
+
+                    note.book.title if note.book else "",
+
+                    str(note.page),
+
+                ]
+
+                search_fields = [
+
+                    (field or "").lower()
+
+                    for field in search_fields
+
+                ]
+
+                if any(
+
+                    keyword in field
+
+                    for field in search_fields
+
+                ):
+
+                    filtered_notes.append(
+                        note
+                    )
+
+            notes = filtered_notes
+
+        # ----------------------------
+        # Sort
+        # ----------------------------
+
+        sort_by = self.sort_filter.currentText()
+
+        if sort_by == "Newest":
+
+            notes.sort(
+                key=lambda note: note.updated_at,
+                reverse=True,
+            )
+
+        elif sort_by == "Oldest":
+
+            notes.sort(
+                key=lambda note: note.created_at,
+            )
+
+        elif sort_by == "Title":
+
+            notes.sort(
+                key=lambda note: (
+                    note.title or ""
+                ).lower()
+            )
+
+        # ----------------------------
+        # Display
+        # ----------------------------
 
         self.note_list.set_notes(
             notes
@@ -368,8 +443,11 @@ class NotesView(QWidget):
         )
 
         if dialog.exec():
-
             self.refresh()
+
+            self.window().statusBar().showMessage(
+                "Note added successfully."
+            )
 
     def update_empty_state(self):
 
@@ -385,4 +463,20 @@ class NotesView(QWidget):
 
         self.empty_state.setVisible(
             not has_notes
+        )
+
+    def on_note_saved(self):
+
+        self.refresh()
+
+        self.window().statusBar().showMessage(
+            "Note updated successfully."
+        )
+
+    def on_note_deleted(self):
+
+        self.refresh()
+
+        self.window().statusBar().showMessage(
+            "Note deleted successfully."
         )

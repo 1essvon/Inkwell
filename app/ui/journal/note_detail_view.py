@@ -210,15 +210,12 @@ class NoteDetailView(QWidget):
     def save_note(self):
 
         if self.current_note is None:
-
             return
 
         NoteService.update_note(
-
             self.current_note.id,
-
+            self.current_note.title,
             self.editor.toPlainText(),
-
         )
 
         self.note_saved.emit()

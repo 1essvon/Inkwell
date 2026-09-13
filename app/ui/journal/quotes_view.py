@@ -237,22 +237,20 @@ class QuotesView(QWidget):
         )
 
         self.detail_view.quote_saved.connect(
-            self.refresh
+            self.on_quote_saved
         )
 
         self.detail_view.quote_deleted.connect(
-            self.refresh
+            self.on_quote_deleted
         )
 
-        # Sprint berikutnya
-        # self.search.textChanged.connect(
-        #     self.filter_quotes
-        # )
+        self.search.textChanged.connect(
+            self.load_quotes
+        )
 
-        # Sprint berikutnya
-        # self.sort_filter.currentIndexChanged.connect(
-        #     self.sort_quotes
-        # )
+        self.sort_filter.currentIndexChanged.connect(
+            self.load_quotes
+        )
 
     def refresh(self):
 
@@ -314,6 +312,85 @@ class QuotesView(QWidget):
                 book_id
             )
 
+        keyword = self.search.text().lower().strip()
+
+        # ----------------------------
+        # Search
+        # ----------------------------
+
+        if keyword:
+
+            filtered_quotes = []
+
+            for quote in quotes:
+
+                search_fields = [
+
+                    quote.content,
+
+                    quote.note,
+
+                    quote.tags,
+
+                    quote.book.title
+                    if quote.book
+                    else "",
+
+                    str(quote.page),
+
+                ]
+
+                search_fields = [
+
+                    (field or "").lower()
+
+                    for field in search_fields
+
+                ]
+
+                if any(
+
+                    keyword in field
+
+                    for field in search_fields
+
+                ):
+
+                    filtered_quotes.append(
+                        quote
+                    )
+
+            quotes = filtered_quotes
+
+        # ----------------------------
+        # Sort
+        # ----------------------------
+
+        sort_by = self.sort_filter.currentText()
+
+        if sort_by == "Newest":
+
+            quotes.sort(
+                key=lambda quote: quote.updated_at,
+                reverse=True,
+            )
+
+        elif sort_by == "Oldest":
+
+            quotes.sort(
+                key=lambda quote: quote.created_at,
+            )
+
+        elif sort_by == "Page":
+
+            quotes.sort(
+                key=lambda quote: quote.page
+            )
+
+        # ----------------------------
+        # Display
+        # ----------------------------
+
         self.quote_list.set_quotes(
             quotes
         )
@@ -348,8 +425,11 @@ class QuotesView(QWidget):
         )
 
         if dialog.exec():
-
             self.refresh()
+
+            self.window().statusBar().showMessage(
+                "Quote added successfully."
+            )
 
     def update_empty_state(self):
 
@@ -365,4 +445,20 @@ class QuotesView(QWidget):
 
         self.empty_state.setVisible(
             not has_quotes
+        )
+
+    def on_quote_saved(self):
+
+        self.refresh()
+
+        self.window().statusBar().showMessage(
+            "Quote updated successfully."
+        )
+
+    def on_quote_deleted(self):
+
+        self.refresh()
+
+        self.window().statusBar().showMessage(
+            "Quote deleted successfully."
         )

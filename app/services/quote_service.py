@@ -199,13 +199,10 @@ class QuoteService:
 
     @staticmethod
     def update_quote(
-
         quote_id: int,
-
+        content: str,
         note: str,
-
         tags: str,
-
     ):
 
         session = SessionLocal()
@@ -221,8 +218,8 @@ class QuoteService:
 
                 return None
 
+            quote.content = content
             quote.note = note
-
             quote.tags = tags
 
             session.commit()
