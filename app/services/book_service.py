@@ -182,6 +182,13 @@ class BookService:
 
                 book.current_page = current_page
 
+                total = book.page_count or 0
+
+                if total > 0 and current_page >= total:
+
+                    book.current_page = total
+                    book.status = BookStatus.COMPLETED
+
                 session.commit()
 
         finally:

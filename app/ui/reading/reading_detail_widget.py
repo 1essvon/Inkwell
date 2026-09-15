@@ -429,6 +429,10 @@ class ReadingDetailWidget(BaseCard):
 
         self.note_input.setFocus()
 
+        self.window().statusBar().showMessage(
+            "Note saved successfully."
+        )
+
     def save_quote(self):
 
         if not self.book:
@@ -456,6 +460,10 @@ class ReadingDetailWidget(BaseCard):
         self.save_quote_button.setEnabled(True)
 
         self.quote_input.setFocus()
+
+        self.window().statusBar().showMessage(
+            "Quote saved successfully."
+        )
 
     def clear(self):
 

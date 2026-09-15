@@ -5,8 +5,8 @@ from PySide6.QtWidgets import (
     QSplitter
 )
 
-from app.services.book_service import (
-    BookService
+from app.constants.book_status import (
+    BookStatus
 )
 
 from app.ui.reading.reading_book_list_widget import (
@@ -79,46 +79,38 @@ class ReadingSessionView(QWidget):
 
         self.book_list.refresh()
 
-    def add_pages(
-        self,
-        amount
-    ):
-
-        if not self.book:
-
-            return
-
-        current = self.book.current_page or 0
-
-        total = self.book.page_count or 0
-
-        new_page = min(
-            current + amount,
-            total
-        )
-
-        BookService.update_current_page(
-
-            self.book.id,
-
-            new_page
-
-        )
-
-        self.refresh()
-
     def setup_connections(self):
 
         self.book_list.bookSelected.connect(
-
             self.on_book_selected
-
         )
 
         self.detail.progressUpdated.connect(
+            self.on_progress_updated
+        )
 
-            self.refresh_list
+    def on_progress_updated(self):
 
+        book = self.detail.book
+
+        self.refresh_list()
+
+        if not book:
+            return
+
+        if book.status == BookStatus.COMPLETED:
+
+            self.detail.clear()
+
+            self.window().statusBar().showMessage(
+                "Book completed!"
+            )
+
+            return
+
+        self.window().statusBar().showMessage(
+            f"Progress updated to page "
+            f"{book.current_page}."
         )
 
     def on_book_selected(
