@@ -1,4 +1,7 @@
-from PySide6.QtCore import Qt
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 
 from PySide6.QtWidgets import (
     QWidget,
@@ -47,6 +50,8 @@ from app.ui.components.toolbar import (
 )
 
 class LibraryView(QWidget):
+
+    continueRequested = Signal()
 
     # ----------------------------------
     # Initialization
@@ -229,6 +234,10 @@ class LibraryView(QWidget):
 
         self.sort_box.currentTextChanged.connect(
             self.refresh
+        )
+
+        self.detail_view.continueRequested.connect(
+            self.continueRequested.emit
         )
 
         self.detail_view.editRequested.connect(

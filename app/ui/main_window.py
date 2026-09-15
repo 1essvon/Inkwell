@@ -184,7 +184,6 @@ class MainWindow(QMainWindow):
 
         self.pages = QStackedWidget()
 
-
         self.dashboard_page = DashboardView()
 
         self.dashboard_page.add_book_requested.connect(
@@ -261,6 +260,10 @@ class MainWindow(QMainWindow):
 
         self.library_button.clicked.connect(
             self.show_library
+        )
+
+        self.library_page.continueRequested.connect(
+            self.show_reading
         )
 
         self.reading_button.clicked.connect(
