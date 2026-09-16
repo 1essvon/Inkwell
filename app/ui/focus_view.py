@@ -360,9 +360,8 @@ class FocusView(QWidget):
     def open_note_dialog(self):
 
         dialog = AddNoteDialog(
-
-            self.book.id
-
+            self,
+            self.book.id,
         )
 
         dialog.exec()
@@ -372,9 +371,8 @@ class FocusView(QWidget):
     def open_quote_dialog(self):
 
         dialog = AddQuoteDialog(
-
-            self.book.id
-
+            self,
+            self.book.id,
         )
 
         dialog.exec()

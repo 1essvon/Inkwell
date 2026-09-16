@@ -15,7 +15,11 @@ from app.services.note_service import NoteService
 
 class AddNoteDialog(QDialog):
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+        book_id=None,
+    ):
 
         super().__init__(parent)
 
@@ -30,7 +34,9 @@ class AddNoteDialog(QDialog):
 
         self.setup_ui()
 
-        self.load_books()
+        self.load_books(
+            book_id
+        )
 
     # ======================================
     # UI
@@ -98,7 +104,10 @@ class AddNoteDialog(QDialog):
     # Data
     # ======================================
 
-    def load_books(self):
+    def load_books(
+        self,
+        book_id=None,
+    ):
 
         self.book_combo.clear()
 
@@ -113,6 +122,18 @@ class AddNoteDialog(QDialog):
                 book.id,
 
             )
+
+        if book_id is not None:
+
+            index = self.book_combo.findData(
+                book_id
+            )
+
+            if index >= 0:
+
+                self.book_combo.setCurrentIndex(
+                    index
+                )
 
     # ======================================
     # Actions
