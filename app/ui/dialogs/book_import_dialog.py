@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QTextEdit,
     QMessageBox,
+    QComboBox
 )
 
 from PySide6.QtCore import Qt
@@ -28,6 +29,10 @@ from app.services.thumbnail_loader import (
 
 from app.services.google_books_service import (
     GoogleBooksService,
+)
+
+from app.services.open_library_service import (
+    OpenLibraryService,
 )
 
 class BookImportDialog(QDialog):
@@ -55,7 +60,7 @@ class BookImportDialog(QDialog):
     def setup_ui(self):
 
         self.setWindowTitle("Import Book")
-        self.resize(900, 550)
+        self.resize(900, 520)
 
         root = QVBoxLayout(self)
 
@@ -81,6 +86,17 @@ class BookImportDialog(QDialog):
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText(
             "Atomic Habits"
+        )
+
+        self.source_combo = QComboBox()
+
+        self.source_combo.addItems([
+            "Google Books",
+            "Open Library",
+        ])
+
+        search_layout.addWidget(
+            self.source_combo
         )
 
         self.search_button = QPushButton(
@@ -160,8 +176,8 @@ class BookImportDialog(QDialog):
         self.cover_label = QLabel()
 
         self.cover_label.setFixedSize(
+            120,
             160,
-            220,
         )
 
         self.cover_label.setAlignment(
@@ -211,6 +227,7 @@ class BookImportDialog(QDialog):
 
         self.description = QTextEdit()
         self.description.setReadOnly(True)
+        self.description.setMaximumHeight(70)
 
         layout.addWidget(
             self.description,
@@ -320,7 +337,10 @@ class BookImportDialog(QDialog):
 
         self.clear_preview()
 
-        books = GoogleBooksService.search(query)
+        if self.source_combo.currentText() == "Open Library":
+            books = OpenLibraryService.search(query)
+        else:
+            books = GoogleBooksService.search(query)
 
         for book in books:
 

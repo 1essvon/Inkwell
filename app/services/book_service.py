@@ -79,21 +79,16 @@ class BookService:
         try:
 
             book = Book(
-
                 title=title,
-
                 author=author,
-
                 isbn=isbn or None,
-
                 publisher=publisher or None,
-
+                published_year=published_year,
                 genre=genre or None,
-
+                description=description or None,
                 page_count=page_count if page_count > 0 else None,
-
+                cover_path=cover_path,
                 status=status
-
             )
 
             session.add(
@@ -391,7 +386,7 @@ class BookService:
 
             description=google_book.description,
 
-            page_count=google_book.page_count,
+            page_count=google_book.page_count or 0,
 
             cover_path=cover_path,
 

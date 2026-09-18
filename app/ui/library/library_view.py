@@ -33,6 +33,8 @@ from app.ui.dialogs.add_book_dialog import (
     AddBookDialog
 )
 
+from app.ui.dialogs.book_import_dialog import BookImportDialog
+
 from app.ui.dialogs.edit_book_dialog import (
     EditBookDialog
 )
@@ -125,6 +127,10 @@ class LibraryView(QWidget):
             "Add Book"
         )
 
+        self.import_button = QPushButton(
+            "Import Book"
+        )
+
         self.add_button.setObjectName(
             "primaryButton"
         )
@@ -153,6 +159,10 @@ class LibraryView(QWidget):
         )
 
         toolbar.add_stretch()
+
+        toolbar.add_widget(
+            self.import_button
+        )
 
         toolbar.add_widget(
             self.add_button
@@ -218,6 +228,10 @@ class LibraryView(QWidget):
 
         self.add_button.clicked.connect(
             self.show_add_book_dialog
+        )
+
+        self.import_button.clicked.connect(
+            self.show_import_book_dialog
         )
 
         self.book_list.bookSelected.connect(
@@ -389,6 +403,18 @@ class LibraryView(QWidget):
 
             self.window().statusBar().showMessage(
                 "Book added successfully."
+            )
+
+    def show_import_book_dialog(self):
+
+        dialog = BookImportDialog()
+
+        if dialog.exec():
+
+            self.refresh()
+
+            self.window().statusBar().showMessage(
+                "Book imported successfully."
             )
 
     def open_edit_dialog(self):

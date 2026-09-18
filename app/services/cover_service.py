@@ -1,20 +1,6 @@
-"""
-Service:
-    Cover Service
-
-Responsibilities:
-    - Download cover image
-    - Save locally
-    - Return local path
-
-Does NOT:
-    - Access database
-    - Know about Book
-    - Know about Qt
-"""
-
+from hashlib import sha256
 from pathlib import Path
-from uuid import uuid4
+from urllib.parse import urlparse
 
 import requests
 
@@ -40,8 +26,15 @@ class CoverService:
             exist_ok=True,
         )
 
-        try:
+        extension = cls._get_extension(url)
+        filename = cls._get_filename(url, extension)
+        path = COVER_DIR / filename
 
+        # Return cached cover if it already exists.
+        if path.exists():
+            return str(path)
+
+        try:
             response = requests.get(
                 url,
                 timeout=cls.TIMEOUT,
@@ -50,25 +43,44 @@ class CoverService:
             response.raise_for_status()
 
         except requests.RequestException:
-
             return None
 
-        extension = ".jpg"
+        if not response.content:
+            return None
 
-        if "." in url:
-
-            last = url.rsplit(".", 1)[-1]
-
-            if len(last) <= 5:
-
-                extension = "." + last.split("?")[0]
-
-        filename = f"{uuid4().hex}{extension}"
-
-        path = COVER_DIR / filename
-
-        path.write_bytes(
-            response.content
-        )
+        try:
+            path.write_bytes(response.content)
+        except OSError:
+            return None
 
         return str(path)
+
+    @staticmethod
+    def _get_filename(
+        url: str,
+        extension: str,
+    ) -> str:
+
+        cache_key = sha256(
+            url.encode("utf-8")
+        ).hexdigest()
+
+        return f"{cache_key}{extension}"
+
+    @staticmethod
+    def _get_extension(url: str) -> str:
+
+        path = urlparse(url).path
+        suffix = Path(path).suffix.lower()
+
+        allowed_extensions = {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp",
+        }
+
+        if suffix in allowed_extensions:
+            return suffix
+
+        return ".jpg"
