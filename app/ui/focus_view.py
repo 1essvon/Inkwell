@@ -139,7 +139,7 @@ class FocusView(QWidget):
 
         self.book_combo.clear()
 
-        books = BookService.get_all_books()
+        books = BookService.get_reading_books()
 
         for book in books:
 
