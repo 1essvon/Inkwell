@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from PySide6.QtCore import Qt
 from PySide6.QtCore import QTimer
@@ -38,6 +38,9 @@ class FocusView(QWidget):
 
         self.is_reading = False
         self.started_at = None
+        self.timer_end_at = None
+        self.paused_at = None
+        self.paused_seconds = 0
 
         self.timer = QTimer()
         self.timer.timeout.connect(
@@ -85,7 +88,7 @@ class FocusView(QWidget):
         # =====================
 
         self.timer_label = QLabel(
-            "00:00:00"
+            "25:00"
         )
 
         self.timer_label.setAlignment(
@@ -101,7 +104,6 @@ class FocusView(QWidget):
         )
 
         self.session_start_page = 0
-
         self.book = None
 
         # =====================
@@ -118,6 +120,32 @@ class FocusView(QWidget):
 
         layout.addWidget(
             self.session_button
+        )
+
+        self.pause_button = QPushButton(
+            "Pause"
+        )
+
+        self.pause_button.setEnabled(False)
+        self.pause_button.clicked.connect(
+            self.toggle_pause
+        )
+
+        layout.addWidget(
+            self.pause_button
+        )
+
+        self.reset_button = QPushButton(
+            "Reset"
+        )
+
+        self.reset_button.setEnabled(False)
+        self.reset_button.clicked.connect(
+            self.reset_timer
+        )
+
+        layout.addWidget(
+            self.reset_button
         )
 
         layout.addStretch()
@@ -209,8 +237,15 @@ class FocusView(QWidget):
                 self.book.current_page or 0
             )
 
+            self.timer_end_at = (
+                datetime.now() + timedelta(minutes=25)
+            )
+
+            self.paused_at = None
+            self.paused_seconds = 0
+
             self.timer_label.setText(
-                "00:00:00"
+                "25:00"
             )
 
             self.timer.start(1000)
@@ -220,6 +255,11 @@ class FocusView(QWidget):
             self.session_button.setText(
                 "Stop Session"
             )
+
+            self.pause_button.setEnabled(True)
+            self.pause_button.setText("Pause")
+
+            self.reset_button.setEnabled(True)
 
             return
 
@@ -242,11 +282,8 @@ class FocusView(QWidget):
         )
 
         dialog = EndSessionDialog(
-
             self.session_start_page,
-
-            self.book.page_count
-
+            self.book.page_count or 999999
         )
 
         if not dialog.exec():
@@ -294,8 +331,16 @@ class FocusView(QWidget):
             "Start Session"
         )
 
+        self.pause_button.setEnabled(False)
+        self.pause_button.setText("Pause")
+        self.paused_at = None
+
+        self.reset_button.setEnabled(False)
+
+        self.timer_end_at = None
+
         self.timer_label.setText(
-            "00:00:00"
+            "25:00"
         )
 
         self.load_book(
@@ -322,6 +367,64 @@ class FocusView(QWidget):
 
             self.open_quote_dialog()
 
+    def reset_timer(self):
+
+        if not self.is_reading:
+            return
+
+        self.timer.stop()
+
+        self.timer_end_at = (
+            datetime.now() + timedelta(minutes=25)
+        )
+
+        self.paused_at = None
+        self.paused_seconds = 0
+
+        self.pause_button.setText(
+            "Pause"
+        )
+
+        self.timer_label.setText(
+            "25:00"
+        )
+
+        self.timer.start(1000)
+
+    def toggle_pause(self):
+
+        if not self.is_reading:
+            return
+
+        if self.timer.isActive():
+
+            self.timer.stop()
+            self.paused_at = datetime.now()
+
+            self.pause_button.setText(
+                "Resume"
+            )
+
+            return
+
+        if not self.paused_at:
+            return
+
+        paused_duration = (
+            datetime.now() - self.paused_at
+        )
+
+        self.timer_end_at += paused_duration
+        self.started_at += paused_duration
+
+        self.paused_at = None
+
+        self.pause_button.setText(
+            "Pause"
+        )
+
+        self.timer.start(1000)
+
 
     # =====================
     # Timer
@@ -329,30 +432,35 @@ class FocusView(QWidget):
 
     def update_timer(self):
 
-        if not self.started_at:
+        if not self.timer_end_at:
             return
 
-        elapsed = (
-            datetime.now()
-            - self.started_at
+        remaining = (
+            self.timer_end_at - datetime.now()
         )
 
-        total = int(
-            elapsed.total_seconds()
+        total = max(
+            0,
+            int(remaining.total_seconds())
         )
 
-        hours = total // 3600
-
-        minutes = (
-            total % 3600
-        ) // 60
-
+        minutes = total // 60
         seconds = total % 60
 
         self.timer_label.setText(
-            f"{hours:02}:{minutes:02}:{seconds:02}"
+            f"{minutes:02}:{seconds:02}"
         )
 
+        if total <= 0:
+            self.timer.stop()
+            self.timer_end_at = None
+
+            if self.is_reading:
+                self.window().statusBar().showMessage(
+                    "Focus timer finished."
+                )
+                self.toggle_session()
+                
     def refresh(self):
 
         pass
