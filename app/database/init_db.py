@@ -1,17 +1,12 @@
-from app.database.base import Base
-from app.database.engine import engine
+from sqlalchemy import text
 
-# Import all models
-from app.models.book import Book
-from app.models.note import Note
-from app.models.quote import Quote
-from app.models.reading_session import ReadingSession
-from app.models.scratchpad_entry import ScratchpadEntry
-from app.models.app_settings import AppSettings
+from app.database.engine import engine
 
 
 def init_database():
 
-    Base.metadata.create_all(
-        bind=engine
-    )
+    with engine.connect() as connection:
+
+        connection.execute(
+            text("SELECT 1")
+        )
