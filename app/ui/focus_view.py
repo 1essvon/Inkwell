@@ -87,6 +87,19 @@ class FocusView(QWidget):
         # Timer
         # =====================
 
+        layout.addWidget(
+            QLabel("Focus Duration")
+        )
+
+        self.duration_spin = QSpinBox()
+        self.duration_spin.setRange(1, 120)
+        self.duration_spin.setValue(25)
+        self.duration_spin.setSuffix(" min")
+
+        layout.addWidget(
+            self.duration_spin
+        )
+                
         self.timer_label = QLabel(
             "25:00"
         )
@@ -237,15 +250,17 @@ class FocusView(QWidget):
                 self.book.current_page or 0
             )
 
+            duration = self.duration_spin.value()
+
             self.timer_end_at = (
-                datetime.now() + timedelta(minutes=25)
+                datetime.now() + timedelta(minutes=duration)
             )
 
             self.paused_at = None
             self.paused_seconds = 0
 
             self.timer_label.setText(
-                "25:00"
+                f"{duration:02}:00"
             )
 
             self.timer.start(1000)
@@ -333,6 +348,7 @@ class FocusView(QWidget):
 
         self.pause_button.setEnabled(False)
         self.pause_button.setText("Pause")
+        self.duration_spin.setEnabled(True)
         self.paused_at = None
 
         self.reset_button.setEnabled(False)
@@ -374,8 +390,10 @@ class FocusView(QWidget):
 
         self.timer.stop()
 
+        duration = self.duration_spin.value()
+
         self.timer_end_at = (
-            datetime.now() + timedelta(minutes=25)
+            datetime.now() + timedelta(minutes=duration)
         )
 
         self.paused_at = None
@@ -386,7 +404,7 @@ class FocusView(QWidget):
         )
 
         self.timer_label.setText(
-            "25:00"
+            f"{duration:02}:00"
         )
 
         self.timer.start(1000)
