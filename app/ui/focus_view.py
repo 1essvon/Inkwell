@@ -356,7 +356,7 @@ class FocusView(QWidget):
         self.timer_end_at = None
 
         self.timer_label.setText(
-            "25:00"
+            f"{self.duration_spin.value():02}:00"
         )
 
         self.load_book(
