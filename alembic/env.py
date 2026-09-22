@@ -30,6 +30,9 @@ from app.models.scratchpad_entry import (
 from app.models.reading_session import (
     ReadingSession
 )
+from app.models.app_settings import (
+    AppSettings
+)
 
 target_metadata = Base.metadata
 
