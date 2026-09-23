@@ -8,10 +8,14 @@ from PySide6.QtWidgets import (
     QPushButton,
     QMessageBox,
     QSpinBox,
+    QFileDialog,
 )
 
 from app.services.settings_service import (
     SettingsService,
+)
+from app.services.backup_service import (
+    BackupService,
 )
 
 from app.ui.components.page_header import (
@@ -182,6 +186,36 @@ class SettingsView(QWidget):
         )
 
         # --------------------------
+        # Backup
+        # --------------------------
+
+        backup_group = QGroupBox(
+            "Backup"
+        )
+
+        backup_layout = QVBoxLayout()
+
+        self.backup_button = QPushButton(
+            "Backup Database"
+        )
+
+        self.backup_button.clicked.connect(
+            self.backup_database
+        )
+
+        backup_layout.addWidget(
+            self.backup_button
+        )
+
+        backup_group.setLayout(
+            backup_layout
+        )
+
+        layout.addWidget(
+            backup_group
+        )
+
+        # --------------------------
         # Save Button
         # --------------------------
 
@@ -274,6 +308,50 @@ class SettingsView(QWidget):
         )
 
         self.load()
+
+    # ==========================
+    # Backup
+    # ==========================
+
+    def backup_database(self):
+
+        destination, _selected_filter = (
+            QFileDialog.getSaveFileName(
+                self,
+                "Backup Database",
+                "inkwell_backup.db",
+                "SQLite Database (*.db)",
+            )
+        )
+
+        if not destination:
+            return
+
+        try:
+            success = BackupService.export_database(
+                destination
+            )
+        except Exception as error:
+            QMessageBox.critical(
+                self,
+                "Backup Failed",
+                f"Database backup failed: {error}",
+            )
+            return
+
+        if not success:
+            QMessageBox.critical(
+                self,
+                "Backup Failed",
+                "Database backup failed. The database file could not be found.",
+            )
+            return
+
+        QMessageBox.information(
+            self,
+            "Backup Complete",
+            f"Database backup saved to:\n{destination}",
+        )
 
     # ==========================
     # Refresh
