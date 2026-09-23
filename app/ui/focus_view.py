@@ -30,6 +30,7 @@ from app.ui.dialogs.add_note_dialog import (
 from app.ui.dialogs.add_quote_dialog import (
     AddQuoteDialog
 )
+from app.ui.components.audio_player_widget import AudioPlayerWidget
 
 class FocusView(QWidget):
 
@@ -160,6 +161,11 @@ class FocusView(QWidget):
 
         layout.addWidget(
             self.reset_button
+        )
+
+        self.audio_player = AudioPlayerWidget(self)
+        layout.addWidget(
+            self.audio_player
         )
 
         layout.addStretch()
