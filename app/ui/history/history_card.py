@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from PySide6.QtWidgets import (
     QLabel,
@@ -27,9 +27,11 @@ class HistoryCard(BaseCard):
 
     def format_datetime(self):
 
-        dt = self.session.ended_at
+        dt = self.session.ended_at.replace(
+            tzinfo=timezone.utc
+        ).astimezone()
 
-        now = datetime.now()
+        now = datetime.now().astimezone()
 
         if dt.date() == now.date():
 

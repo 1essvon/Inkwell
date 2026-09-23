@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from app.database.session import SessionLocal
 
@@ -14,8 +15,19 @@ class ReadingSessionService:
         book_id: int,
         start_page: int,
         end_page: int,
-        duration_minutes: int
+        duration_minutes: int,
+        started_at: Optional[datetime] = None,
+        ended_at: Optional[datetime] = None,
     ):
+
+        if end_page < start_page or duration_minutes < 0:
+            return None
+
+        timestamp = datetime.utcnow()
+        if started_at is None:
+            started_at = timestamp
+        if ended_at is None:
+            ended_at = timestamp
 
         session = SessionLocal()
 
@@ -27,8 +39,8 @@ class ReadingSessionService:
                     start_page=start_page,
                     end_page=end_page,
                     duration_minutes=duration_minutes,
-                    started_at=datetime.utcnow(),
-                    ended_at=datetime.utcnow()
+                    started_at=started_at,
+                    ended_at=ended_at,
                 )
             )
 
@@ -37,6 +49,8 @@ class ReadingSessionService:
             )
 
             session.commit()
+            session.refresh(reading_session)
+            return reading_session
 
         finally:
             session.close()
@@ -147,5 +161,3 @@ class ReadingSessionService:
             for session in sessions
 
         )
-    
-    

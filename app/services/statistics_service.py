@@ -1,5 +1,6 @@
 from datetime import date
 from datetime import timedelta
+from datetime import timezone
 
 from sqlalchemy import func
 
@@ -280,7 +281,9 @@ class StatisticsService:
 
                 {
 
-                    s.started_at.date()
+                    s.started_at.replace(
+                        tzinfo=timezone.utc
+                    ).astimezone().date()
 
                     for s in sessions
 

@@ -38,6 +38,7 @@ class FocusView(QWidget):
 
         self.is_reading = False
         self.started_at = None
+        self.activity_started_at = None
         self.timer_end_at = None
         self.paused_at = None
         self.paused_seconds = 0
@@ -208,10 +209,15 @@ class FocusView(QWidget):
 
     def load_book(self, index):
 
+        self.book = None
+
         if index < 0:
             return
 
         book_id = self.book_combo.currentData()
+
+        if book_id is None:
+            return
 
         self.book = BookService.get_book(
             book_id
@@ -242,7 +248,20 @@ class FocusView(QWidget):
 
         if not self.is_reading:
 
+            book_id = self.book_combo.currentData()
+
+            if (
+                self.book is None
+                or book_id is None
+                or self.book.id != book_id
+            ):
+                self.window().statusBar().showMessage(
+                    "Pilih buku yang sedang dibaca sebelum memulai sesi."
+                )
+                return
+
             self.started_at = datetime.now()
+            self.activity_started_at = datetime.utcnow()
 
             self.is_reading = True
 
@@ -303,6 +322,18 @@ class FocusView(QWidget):
 
         if not dialog.exec():
 
+            if (
+                self.timer_end_at is None
+                or self.timer_end_at <= datetime.now()
+            ):
+                duration = self.duration_spin.value()
+                self.timer_end_at = (
+                    datetime.now() + timedelta(minutes=duration)
+                )
+                self.timer_label.setText(
+                    f"{duration:02}:00"
+                )
+
             self.timer.start(1000)
 
             return
@@ -324,7 +355,11 @@ class FocusView(QWidget):
 
             end_page=end_page,
 
-            duration_minutes=duration
+            duration_minutes=duration,
+
+            started_at=self.activity_started_at,
+
+            ended_at=datetime.utcnow(),
 
         )
 
@@ -339,6 +374,7 @@ class FocusView(QWidget):
         self.is_reading = False
 
         self.started_at = None
+        self.activity_started_at = None
 
         self.book_combo.setEnabled(True)
 
@@ -471,7 +507,6 @@ class FocusView(QWidget):
 
         if total <= 0:
             self.timer.stop()
-            self.timer_end_at = None
 
             if self.is_reading:
                 self.window().statusBar().showMessage(
