@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PySide6.QtCore import Signal
 
 from PySide6.QtWidgets import (
@@ -13,6 +15,9 @@ from PySide6.QtWidgets import (
 from app.services.book_service import BookService
 from app.services.note_service import NoteService
 from app.services.quote_service import QuoteService
+from app.services.reading_session_service import (
+    ReadingSessionService,
+)
 
 from app.ui.components.base_card import BaseCard
 
@@ -374,32 +379,52 @@ class ReadingDetailWidget(BaseCard):
             total,
         )
 
-        BookService.update_current_page(
-            self.book.id,
+        self._update_page_and_log_activity(
             new_page,
         )
-
-        self.book = BookService.get_book(
-            self.book.id
-        )
-
-        self.refresh()
-
-        self.progressUpdated.emit()
 
     def save_page(self):
 
         if not self.book:
             return
 
-        BookService.update_current_page(
-            self.book.id,
+        self._update_page_and_log_activity(
             self.page_input.value(),
         )
 
-        self.book = BookService.get_book(
-            self.book.id
+    def _update_page_and_log_activity(
+        self,
+        requested_page,
+    ):
+
+        if not self.book:
+            return
+
+        book_id = self.book.id
+        old_page = self.book.current_page or 0
+        action_at = datetime.utcnow()
+
+        BookService.update_current_page(
+            book_id,
+            requested_page,
         )
+
+        self.book = BookService.get_book(
+            book_id
+        )
+
+        if self.book:
+            new_page = self.book.current_page or 0
+
+            if new_page > old_page:
+                ReadingSessionService.create_session(
+                    book_id=book_id,
+                    start_page=old_page,
+                    end_page=new_page,
+                    duration_minutes=0,
+                    started_at=action_at,
+                    ended_at=action_at,
+                )
 
         self.refresh()
 
