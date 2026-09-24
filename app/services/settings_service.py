@@ -30,7 +30,9 @@ class SettingsService:
 
             if settings is None:
 
-                settings = AppSettings()
+                settings = AppSettings(
+                    theme="black_on_white"
+                )
 
                 session.add(
                     settings
@@ -114,7 +116,7 @@ class SettingsService:
 
         SettingsService.save(
 
-            theme="Dark",
+            theme="black_on_white",
 
             autosave=False,
 

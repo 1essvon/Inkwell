@@ -53,7 +53,7 @@ class SessionCompleteDialog(QDialog):
         )
 
         title_label = QLabel(
-            "🎉 Great Reading Session!"
+            "Great Reading Session!"
         )
 
         title_label.setAlignment(
@@ -81,7 +81,7 @@ class SessionCompleteDialog(QDialog):
         layout.addWidget(book_label)
 
         pages_label = QLabel(
-            f"📖 {pages} Pages Read"
+            f"▤ {pages} Pages Read"
         )
 
         pages_label.setAlignment(
@@ -93,7 +93,7 @@ class SessionCompleteDialog(QDialog):
         )
 
         duration_label = QLabel(
-            f"⏱ {duration} Minute{'s' if duration > 1 else ''}"
+            f"{duration} Minute{'s' if duration > 1 else ''}"
         )
 
         duration_label.setAlignment(
@@ -107,7 +107,7 @@ class SessionCompleteDialog(QDialog):
         layout.addSpacing(10)
 
         note_button = QPushButton(
-            "📝 Add Note"
+            "▤ Add Note"
         )
 
         note_button.setToolTip(
@@ -118,7 +118,7 @@ class SessionCompleteDialog(QDialog):
 
 
         quote_button = QPushButton(
-            "💬 Add Quote"
+            "Add Quote"
         )
 
         quote_button.setToolTip(

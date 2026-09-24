@@ -77,7 +77,7 @@ class DashboardService:
 
         if percentage == 100:
 
-            status = "Finished reading 🎉"
+            status = "Finished reading"
 
         elif percentage >= 75:
 
@@ -165,7 +165,7 @@ class DashboardService:
 
             if remaining == 0:
 
-                status = "Goal achieved! 🎉"
+                status = "Goal achieved!"
 
             else:
 

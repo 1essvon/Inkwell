@@ -157,6 +157,7 @@ class MainWindow(QMainWindow):
             (self.settings_button, "settings"),
         )
         for button, icon_name in navigation_icons:
+            button.setProperty("inkwell_icon_name", icon_name)
             button.setIcon(icon(icon_name))
             button.setIconSize(QSize(18, 18))
 

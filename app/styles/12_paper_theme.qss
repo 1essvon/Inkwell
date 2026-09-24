@@ -1,20 +1,22 @@
-/* Active monochrome palette. Loaded last to normalize all screen components. */
+/*
+   Ink & Paper visual identity.
+   Loaded after component styles so one warm, readable palette applies across
+   the existing screens without changing their behavior.
+*/
 
 QMainWindow,
 QDialog,
 QWidget#appRoot,
 QWidget#focusView {
-    background-color: #FFFFFF;
+    background-color: #F3EEE3;
 }
 
 QWidget {
-    color: #111111;
+    color: #302B25;
     font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-QStackedWidget,
-QScrollArea,
-QScrollArea > QWidget > QWidget {
+QStackedWidget {
     background-color: transparent;
 }
 
@@ -25,17 +27,15 @@ QLabel {
 QWidget#baseCard,
 QWidget#toolbar,
 QWidget#noteCard,
-QWidget#infoCard,
-QWidget#focusBookPanel,
-QWidget#focusTimerPanel {
-    background-color: #FFFFFF;
-    border-color: #D6D6D6;
+QWidget#infoCard {
+    background-color: #FFFCF6;
+    border-color: #D9CEBC;
 }
 
 QWidget#baseCard:hover,
 QWidget#noteCard:hover {
-    background-color: #F5F5F5;
-    border-color: #BDBDBD;
+    background-color: #F8F1E5;
+    border-color: #C8B79F;
 }
 
 QLabel#pageTitle,
@@ -44,9 +44,8 @@ QLabel#dialogTitle,
 QLabel#detailTitle,
 QLabel#emptyTitle,
 QLabel#noteCardTitle,
-QLineEdit#pageTitleEditor,
-QLabel#focusTitle {
-    color: #111111;
+QLineEdit#pageTitleEditor {
+    color: #302B25;
     font-family: "Georgia", "Times New Roman", serif;
 }
 
@@ -63,120 +62,69 @@ QLabel#noteCardBook,
 QLabel#noteCardPreview,
 QLabel#noteCardDate,
 QLabel#emptySubtitle,
-QLabel#toolbarTitle,
-QLabel#focusSubtitle,
-QLabel#focusDurationLabel,
-QLabel#focusEmptyState {
-    color: #666666;
+QLabel#toolbarTitle {
+    color: #746B5F;
 }
 
 QLabel#cardValue,
 QLabel#metricValue,
 QLabel#bookTitle,
 QLabel#quoteCardPage,
-QLabel#pageIndicator,
-QLabel#bookProgress,
-QLabel#bookStatus,
-QLabel#focusEyebrow,
-QLabel#searchIcon,
-QLabel#emptyIcon,
-QLabel#cardIcon,
-QLabel#quoteIcon {
-    color: #222222;
-}
-
-QLabel#focusTitle {
-    font-size: 28px;
-    font-weight: 700;
-}
-
-QLabel#focusSubtitle,
-QLabel#focusDurationLabel {
-    font-size: 13px;
-}
-
-QLabel#focusEyebrow {
-    font-size: 10px;
-    font-weight: 700;
-}
-
-QLabel#timerLabel {
-    background-color: transparent;
-    color: #111111;
-    font-family: "Georgia", "Times New Roman", serif;
-    font-size: 48px;
-    font-weight: 600;
-    padding: 2px 0;
-}
-
 QLabel#pageIndicator {
-    background-color: #F5F5F5;
-    border: 1px solid #D6D6D6;
-    border-radius: 9px;
-    padding: 6px 10px;
+    color: #302B25;
 }
 
-QLabel#badgeReading,
-QLabel#badgeFinished,
-QLabel#badgeWaiting,
-QLabel#badgeDanger,
-QLabel#badgeDefault {
-    background-color: #EEEEEE;
-    color: #222222;
-}
-
-QLabel#bookCover {
-    background-color: #F5F5F5;
-    color: #666666;
-    border-color: #D6D6D6;
+QLabel#bookProgress,
+QLabel#bookStatus {
+    color: #805638;
 }
 
 QPushButton {
-    background-color: #F2F2F2;
-    color: #111111;
-    border: 1px solid #D0D0D0;
+    background-color: #EAE1D2;
+    color: #302B25;
+    border: 1px solid #D1C4B0;
 }
 
 QPushButton:hover {
-    background-color: #E8E8E8;
-    border-color: #AFAFAF;
+    background-color: #E1D3BE;
+    border-color: #BAA58A;
 }
 
 QPushButton:pressed {
-    background-color: #D9D9D9;
+    background-color: #D8C6AE;
 }
 
 QPushButton:disabled {
-    background-color: #F5F5F5;
-    color: #929292;
-    border-color: #E2E2E2;
+    background-color: #EEE9E0;
+    color: #A49A8B;
+    border-color: #E1D9CC;
 }
 
 QPushButton#primaryButton,
 QPushButton#emptyAction {
-    background-color: #111111;
-    color: #FFFFFF;
-    border-color: #111111;
+    background-color: #76543A;
+    color: #FFF9EF;
+    border-color: #76543A;
 }
 
 QPushButton#primaryButton:hover,
 QPushButton#emptyAction:hover {
-    background-color: #333333;
-    border-color: #333333;
+    background-color: #62442F;
+    border-color: #62442F;
 }
 
 QPushButton#secondaryButton,
 QPushButton#iconButton,
 QPushButton#searchClearButton {
     background-color: transparent;
-    color: #222222;
-    border-color: #D0D0D0;
+    color: #5F5142;
+    border-color: #CFC2AE;
 }
 
 QPushButton#dangerButton {
-    background-color: #222222;
-    color: #FFFFFF;
-    border-color: #222222;
+    background-color: #9A5147;
+    color: #FFF9EF;
+    border-color: #9A5147;
 }
 
 QLineEdit,
@@ -185,19 +133,24 @@ QPlainTextEdit,
 QComboBox,
 QSpinBox,
 QDateEdit {
-    background-color: #FFFFFF;
-    color: #111111;
-    border: 1px solid #D0D0D0;
-    selection-background-color: #222222;
-    selection-color: #FFFFFF;
+    background-color: #FFFCF6;
+    color: #302B25;
+    border: 1px solid #D2C6B4;
+    selection-background-color: #B98B62;
+    selection-color: #FFF9EF;
 }
 
-QLineEdit#searchInput,
+QLineEdit#searchInput {
+    background-color: #FFFCF6;
+    color: #302B25;
+    border-color: #D2C6B4;
+}
+
 QLineEdit#searchInput:hover,
 QLineEdit#searchInput:focus {
-    background-color: #FFFFFF;
-    color: #111111;
-    border-color: #888888;
+    background-color: #FFFCF6;
+    color: #302B25;
+    border-color: #8A6242;
 }
 
 QLineEdit:focus,
@@ -206,67 +159,120 @@ QPlainTextEdit:focus,
 QComboBox:focus,
 QSpinBox:focus,
 QDateEdit:focus {
-    border-color: #666666;
+    border-color: #8A6242;
 }
 
 QListWidget,
 QListView,
 QTreeWidget {
     background-color: transparent;
-    color: #111111;
+    color: #302B25;
 }
 
 QListWidget::item:hover,
-QListView::item:hover,
-QListWidget::item:selected,
-QListView::item:selected,
-QTreeWidget::item:selected,
-QListView::item:selected:active {
-    background-color: #EAEAEA;
-    color: #111111;
+QListView::item:hover {
+    background-color: #EEE5D7;
 }
 
 QListWidget::item:selected,
-QListView::item:selected {
-    border-left: 3px solid #222222;
+QListView::item:selected,
+QTreeWidget::item:selected {
+    background-color: #E4D3BE;
+    color: #302B25;
 }
 
 QProgressBar {
-    background-color: #E6E6E6;
+    background-color: #E4DACB;
 }
 
 QProgressBar::chunk {
-    background-color: #333333;
+    background-color: #BC9877;
 }
 
-QSlider::groove:horizontal {
-    height: 6px;
-    background-color: #E6E6E6;
-    border-radius: 3px;
+QLabel#badgeReading,
+QLabel#badgeFinished,
+QLabel#badgeWaiting,
+QLabel#badgeDanger,
+QLabel#badgeDefault {
+    color: #302B25;
 }
 
-QSlider::sub-page:horizontal {
-    background-color: #777777;
-    border-radius: 3px;
-}
+QLabel#badgeReading { background-color: #D9E2D0; }
+QLabel#badgeFinished { background-color: #D4E1D0; }
+QLabel#badgeWaiting { background-color: #E9E1D5; }
+QLabel#badgeDanger { background-color: #EBD5CF; }
+QLabel#badgeDefault { background-color: #E9E1D5; }
 
-QSlider::handle:horizontal {
-    width: 14px;
-    margin: -5px 0;
-    background-color: #FFFFFF;
-    border: 1px solid #333333;
-    border-radius: 7px;
+QLabel#bookCover {
+    background-color: #EFE7D9;
+    color: #877966;
+    border-color: #D3C6B3;
 }
 
 QFrame#divider,
 QFrame#toolbarDivider {
-    background-color: #D6D6D6;
+    background-color: #D9CEBC;
+}
+
+QLabel#emptyIcon,
+QLabel#cardIcon,
+QLabel#quoteIcon {
+    color: #927859;
+}
+
+QLabel#searchIcon {
+    color: #746B5F;
+}
+
+QWidget#focusView {
+    background-color: #F3EEE3;
 }
 
 QWidget#focusBookPanel,
 QWidget#focusTimerPanel {
-    border: 1px solid #D6D6D6;
-    border-radius: 14px;
+    background-color: #FFFCF6;
+    border: 1px solid #D9CEBC;
+    border-radius: 16px;
+}
+
+QWidget#focusTimerPanel {
+    background-color: #FBF7EE;
+}
+
+QLabel#focusTitle {
+    color: #302B25;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+QLabel#focusSubtitle,
+QLabel#focusDurationLabel {
+    color: #746B5F;
+    font-size: 13px;
+}
+
+QLabel#focusEyebrow {
+    color: #8A6242;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+QLabel#timerLabel {
+    background-color: transparent;
+    color: #60462F;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 48px;
+    font-weight: 600;
+    padding: 2px 0;
+}
+
+QLabel#pageIndicator {
+    background-color: #EFE7D9;
+    border: 1px solid #DED1BD;
+    border-radius: 9px;
+    color: #675844;
+    padding: 6px 10px;
 }
 
 QComboBox#focusBookSelector {
@@ -280,27 +286,36 @@ QSpinBox#focusDuration {
     min-height: 30px;
 }
 
-QGroupBox {
-    color: #111111;
+QFrame#progressTrack {
+    background-color: #E4DACB;
+    border-radius: 5px;
 }
 
-QScrollBar:vertical {
-    background-color: #F5F5F5;
-    width: 10px;
-    margin: 0;
+QFrame#progressFill {
+    background-color: #8A6242;
+    border-radius: 5px;
 }
 
-QScrollBar::handle:vertical {
-    background-color: #BDBDBD;
-    min-height: 24px;
-    border-radius: 4px;
+QLabel#bookImportCoverPreview {
+    background-color: #EFE7D9;
+    border: 1px solid #D3C6B3;
 }
 
-QScrollBar::handle:vertical:hover {
-    background-color: #888888;
+QSlider::groove:horizontal {
+    height: 6px;
+    background-color: #E4DACB;
+    border-radius: 3px;
 }
 
-QScrollBar::add-line:vertical,
-QScrollBar::sub-line:vertical {
-    height: 0;
+QSlider::sub-page:horizontal {
+    background-color: #BC9877;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    width: 14px;
+    margin: -5px 0;
+    background-color: #FFFCF6;
+    border: 1px solid #8A6242;
+    border-radius: 7px;
 }

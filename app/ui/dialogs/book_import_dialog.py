@@ -183,11 +183,7 @@ class BookImportDialog(QDialog):
         self.cover_label.setAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
-
-        self.cover_label.setStyleSheet("""
-            background-color: #EFE7D9;
-            border: 1px solid #D3C6B3;
-        """)
+        self.cover_label.setObjectName("bookImportCoverPreview")
 
         layout.addWidget(
             self.cover_label,

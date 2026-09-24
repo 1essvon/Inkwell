@@ -1,5 +1,6 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QApplication,
     QWidget,
     QVBoxLayout,
     QFormLayout,
@@ -17,6 +18,7 @@ from PySide6.QtWidgets import (
 from app.services.settings_service import (
     SettingsService,
 )
+from app.services.theme_service import ThemeService
 from app.services.backup_service import (
     BackupService,
 )
@@ -89,7 +91,9 @@ class SettingsView(QWidget):
 
         self.theme_combo = QComboBox()
 
-        self.theme_combo.addItem("Monochrome", "Dark")
+        self.theme_combo.addItem("White on Black", "white_on_black")
+        self.theme_combo.addItem("Black on White", "black_on_white")
+        self.theme_combo.addItem("Ink & Paper", "ink_and_paper")
 
         appearance_layout.addWidget(
             self.theme_combo
@@ -308,9 +312,11 @@ class SettingsView(QWidget):
             SettingsService.get()
         )
 
-        # "Dark" is the persisted legacy value; the active stylesheet is the
-        # monochrome light palette, so expose an accurate label in the UI.
-        self.theme_combo.setCurrentText("Monochrome")
+        theme_name = ThemeService.normalize_theme_name(
+            self.settings.theme
+        )
+        index = self.theme_combo.findData(theme_name)
+        self.theme_combo.setCurrentIndex(max(index, 0))
 
         self.autosave_checkbox.setChecked(
 
@@ -342,9 +348,11 @@ class SettingsView(QWidget):
 
     def save(self):
 
+        theme_name = self.theme_combo.currentData()
+
         SettingsService.save(
 
-            theme=self.theme_combo.currentData(),
+            theme=theme_name,
 
             autosave=self.autosave_checkbox.isChecked(),
 
@@ -359,6 +367,10 @@ class SettingsView(QWidget):
             ),
 
         )
+
+        app = QApplication.instance()
+        if app is not None:
+            ThemeService.apply_theme(app, theme_name)
 
         QMessageBox.information(
 

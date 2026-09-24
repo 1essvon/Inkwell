@@ -49,7 +49,7 @@ class BookListWidget(QWidget):
 
         self.empty_state = EmptyState(
 
-            icon="📚",
+            icon="▤",
 
             title="Your Library is Empty",
 

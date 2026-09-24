@@ -82,6 +82,7 @@ class QuickActionsWidget(BaseCard):
     ):
 
         button = QPushButton(text)
+        button.setProperty("inkwell_icon_name", icon_name)
         button.setIcon(icon(icon_name, size=24))
         button.setIconSize(QSize(24, 24))
 

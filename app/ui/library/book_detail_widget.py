@@ -71,7 +71,7 @@ class BookDetailWidget(QWidget):
         )
 
         self.cover = QLabel(
-            "📘"
+            "▣"
         )
 
         self.cover.setObjectName(

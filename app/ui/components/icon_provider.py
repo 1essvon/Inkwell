@@ -3,6 +3,7 @@
 from PySide6.QtCore import QByteArray, QSize, Qt
 from PySide6.QtGui import QIcon, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
+from PySide6.QtWidgets import QApplication
 
 
 _ICON_PATHS = {
@@ -20,11 +21,19 @@ _ICON_PATHS = {
 }
 
 
-def icon(name: str, size: int = 20) -> QIcon:
+def icon(name: str, size: int = 20, color: str | None = None) -> QIcon:
     """Render a 24px stroke SVG as a QIcon at the requested size."""
+    if color is None:
+        application = QApplication.instance()
+        color = (
+            application.property("inkwell_icon_color")
+            if application is not None
+            else None
+        ) or "#111111"
+
     svg = (
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" '
-        'viewBox="0 0 24 24" fill="none" stroke="#76543A" '
+        f'viewBox="0 0 24 24" fill="none" stroke="{color}" '
         'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'
         f"{_ICON_PATHS[name]}</svg>"
     )

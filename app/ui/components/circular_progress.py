@@ -11,6 +11,7 @@ from PySide6.QtGui import (
 )
 
 from PySide6.QtWidgets import (
+    QApplication,
     QWidget,
 )
 
@@ -25,11 +26,20 @@ class CircularProgress(QWidget):
 
         self._thickness = 10
 
-        self._track_color = QColor("#E4DACB")
+        self._track_color = QColor("#E6E6E6")
+        self._progress_color = QColor("#333333")
+        self._text_color = QColor("#111111")
 
-        self._progress_color = QColor("#8A6242")
-
-        self._text_color = QColor("#302B25")
+        application = QApplication.instance()
+        theme_name = (
+            application.property("inkwell_theme")
+            if application is not None
+            else "black_on_white"
+        )
+        from app.services.theme_service import ThemeService
+        self.set_theme_palette(
+            ThemeService.palette_for(theme_name)
+        )
 
         self.setMinimumSize(
             120,
@@ -39,6 +49,12 @@ class CircularProgress(QWidget):
     # ==================================================
     # Public API
     # ==================================================
+
+    def set_theme_palette(self, palette):
+        self._track_color = QColor(palette["progress_track"])
+        self._progress_color = QColor(palette["progress"])
+        self._text_color = QColor(palette["progress_text"])
+        self.update()
 
     def set_percentage(
         self,

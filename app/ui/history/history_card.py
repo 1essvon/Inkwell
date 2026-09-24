@@ -36,7 +36,7 @@ class HistoryCard(BaseCard):
         if dt.date() == now.date():
 
             return (
-                "🕒 Today • "
+                "Today • "
                 + dt.strftime("%H:%M")
             )
 
@@ -46,14 +46,11 @@ class HistoryCard(BaseCard):
         ).days == 1:
 
             return (
-                "🕒 Yesterday • "
+                "Yesterday • "
                 + dt.strftime("%H:%M")
             )
 
-        return (
-            "🕒 "
-            + dt.strftime("%d %b %Y • %H:%M")
-        )
+        return dt.strftime("%d %b %Y • %H:%M")
     
     def setup_ui(self):
 
@@ -64,7 +61,7 @@ class HistoryCard(BaseCard):
         )
 
         title = QLabel(
-            f"📖 {self.book.title}"
+            f"▤ {self.book.title}"
         )
 
         title.setObjectName(
@@ -113,7 +110,7 @@ class HistoryCard(BaseCard):
 
             f" • "
 
-            f"⏱ {self.session.duration_minutes} min"
+            f"{self.session.duration_minutes} min"
 
         )
 

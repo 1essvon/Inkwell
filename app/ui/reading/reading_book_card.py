@@ -40,7 +40,7 @@ class ReadingBookCard(BaseCard):
         # ==========================
 
         title = QLabel(
-            f"📖 {self.book.title}"
+            f"▤ {self.book.title}"
         )
 
         title.setObjectName(

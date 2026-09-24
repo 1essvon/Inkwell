@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-STYLE_FILES = [
+BASE_STYLE_FILES = [
 
     "00_base.qss",
 
@@ -27,18 +27,30 @@ STYLE_FILES = [
 
     "11_lists.qss",
 
-    "12_paper_theme.qss",
-
 ]
 
+THEME_STYLE_FILES = {
+    "black_on_white": "12_black_on_white.qss",
+    "white_on_black": "13_white_on_black.qss",
+    "ink_and_paper": "12_paper_theme.qss",
+}
 
-def load_styles():
+
+def load_styles(theme_name="black_on_white"):
 
     styles_path = Path(__file__).parent
 
     styles = []
 
-    for filename in STYLE_FILES:
+    filenames = [
+        *BASE_STYLE_FILES,
+        THEME_STYLE_FILES.get(
+            theme_name,
+            THEME_STYLE_FILES["black_on_white"],
+        ),
+    ]
+
+    for filename in filenames:
 
         file = styles_path / filename
 

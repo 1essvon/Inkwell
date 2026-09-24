@@ -43,7 +43,7 @@ class ReadingStreakCard(BaseCard):
 
         self.empty = EmptyState(
 
-            icon="🔥",
+            icon="◆",
 
             title="No reading streak",
 
@@ -112,15 +112,15 @@ class ReadingStreakCard(BaseCard):
             return value_label
 
         self.current_value = add_section(
-            "🔥 Current"
+            "Current"
         )
 
         self.best_value = add_section(
-            "🏆 Best"
+            "Best"
         )
 
         self.last_value = add_section(
-            "📅 Last Reading"
+            "Last Reading"
         )
 
         self.status = QLabel()

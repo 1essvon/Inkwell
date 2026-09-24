@@ -70,27 +70,27 @@ class LibrarySummaryCard(BaseCard):
         #
 
         self.reading = StatusRow(
-            "📖",
+            "▤",
             "Reading",
         )
 
         self.want_to_read = StatusRow(
-            "📚",
+            "▤",
             "Want To Read",
         )
 
         self.completed = StatusRow(
-            "✅",
+            "✓",
             "Completed",
         )
 
         self.paused = StatusRow(
-            "⏸",
+            "Ⅱ",
             "Paused",
         )
 
         self.dropped = StatusRow(
-            "❌",
+            "×",
             "Dropped",
         )
 

@@ -60,16 +60,6 @@ class ProgressBar(QWidget):
             "progressTrack"
         )
 
-        self.track.setStyleSheet("""
-            QFrame#progressTrack {
-
-                background: #E4DACB;
-
-                border-radius: 5px;
-
-            }
-        """)
-
         track_layout = QHBoxLayout(
             self.track
         )
@@ -98,16 +88,6 @@ class ProgressBar(QWidget):
         self.fill.setObjectName(
             "progressFill"
         )
-
-        self.fill.setStyleSheet("""
-            QFrame#progressFill {
-
-                background: #8A6242;
-
-                border-radius: 5px;
-
-            }
-        """)
 
         track_layout.addWidget(
             self.fill,
