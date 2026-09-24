@@ -5,6 +5,7 @@ from PySide6.QtCore import QTimer
 
 from PySide6.QtWidgets import (
     QWidget,
+    QHBoxLayout,
     QVBoxLayout,
     QLabel,
     QPushButton,
@@ -36,6 +37,7 @@ class FocusView(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setObjectName("focusView")
 
         self.is_reading = False
         self.started_at = None
@@ -49,15 +51,28 @@ class FocusView(QWidget):
             self.update_timer
         )
 
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(32, 28, 32, 28)
+        layout.setSpacing(18)
 
-        # =====================
-        # Book
-        # =====================
+        header = QVBoxLayout()
+        header.setSpacing(5)
+        title = QLabel("Focus Session")
+        title.setObjectName("focusTitle")
+        subtitle = QLabel("Settle in with your book and take your time.")
+        subtitle.setObjectName("focusSubtitle")
+        header.addWidget(title)
+        header.addWidget(subtitle)
+        layout.addLayout(header)
 
-        layout.addWidget(
-            QLabel("Book")
-        )
+        book_panel = QWidget()
+        book_panel.setObjectName("focusBookPanel")
+        book_layout = QVBoxLayout(book_panel)
+        book_layout.setContentsMargins(20, 16, 20, 16)
+        book_layout.setSpacing(10)
+        book_label = QLabel("YOUR BOOK")
+        book_label.setObjectName("focusEyebrow")
+        book_layout.addWidget(book_label)
 
         self.book_combo = QComboBox()
 
@@ -66,8 +81,9 @@ class FocusView(QWidget):
         self.book_combo.currentIndexChanged.connect(
             self.load_book
         )
+        self.book_combo.setObjectName("focusBookSelector")
 
-        layout.addWidget(
+        book_layout.addWidget(
             self.book_combo
         )
 
@@ -81,26 +97,38 @@ class FocusView(QWidget):
             "pageIndicator"
         )
 
-        layout.addWidget(
+        book_layout.addWidget(
             self.current_page_label
         )
+        layout.addWidget(book_panel)
 
-        # =====================
-        # Timer
-        # =====================
+        timer_panel = QWidget()
+        timer_panel.setObjectName("focusTimerPanel")
+        timer_layout = QVBoxLayout(timer_panel)
+        timer_layout.setContentsMargins(24, 18, 24, 20)
+        timer_layout.setSpacing(12)
+        timer_heading = QLabel("READING TIMER")
+        timer_heading.setObjectName("focusEyebrow")
+        timer_heading.setAlignment(Qt.AlignCenter)
+        timer_layout.addWidget(timer_heading)
 
-        layout.addWidget(
-            QLabel("Focus Duration")
-        )
+        duration_row = QHBoxLayout()
+        duration_row.setSpacing(10)
+        duration_label = QLabel("Session length")
+        duration_label.setObjectName("focusDurationLabel")
+        duration_row.addWidget(duration_label)
 
         self.duration_spin = QSpinBox()
         self.duration_spin.setRange(1, 120)
         self.duration_spin.setValue(25)
         self.duration_spin.setSuffix(" min")
+        self.duration_spin.setObjectName("focusDuration")
 
-        layout.addWidget(
+        duration_row.addWidget(
             self.duration_spin
         )
+        duration_row.addStretch()
+        timer_layout.addLayout(duration_row)
                 
         self.timer_label = QLabel(
             "25:00"
@@ -114,9 +142,10 @@ class FocusView(QWidget):
             "timerLabel"
         )
 
-        layout.addWidget(
+        timer_layout.addWidget(
             self.timer_label
         )
+        layout.addWidget(timer_panel)
 
         self.session_start_page = 0
         self.book = None
@@ -128,12 +157,15 @@ class FocusView(QWidget):
         self.session_button = QPushButton(
             "Start Session"
         )
+        self.session_button.setObjectName("primaryButton")
 
         self.session_button.clicked.connect(
             self.toggle_session
         )
 
-        layout.addWidget(
+        controls = QHBoxLayout()
+        controls.setSpacing(10)
+        controls.addWidget(
             self.session_button
         )
 
@@ -142,11 +174,12 @@ class FocusView(QWidget):
         )
 
         self.pause_button.setEnabled(False)
+        self.pause_button.setObjectName("secondaryButton")
         self.pause_button.clicked.connect(
             self.toggle_pause
         )
 
-        layout.addWidget(
+        controls.addWidget(
             self.pause_button
         )
 
@@ -155,13 +188,15 @@ class FocusView(QWidget):
         )
 
         self.reset_button.setEnabled(False)
+        self.reset_button.setObjectName("secondaryButton")
         self.reset_button.clicked.connect(
             self.reset_timer
         )
 
-        layout.addWidget(
+        controls.addWidget(
             self.reset_button
         )
+        layout.addLayout(controls)
 
         self.audio_player = AudioPlayerWidget(self)
         layout.addWidget(
@@ -169,8 +204,6 @@ class FocusView(QWidget):
         )
 
         layout.addStretch()
-
-        self.setLayout(layout)
 
         if self.book_combo.count() > 0:
             self.load_book(0)

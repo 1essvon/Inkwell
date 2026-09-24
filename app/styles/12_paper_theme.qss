@@ -216,3 +216,65 @@ QLabel#quoteIcon {
 QLabel#searchIcon {
     color: #746B5F;
 }
+
+QWidget#focusView {
+    background-color: #F3EEE3;
+}
+
+QWidget#focusBookPanel,
+QWidget#focusTimerPanel {
+    background-color: #FFFCF6;
+    border: 1px solid #D9CEBC;
+    border-radius: 16px;
+}
+
+QWidget#focusTimerPanel {
+    background-color: #FBF7EE;
+}
+
+QLabel#focusTitle {
+    color: #302B25;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+QLabel#focusSubtitle,
+QLabel#focusDurationLabel {
+    color: #746B5F;
+    font-size: 13px;
+}
+
+QLabel#focusEyebrow {
+    color: #8A6242;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+QLabel#timerLabel {
+    background-color: transparent;
+    color: #60462F;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 58px;
+    font-weight: 600;
+    padding: 2px 0;
+}
+
+QLabel#pageIndicator {
+    background-color: #EFE7D9;
+    border: 1px solid #DED1BD;
+    border-radius: 9px;
+    color: #675844;
+    padding: 6px 10px;
+}
+
+QComboBox#focusBookSelector {
+    min-height: 34px;
+    font-size: 15px;
+}
+
+QSpinBox#focusDuration {
+    min-width: 104px;
+    max-width: 124px;
+    min-height: 30px;
+}
