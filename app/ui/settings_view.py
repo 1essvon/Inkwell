@@ -207,6 +207,18 @@ class SettingsView(QWidget):
             self.backup_button
         )
 
+        self.restore_button = QPushButton(
+            "Restore Database"
+        )
+
+        self.restore_button.clicked.connect(
+            self.restore_database
+        )
+
+        backup_layout.addWidget(
+            self.restore_button
+        )
+
         backup_group.setLayout(
             backup_layout
         )
@@ -351,6 +363,63 @@ class SettingsView(QWidget):
             self,
             "Backup Complete",
             f"Database backup saved to:\n{destination}",
+        )
+
+    def restore_database(self):
+
+        source, _selected_filter = (
+            QFileDialog.getOpenFileName(
+                self,
+                "Restore Database",
+                "",
+                "SQLite Database (*.db)",
+            )
+        )
+
+        if not source:
+            return
+
+        reply = QMessageBox.question(
+            self,
+            "Confirm Database Restore",
+            (
+                "Restoring this backup will replace the application's "
+                "current database. This cannot be undone. Continue?"
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+
+        if reply != QMessageBox.Yes:
+            return
+
+        try:
+            success = BackupService.import_database(
+                source
+            )
+        except Exception as error:
+            QMessageBox.critical(
+                self,
+                "Restore Failed",
+                f"Database restore failed. The current database was not replaced.\n\n{error}",
+            )
+            return
+
+        if not success:
+            QMessageBox.critical(
+                self,
+                "Restore Failed",
+                "The selected backup file could not be found. The current database was not replaced.",
+            )
+            return
+
+        QMessageBox.information(
+            self,
+            "Restore Complete",
+            (
+                "The database was restored successfully. "
+                "Please restart The Inkwell before continuing."
+            ),
         )
 
     # ==========================
