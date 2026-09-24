@@ -1,10 +1,14 @@
 from hashlib import sha256
+import logging
 from pathlib import Path
 from urllib.parse import urlparse
 
 import requests
 
 from app.storage_config import storage_config
+
+
+logger = logging.getLogger(__name__)
 
 
 COVER_DIR = storage_config.covers_directory()
@@ -45,7 +49,8 @@ class CoverService:
 
             response.raise_for_status()
 
-        except requests.RequestException:
+        except requests.RequestException as error:
+            logger.warning("Cover download failed (%s)", type(error).__name__)
             return None
 
         if not response.content:
@@ -53,7 +58,8 @@ class CoverService:
 
         try:
             path.write_bytes(response.content)
-        except OSError:
+        except OSError as error:
+            logger.warning("Could not save downloaded cover (%s)", type(error).__name__)
             return None
 
         return str(_COVER_RELATIVE_DIR / filename)

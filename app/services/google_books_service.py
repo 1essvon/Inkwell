@@ -14,10 +14,14 @@ Does NOT:
 """
 
 from dataclasses import dataclass
+import logging
 
 import requests
 
 from requests import RequestException
+
+
+logger = logging.getLogger(__name__)
 
 
 API_URL = "https://www.googleapis.com/books/v1/volumes"
@@ -79,10 +83,7 @@ class GoogleBooksService:
             response.raise_for_status()
 
         except RequestException as error:
-
-            print(
-                f"[GoogleBooksService] {error}"
-            )
+            logger.warning("Google Books request failed (%s)", type(error).__name__)
 
             return []
 
@@ -90,7 +91,11 @@ class GoogleBooksService:
 
             payload = response.json()
 
-        except ValueError:
+        except ValueError as error:
+            logger.warning(
+                "Google Books response was not valid JSON (%s)",
+                type(error).__name__,
+            )
 
             return []
 
@@ -111,9 +116,9 @@ class GoogleBooksService:
                 )
 
             except Exception as error:
-
-                print(
-                    f"[GoogleBooksService] Failed to parse book: {error}"
+                logger.warning(
+                    "Could not parse a Google Books result (%s)",
+                    type(error).__name__,
                 )
 
         return books
@@ -208,5 +213,3 @@ class GoogleBooksService:
             ),
 
         )
-
-    

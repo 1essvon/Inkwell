@@ -1,7 +1,11 @@
 from dataclasses import dataclass
+import logging
 
 import requests
 from requests import RequestException
+
+
+logger = logging.getLogger(__name__)
 
 
 SEARCH_API_URL = "https://openlibrary.org/search.json"
@@ -56,12 +60,16 @@ class OpenLibraryService:
             response.raise_for_status()
 
         except RequestException as error:
-            print(f"[OpenLibraryService] {error}")
+            logger.warning("Open Library request failed (%s)", type(error).__name__)
             return []
 
         try:
             payload = response.json()
-        except ValueError:
+        except ValueError as error:
+            logger.warning(
+                "Open Library search response was not valid JSON (%s)",
+                type(error).__name__,
+            )
             return []
 
         docs = payload.get("docs")
@@ -75,9 +83,7 @@ class OpenLibraryService:
             try:
                 books.append(cls._parse(doc))
             except Exception as error:
-                print(
-                    f"[OpenLibraryService] Failed to parse book: {error}"
-                )
+                logger.warning("Could not parse an Open Library result (%s)", type(error).__name__)
 
         return books
 
@@ -149,14 +155,16 @@ class OpenLibraryService:
             response.raise_for_status()
 
         except RequestException as error:
-            print(
-                f"[OpenLibraryService] Failed to fetch description: {error}"
-            )
+            logger.warning("Open Library description request failed (%s)", type(error).__name__)
             return None
 
         try:
             payload = response.json()
-        except ValueError:
+        except ValueError as error:
+            logger.warning(
+                "Open Library description response was not valid JSON (%s)",
+                type(error).__name__,
+            )
             return None
 
         description = payload.get("description")
