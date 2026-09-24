@@ -33,6 +33,7 @@ QLabel#dashboardGreeting {
     color: #FFFFFF;
 }
 
+QLabel#pageSubtitle,
 QLabel#dashboardSubtitle {
 
     font-size: 15px;
@@ -47,9 +48,9 @@ QLabel#dashboardSubtitle {
 
 QLabel#cardTitle {
 
-    font-size: 12px;
+    font-size: 14px;
 
-    font-weight: 500;
+    font-weight: 600;
 
     color: #B8B8B8;
 }
@@ -117,9 +118,10 @@ QLabel#secondaryText {
     color: #B8B8B8;
 }
 
-QLabel#caption {
+QLabel#caption,
+QLabel#captionText {
 
-    font-size: 11px;
+    font-size: 12px;
 
     color: #8A8A8A;
 }
