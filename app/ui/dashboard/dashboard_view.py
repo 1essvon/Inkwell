@@ -133,7 +133,7 @@ class DashboardView(QWidget):
         )
 
         self.layout.setSpacing(
-            20
+            16
         )
 
         self.scroll.setWidget(

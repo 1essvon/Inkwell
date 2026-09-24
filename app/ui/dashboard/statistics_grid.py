@@ -45,11 +45,11 @@ class StatisticsGrid(QWidget):
         )
 
         self.grid_layout.setHorizontalSpacing(
-            20,
+            16,
         )
 
         self.grid_layout.setVerticalSpacing(
-            20,
+            16,
         )
 
         for column in range(
