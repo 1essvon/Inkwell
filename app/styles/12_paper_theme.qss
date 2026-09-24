@@ -4,14 +4,20 @@
    the existing screens without changing their behavior.
 */
 
-QMainWindow {
+QMainWindow,
+QDialog,
+QWidget#appRoot,
+QWidget#focusView {
     background-color: #F3EEE3;
 }
 
 QWidget {
-    background-color: #F3EEE3;
     color: #302B25;
     font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+QStackedWidget {
+    background-color: transparent;
 }
 
 QLabel {

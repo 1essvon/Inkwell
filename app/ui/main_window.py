@@ -1,3 +1,4 @@
+from PySide6.QtGui import QGuiApplication
 from PySide6.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -59,11 +60,20 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("The Inkwell")
-        self.resize(1280, 720)
+        screen = QGuiApplication.primaryScreen()
+        available = screen.availableGeometry() if screen else None
+        if available:
+            width = min(1280, round(available.width() * 0.92))
+            height = min(720, round(available.height() * 0.88))
+        else:
+            width, height = 1100, 640
+        self.resize(width, height)
+        self.setMinimumSize(min(900, width), min(560, height))
 
         self.setup_status_bar()
 
         root = QWidget()
+        root.setObjectName("appRoot")
 
         self.setCentralWidget(
             root
