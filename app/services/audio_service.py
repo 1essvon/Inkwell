@@ -20,13 +20,13 @@ class AudioService(QObject):
         self._player.setAudioOutput(self._audio_output)
 
         self._player.playbackStateChanged.connect(
-            self.playback_state_changed
+            self._on_playback_state_changed
         )
         self._player.positionChanged.connect(
-            self.position_changed
+            self._on_position_changed
         )
         self._player.durationChanged.connect(
-            self.duration_changed
+            self._on_duration_changed
         )
         self._player.errorOccurred.connect(
             self._on_error
@@ -81,6 +81,15 @@ class AudioService(QObject):
         self._audio_output.setVolume(
             max(0.0, min(1.0, float(volume)))
         )
+
+    def _on_playback_state_changed(self, state):
+        self.playback_state_changed.emit(state)
+
+    def _on_position_changed(self, position):
+        self.position_changed.emit(int(position))
+
+    def _on_duration_changed(self, duration):
+        self.duration_changed.emit(int(duration))
 
     def _on_error(self, _error):
         self.error_occurred.emit(
