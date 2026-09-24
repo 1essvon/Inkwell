@@ -185,7 +185,8 @@ class BookImportDialog(QDialog):
         )
 
         self.cover_label.setStyleSheet("""
-            border: 1px solid #666;
+            background-color: #EFE7D9;
+            border: 1px solid #D3C6B3;
         """)
 
         layout.addWidget(
@@ -436,4 +437,4 @@ class BookImportDialog(QDialog):
 
         self.cover_label.setText(
             "No Cover"
-        ) 
+        )

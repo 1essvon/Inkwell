@@ -63,7 +63,7 @@ class ProgressBar(QWidget):
         self.track.setStyleSheet("""
             QFrame#progressTrack {
 
-                background: #2F2F2F;
+                background: #E4DACB;
 
                 border-radius: 5px;
 
@@ -102,7 +102,7 @@ class ProgressBar(QWidget):
         self.fill.setStyleSheet("""
             QFrame#progressFill {
 
-                background: white;
+                background: #8A6242;
 
                 border-radius: 5px;
 

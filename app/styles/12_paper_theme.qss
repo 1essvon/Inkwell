@@ -1,0 +1,218 @@
+/*
+   Ink & Paper visual identity.
+   Loaded after component styles so one warm, readable palette applies across
+   the existing screens without changing their behavior.
+*/
+
+QMainWindow {
+    background-color: #F3EEE3;
+}
+
+QWidget {
+    background-color: #F3EEE3;
+    color: #302B25;
+    font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+QLabel {
+    background-color: transparent;
+}
+
+QWidget#baseCard,
+QWidget#toolbar,
+QWidget#noteCard,
+QWidget#infoCard {
+    background-color: #FFFCF6;
+    border-color: #D9CEBC;
+}
+
+QWidget#baseCard:hover,
+QWidget#noteCard:hover {
+    background-color: #F8F1E5;
+    border-color: #C8B79F;
+}
+
+QLabel#pageTitle,
+QLabel#dashboardGreeting,
+QLabel#dialogTitle,
+QLabel#detailTitle,
+QLabel#emptyTitle,
+QLabel#noteCardTitle,
+QLineEdit#pageTitleEditor {
+    color: #302B25;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+
+QLabel#pageSubtitle,
+QLabel#dashboardSubtitle,
+QLabel#bookAuthor,
+QLabel#secondaryText,
+QLabel#caption,
+QLabel#cardTitle,
+QLabel#metricTitle,
+QLabel#metricSubtitle,
+QLabel#noteCardBook,
+QLabel#noteCardPreview,
+QLabel#noteCardDate,
+QLabel#emptySubtitle,
+QLabel#toolbarTitle {
+    color: #746B5F;
+}
+
+QLabel#cardValue,
+QLabel#metricValue,
+QLabel#bookTitle,
+QLabel#quoteCardPage,
+QLabel#pageIndicator {
+    color: #302B25;
+}
+
+QLabel#bookProgress,
+QLabel#bookStatus {
+    color: #805638;
+}
+
+QPushButton {
+    background-color: #EAE1D2;
+    color: #302B25;
+    border: 1px solid #D1C4B0;
+}
+
+QPushButton:hover {
+    background-color: #E1D3BE;
+    border-color: #BAA58A;
+}
+
+QPushButton:pressed {
+    background-color: #D8C6AE;
+}
+
+QPushButton:disabled {
+    background-color: #EEE9E0;
+    color: #A49A8B;
+    border-color: #E1D9CC;
+}
+
+QPushButton#primaryButton,
+QPushButton#emptyAction {
+    background-color: #76543A;
+    color: #FFF9EF;
+    border-color: #76543A;
+}
+
+QPushButton#primaryButton:hover,
+QPushButton#emptyAction:hover {
+    background-color: #62442F;
+    border-color: #62442F;
+}
+
+QPushButton#secondaryButton,
+QPushButton#iconButton,
+QPushButton#searchClearButton {
+    background-color: transparent;
+    color: #5F5142;
+    border-color: #CFC2AE;
+}
+
+QPushButton#dangerButton {
+    background-color: #9A5147;
+    color: #FFF9EF;
+    border-color: #9A5147;
+}
+
+QLineEdit,
+QTextEdit,
+QPlainTextEdit,
+QComboBox,
+QSpinBox,
+QDateEdit {
+    background-color: #FFFCF6;
+    color: #302B25;
+    border: 1px solid #D2C6B4;
+    selection-background-color: #B98B62;
+    selection-color: #FFF9EF;
+}
+
+QLineEdit#searchInput {
+    background-color: #FFFCF6;
+    color: #302B25;
+    border-color: #D2C6B4;
+}
+
+QLineEdit#searchInput:hover,
+QLineEdit#searchInput:focus {
+    background-color: #FFFCF6;
+    color: #302B25;
+    border-color: #8A6242;
+}
+
+QLineEdit:focus,
+QTextEdit:focus,
+QPlainTextEdit:focus,
+QComboBox:focus,
+QSpinBox:focus,
+QDateEdit:focus {
+    border-color: #8A6242;
+}
+
+QListWidget,
+QListView,
+QTreeWidget {
+    background-color: transparent;
+    color: #302B25;
+}
+
+QListWidget::item:hover,
+QListView::item:hover {
+    background-color: #EEE5D7;
+}
+
+QListWidget::item:selected,
+QListView::item:selected,
+QTreeWidget::item:selected {
+    background-color: #E4D3BE;
+    color: #302B25;
+}
+
+QProgressBar {
+    background-color: #E4DACB;
+}
+
+QProgressBar::chunk {
+    background-color: #BC9877;
+}
+
+QLabel#badgeReading,
+QLabel#badgeFinished,
+QLabel#badgeWaiting,
+QLabel#badgeDanger,
+QLabel#badgeDefault {
+    color: #302B25;
+}
+
+QLabel#badgeReading { background-color: #D9E2D0; }
+QLabel#badgeFinished { background-color: #D4E1D0; }
+QLabel#badgeWaiting { background-color: #E9E1D5; }
+QLabel#badgeDanger { background-color: #EBD5CF; }
+QLabel#badgeDefault { background-color: #E9E1D5; }
+
+QLabel#bookCover {
+    background-color: #EFE7D9;
+    color: #877966;
+    border-color: #D3C6B3;
+}
+
+QFrame#divider,
+QFrame#toolbarDivider {
+    background-color: #D9CEBC;
+}
+
+QLabel#emptyIcon,
+QLabel#cardIcon,
+QLabel#quoteIcon {
+    color: #927859;
+}
+
+QLabel#searchIcon {
+    color: #746B5F;
+}

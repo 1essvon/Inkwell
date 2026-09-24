@@ -25,11 +25,11 @@ class CircularProgress(QWidget):
 
         self._thickness = 10
 
-        self._track_color = QColor("#343434")
+        self._track_color = QColor("#E4DACB")
 
-        self._progress_color = QColor("#4F8EF7")
+        self._progress_color = QColor("#8A6242")
 
-        self._text_color = QColor("#FFFFFF")
+        self._text_color = QColor("#302B25")
 
         self.setMinimumSize(
             120,
