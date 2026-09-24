@@ -1,3 +1,4 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -17,6 +18,10 @@ from app.services.settings_service import (
 from app.services.backup_service import (
     BackupService,
 )
+from app.services.storage_service import (
+    StorageService,
+)
+from app.storage_config import storage_config
 
 from app.ui.components.page_header import (
     PageHeader,
@@ -30,6 +35,7 @@ class SettingsView(QWidget):
         super().__init__()
 
         self.settings = None
+        self.pending_storage_root = None
 
         self.setup_ui()
 
@@ -186,6 +192,48 @@ class SettingsView(QWidget):
         )
 
         # --------------------------
+        # Storage
+        # --------------------------
+
+        storage_group = QGroupBox(
+            "Storage"
+        )
+
+        storage_layout = QVBoxLayout()
+
+        self.storage_root_label = QLabel()
+        self.storage_root_label.setObjectName(
+            "secondaryText"
+        )
+        self.storage_root_label.setWordWrap(True)
+        self.storage_root_label.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse
+        )
+
+        storage_layout.addWidget(
+            self.storage_root_label
+        )
+
+        self.change_storage_button = QPushButton(
+            "Change Storage Location"
+        )
+        self.change_storage_button.clicked.connect(
+            self.change_storage_location
+        )
+
+        storage_layout.addWidget(
+            self.change_storage_button
+        )
+
+        storage_group.setLayout(
+            storage_layout
+        )
+
+        layout.addWidget(
+            storage_group
+        )
+
+        # --------------------------
         # Backup
         # --------------------------
 
@@ -244,6 +292,8 @@ class SettingsView(QWidget):
         )
 
         layout.addStretch()
+
+        self.update_storage_display()
 
     # ==========================
     # Load
@@ -422,6 +472,91 @@ class SettingsView(QWidget):
             ),
         )
 
+    def change_storage_location(self):
+
+        active_root = storage_config.storage_root()
+        destination = QFileDialog.getExistingDirectory(
+            self,
+            "Choose Storage Folder",
+            str(active_root.parent),
+            QFileDialog.Option.ShowDirsOnly,
+        )
+
+        if not destination:
+            return
+
+        try:
+            destination = StorageService.validate_destination(
+                destination
+            )
+        except Exception as error:
+            QMessageBox.critical(
+                self,
+                "Invalid Storage Folder",
+                f"This folder cannot be used for storage migration:\n{error}",
+            )
+            return
+
+        reply = QMessageBox.question(
+            self,
+            "Confirm Storage Migration",
+            (
+                "Inkwell will copy the database and cover files to:\n\n"
+                f"{destination}\n\n"
+                "The current storage will remain unchanged. The new location "
+                "will become active after restarting the application. Continue?"
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+
+        if reply != QMessageBox.Yes:
+            return
+
+        try:
+            migrated_root = StorageService.migrate_storage(
+                destination
+            )
+        except Exception as error:
+            QMessageBox.critical(
+                self,
+                "Storage Migration Failed",
+                (
+                    "Storage was not changed. The current root remains active.\n\n"
+                    f"{error}"
+                ),
+            )
+            return
+
+        self.pending_storage_root = migrated_root
+        self.change_storage_button.setEnabled(False)
+        self.update_storage_display()
+
+        QMessageBox.information(
+            self,
+            "Storage Migration Complete",
+            (
+                "The database and cover files were copied successfully to:\n\n"
+                f"{migrated_root}\n\n"
+                "Restart The Inkwell for the new storage root to become active."
+            ),
+        )
+
+    def update_storage_display(self):
+
+        active_root = storage_config.storage_root()
+
+        if self.pending_storage_root is not None:
+            self.storage_root_label.setText(
+                f"Active until restart: {active_root}\n"
+                f"Configured after restart: {self.pending_storage_root}"
+            )
+            return
+
+        self.storage_root_label.setText(
+            f"Active storage root: {active_root}"
+        )
+
     # ==========================
     # Refresh
     # ==========================
@@ -429,3 +564,4 @@ class SettingsView(QWidget):
     def refresh(self):
 
         self.load()
+        self.update_storage_display()
