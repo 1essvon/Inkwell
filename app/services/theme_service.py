@@ -13,13 +13,30 @@ class ThemeService:
     def get_theme_name():
 
         settings = SettingsService.get()
+        theme_name = getattr(settings, "theme", None)
 
-        return settings.theme.lower()
+        if not isinstance(theme_name, str):
+            return "dark"
+
+        theme_name = theme_name.strip().lower()
+
+        if theme_name != "dark":
+            return "dark"
+
+        return theme_name
 
     @staticmethod
     def load_theme():
 
-        return load_styles()
+        theme_name = ThemeService.get_theme_name()
+        theme_loaders = {
+            "dark": load_styles,
+        }
+
+        return theme_loaders.get(
+            theme_name,
+            load_styles,
+        )()
 
     @staticmethod
     def apply_theme(app):
