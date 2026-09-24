@@ -2,6 +2,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
+    QFormLayout,
+    QScrollArea,
     QLabel,
     QGroupBox,
     QComboBox,
@@ -61,6 +63,16 @@ class SettingsView(QWidget):
 
         )
 
+        scroll = QScrollArea(self)
+        scroll.setObjectName("settingsScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+
+        content = QWidget()
+        content_layout = QVBoxLayout(content)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(16)
+
         # --------------------------
         # Appearance
         # --------------------------
@@ -77,13 +89,7 @@ class SettingsView(QWidget):
 
         self.theme_combo = QComboBox()
 
-        self.theme_combo.addItems(
-
-            [
-                "Dark",
-            ]
-
-        )
+        self.theme_combo.addItem("Monochrome", "Dark")
 
         appearance_layout.addWidget(
             self.theme_combo
@@ -93,7 +99,7 @@ class SettingsView(QWidget):
             appearance_layout
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             appearance_group
         )
 
@@ -131,7 +137,7 @@ class SettingsView(QWidget):
             scratchpad_layout
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             scratchpad_group
         )
 
@@ -143,13 +149,12 @@ class SettingsView(QWidget):
             "Reading Goals"
         )
 
-        goals_layout = QVBoxLayout()
-
-        goals_layout.addWidget(
-            QLabel(
-                "Books per Year"
-            )
+        goals_layout = QFormLayout()
+        goals_layout.setFieldGrowthPolicy(
+            QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow
         )
+        goals_layout.setHorizontalSpacing(18)
+        goals_layout.setVerticalSpacing(12)
 
         self.books_goal_spin = (
             QSpinBox()
@@ -160,14 +165,9 @@ class SettingsView(QWidget):
             1000,
         )
 
-        goals_layout.addWidget(
+        goals_layout.addRow(
+            "Books per Year",
             self.books_goal_spin
-        )
-
-        goals_layout.addWidget(
-            QLabel(
-                "Pages per Day"
-            )
         )
 
         self.pages_goal_spin = (
@@ -179,7 +179,8 @@ class SettingsView(QWidget):
             5000,
         )
 
-        goals_layout.addWidget(
+        goals_layout.addRow(
+            "Pages per Day",
             self.pages_goal_spin
         )
 
@@ -187,7 +188,7 @@ class SettingsView(QWidget):
             goals_layout
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             goals_group
         )
 
@@ -229,7 +230,7 @@ class SettingsView(QWidget):
             storage_layout
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             storage_group
         )
 
@@ -271,7 +272,7 @@ class SettingsView(QWidget):
             backup_layout
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             backup_group
         )
 
@@ -287,11 +288,13 @@ class SettingsView(QWidget):
             self.save
         )
 
-        layout.addWidget(
+        content_layout.addWidget(
             self.save_button
         )
 
-        layout.addStretch()
+        content_layout.addStretch()
+        scroll.setWidget(content)
+        layout.addWidget(scroll, 1)
 
         self.update_storage_display()
 
@@ -305,11 +308,9 @@ class SettingsView(QWidget):
             SettingsService.get()
         )
 
-        self.theme_combo.setCurrentText(
-
-            self.settings.theme
-
-        )
+        # "Dark" is the persisted legacy value; the active stylesheet is the
+        # monochrome light palette, so expose an accurate label in the UI.
+        self.theme_combo.setCurrentText("Monochrome")
 
         self.autosave_checkbox.setChecked(
 
@@ -343,7 +344,7 @@ class SettingsView(QWidget):
 
         SettingsService.save(
 
-            theme=self.theme_combo.currentText(),
+            theme=self.theme_combo.currentData(),
 
             autosave=self.autosave_checkbox.isChecked(),
 

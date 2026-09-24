@@ -25,6 +25,9 @@ class AudioPlayerWidget(BaseCard):
         self.audio_path = None
         self._playback_state = "stopped"
 
+        self.layout.setContentsMargins(14, 12, 14, 12)
+        self.layout.setSpacing(8)
+
         self._setup_audio_controls()
         self._connect_audio_signals()
         self.audio_service.set_volume(
@@ -37,7 +40,9 @@ class AudioPlayerWidget(BaseCard):
         self.layout.addWidget(title)
 
         file_row = QHBoxLayout()
-        self.file_label = QLabel("No audio selected")
+        self.file_label = QLabel(
+            "No audio selected. Choose a local file to play."
+        )
         self.file_label.setObjectName("secondaryText")
         self.file_label.setMinimumWidth(0)
         self.file_label.setTextInteractionFlags(
@@ -74,6 +79,7 @@ class AudioPlayerWidget(BaseCard):
         self.volume_slider = QSlider(Qt.Orientation.Horizontal)
         self.volume_slider.setRange(0, 100)
         self.volume_slider.setValue(60)
+        self.volume_slider.setEnabled(False)
         volume_row.addWidget(volume_label)
         volume_row.addWidget(self.volume_slider, 1)
         self.layout.addLayout(volume_row)
@@ -119,6 +125,7 @@ class AudioPlayerWidget(BaseCard):
         self.file_label.setText(self.audio_path.name)
         self.file_label.setToolTip(str(self.audio_path))
         self.play_pause_button.setEnabled(True)
+        self.volume_slider.setEnabled(True)
         self.progress_bar.setRange(0, 1)
         self.progress_bar.setValue(0)
         self.time_label.setText("00:00 / 00:00")

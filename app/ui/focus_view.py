@@ -11,7 +11,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QComboBox,
     QSpinBox,
-    QMessageBox
+    QMessageBox,
+    QScrollArea,
 )
 
 from app.services.book_service import BookService
@@ -52,8 +53,15 @@ class FocusView(QWidget):
         )
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(32, 28, 32, 28)
-        layout.setSpacing(18)
+        layout.setContentsMargins(0, 0, 0, 0)
+        scroll = QScrollArea(self)
+        scroll.setObjectName("focusScroll")
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        content = QWidget()
+        content_layout = QVBoxLayout(content)
+        content_layout.setContentsMargins(24, 18, 24, 18)
+        content_layout.setSpacing(12)
 
         header = QVBoxLayout()
         header.setSpacing(5)
@@ -63,7 +71,7 @@ class FocusView(QWidget):
         subtitle.setObjectName("focusSubtitle")
         header.addWidget(title)
         header.addWidget(subtitle)
-        layout.addLayout(header)
+        content_layout.addLayout(header)
 
         book_panel = QWidget()
         book_panel.setObjectName("focusBookPanel")
@@ -87,6 +95,14 @@ class FocusView(QWidget):
             self.book_combo
         )
 
+        self.empty_book_label = QLabel(
+            "No books available. Add a book in Library to start a focus session."
+        )
+        self.empty_book_label.setObjectName("focusEmptyState")
+        self.empty_book_label.setWordWrap(True)
+        self.empty_book_label.hide()
+        book_layout.addWidget(self.empty_book_label)
+
         self.current_page_label = QLabel()
 
         self.current_page_label.setAlignment(
@@ -100,13 +116,13 @@ class FocusView(QWidget):
         book_layout.addWidget(
             self.current_page_label
         )
-        layout.addWidget(book_panel)
+        content_layout.addWidget(book_panel)
 
         timer_panel = QWidget()
         timer_panel.setObjectName("focusTimerPanel")
         timer_layout = QVBoxLayout(timer_panel)
-        timer_layout.setContentsMargins(24, 18, 24, 20)
-        timer_layout.setSpacing(12)
+        timer_layout.setContentsMargins(18, 12, 18, 12)
+        timer_layout.setSpacing(8)
         timer_heading = QLabel("READING TIMER")
         timer_heading.setObjectName("focusEyebrow")
         timer_heading.setAlignment(Qt.AlignCenter)
@@ -145,7 +161,7 @@ class FocusView(QWidget):
         timer_layout.addWidget(
             self.timer_label
         )
-        layout.addWidget(timer_panel)
+        content_layout.addWidget(timer_panel)
 
         self.session_start_page = 0
         self.book = None
@@ -196,17 +212,21 @@ class FocusView(QWidget):
         controls.addWidget(
             self.reset_button
         )
-        layout.addLayout(controls)
+        content_layout.addLayout(controls)
 
         self.audio_player = AudioPlayerWidget(self)
-        layout.addWidget(
+        content_layout.addWidget(
             self.audio_player
         )
 
-        layout.addStretch()
+        content_layout.addStretch()
+        scroll.setWidget(content)
+        layout.addWidget(scroll)
 
         if self.book_combo.count() > 0:
             self.load_book(0)
+        else:
+            self.load_book(-1)
 
     # =====================
     # Refresh Books
@@ -249,13 +269,20 @@ class FocusView(QWidget):
     def load_book(self, index):
 
         self.book = None
+        self.current_page_label.clear()
 
         if index < 0:
+            self.empty_book_label.show()
+            self.book_combo.setEnabled(False)
+            self.session_button.setEnabled(False)
             return
 
         book_id = self.book_combo.currentData()
 
         if book_id is None:
+            self.empty_book_label.show()
+            self.book_combo.setEnabled(False)
+            self.session_button.setEnabled(False)
             return
 
         self.book = BookService.get_book(
@@ -263,7 +290,14 @@ class FocusView(QWidget):
         )
 
         if not self.book:
+            self.empty_book_label.show()
+            self.book_combo.setEnabled(False)
+            self.session_button.setEnabled(False)
             return
+
+        self.empty_book_label.hide()
+        self.book_combo.setEnabled(True)
+        self.session_button.setEnabled(True)
 
         current = self.book.current_page or 0
 
@@ -554,8 +588,11 @@ class FocusView(QWidget):
                 self.toggle_session()
                 
     def refresh(self):
+        if self.is_reading:
+            return
 
-        pass
+        self.refresh_books()
+        self.load_book(self.book_combo.currentIndex())
 
     def open_note_dialog(self):
 
