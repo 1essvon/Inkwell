@@ -6,7 +6,7 @@ Purpose:
     Dashboard quick actions.
 """
 
-from PySide6.QtCore import Signal, Qt
+from PySide6.QtCore import Signal, Qt, QSize
 
 from PySide6.QtWidgets import (
     QLabel,
@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from app.ui.components.base_card import BaseCard
+from app.ui.components.icon_provider import icon
 
 
 class QuickActionsWidget(BaseCard):
@@ -42,17 +43,17 @@ class QuickActionsWidget(BaseCard):
         row.setSpacing(16)
 
         self.add_button = self.create_button(
-            "📚",
+            "add_book",
             "Add Book"
         )
 
         self.session_button = self.create_button(
-            "📖",
+            "play",
             "Start Session"
         )
 
         self.note_button = self.create_button(
-            "📝",
+            "note",
             "New Note"
         )
 
@@ -76,13 +77,13 @@ class QuickActionsWidget(BaseCard):
 
     def create_button(
         self,
-        icon,
+        icon_name,
         text,
     ):
 
-        button = QPushButton(
-            f"{icon}\n\n{text}"
-        )
+        button = QPushButton(text)
+        button.setIcon(icon(icon_name, size=24))
+        button.setIconSize(QSize(24, 24))
 
         button.setMinimumHeight(
             self.CARD_HEIGHT

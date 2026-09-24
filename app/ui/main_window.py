@@ -1,4 +1,5 @@
 from PySide6.QtGui import QGuiApplication
+from PySide6.QtCore import QSize
 from PySide6.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -52,6 +53,7 @@ from app.services.note_service import (
 from app.services.quote_service import (
     QuoteService
 )
+from app.ui.components.icon_provider import icon
 
 class MainWindow(QMainWindow):
 
@@ -143,6 +145,20 @@ class MainWindow(QMainWindow):
         self.settings_button = QPushButton(
             "Settings"
         )
+
+        navigation_icons = (
+            (self.dashboard_button, "dashboard"),
+            (self.library_button, "library"),
+            (self.reading_button, "reading"),
+            (self.journal_button, "journal"),
+            (self.statistics_button, "statistics"),
+            (self.focus_button, "focus"),
+            (self.history_button, "history"),
+            (self.settings_button, "settings"),
+        )
+        for button, icon_name in navigation_icons:
+            button.setIcon(icon(icon_name))
+            button.setIconSize(QSize(18, 18))
 
         sidebar.addWidget(
             self.dashboard_button
