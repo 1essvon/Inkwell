@@ -244,7 +244,7 @@ class SettingsView(QWidget):
         backup_layout = QVBoxLayout()
 
         self.backup_button = QPushButton(
-            "Backup Database"
+            "Backup Database and Covers"
         )
 
         self.backup_button.clicked.connect(
@@ -256,7 +256,7 @@ class SettingsView(QWidget):
         )
 
         self.restore_button = QPushButton(
-            "Restore Database"
+            "Restore Backup"
         )
 
         self.restore_button.clicked.connect(
@@ -380,9 +380,9 @@ class SettingsView(QWidget):
         destination, _selected_filter = (
             QFileDialog.getSaveFileName(
                 self,
-                "Backup Database",
-                "inkwell_backup.db",
-                "SQLite Database (*.db)",
+                "Backup Database and Covers",
+                "inkwell_backup.zip",
+                "Inkwell Backup (*.zip)",
             )
         )
 
@@ -397,7 +397,7 @@ class SettingsView(QWidget):
             QMessageBox.critical(
                 self,
                 "Backup Failed",
-                f"Database backup failed: {error}",
+                f"Complete backup failed: {error}",
             )
             return
 
@@ -405,14 +405,14 @@ class SettingsView(QWidget):
             QMessageBox.critical(
                 self,
                 "Backup Failed",
-                "Database backup failed. The database file could not be found.",
+                "Backup failed. The active database file could not be found.",
             )
             return
 
         QMessageBox.information(
             self,
             "Backup Complete",
-            f"Database backup saved to:\n{destination}",
+            f"Complete backup saved to:\n{destination}",
         )
 
     def restore_database(self):
@@ -420,9 +420,9 @@ class SettingsView(QWidget):
         source, _selected_filter = (
             QFileDialog.getOpenFileName(
                 self,
-                "Restore Database",
+                "Restore Backup",
                 "",
-                "SQLite Database (*.db)",
+                "Inkwell Backup (*.zip)",
             )
         )
 
@@ -431,10 +431,10 @@ class SettingsView(QWidget):
 
         reply = QMessageBox.question(
             self,
-            "Confirm Database Restore",
+            "Confirm Complete Restore",
             (
-                "Restoring this backup will replace the application's "
-                "current database. This cannot be undone. Continue?"
+                "Restoring this backup will replace the application's database "
+                "and cover files. This cannot be undone. Continue?"
             ),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
@@ -451,7 +451,7 @@ class SettingsView(QWidget):
             QMessageBox.critical(
                 self,
                 "Restore Failed",
-                f"Database restore failed. The current database was not replaced.\n\n{error}",
+                f"Restore failed. The current database and covers were rolled back where possible.\n\n{error}",
             )
             return
 
@@ -459,7 +459,7 @@ class SettingsView(QWidget):
             QMessageBox.critical(
                 self,
                 "Restore Failed",
-                "The selected backup file could not be found. The current database was not replaced.",
+                "The selected backup file could not be found. Current data was not replaced.",
             )
             return
 
@@ -467,7 +467,7 @@ class SettingsView(QWidget):
             self,
             "Restore Complete",
             (
-                "The database was restored successfully. "
+                "The database and covers were restored successfully. "
                 "Please restart The Inkwell before continuing."
             ),
         )
