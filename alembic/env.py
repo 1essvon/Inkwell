@@ -11,7 +11,10 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-if config.config_file_name is not None:
+if (
+    config.config_file_name is not None
+    and config.attributes.get("configure_logger", True)
+):
     fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
@@ -80,15 +83,24 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        run_with_connection(connection)
 
-        with context.begin_transaction():
-            context.run_migrations()
+
+def run_with_connection(connection) -> None:
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
 
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    run_migrations_online()
+    supplied_connection = config.attributes.get("connection")
+    if supplied_connection is not None:
+        run_with_connection(supplied_connection)
+    else:
+        run_migrations_online()
