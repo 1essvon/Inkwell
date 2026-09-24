@@ -15,7 +15,7 @@ class BackupService:
     ) -> bool:
 
         source = Path(
-            "inkwell.db"
+            engine.url.database
         )
 
         if not source.exists():

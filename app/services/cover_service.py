@@ -4,8 +4,11 @@ from urllib.parse import urlparse
 
 import requests
 
+from app.storage_config import storage_config
 
-COVER_DIR = Path("data/covers")
+
+COVER_DIR = storage_config.covers_directory()
+_COVER_RELATIVE_DIR = Path("data") / "covers"
 
 
 class CoverService:
@@ -32,7 +35,7 @@ class CoverService:
 
         # Return cached cover if it already exists.
         if path.exists():
-            return str(path)
+            return str(_COVER_RELATIVE_DIR / filename)
 
         try:
             response = requests.get(
@@ -53,7 +56,7 @@ class CoverService:
         except OSError:
             return None
 
-        return str(path)
+        return str(_COVER_RELATIVE_DIR / filename)
 
     @staticmethod
     def _get_filename(

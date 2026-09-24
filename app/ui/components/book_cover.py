@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from app.storage_config import storage_config
+
 
 class BookCover(QFrame):
 
@@ -88,14 +90,22 @@ class BookCover(QFrame):
 
         self._cover_path = cover_path
 
+        resolved_path = None
+
+        if cover_path:
+            resolved_path = Path(cover_path).expanduser()
+
+            if not resolved_path.is_absolute():
+                resolved_path = storage_config.storage_root() / resolved_path
+
         if (
-            cover_path
+            resolved_path
             and
-            Path(cover_path).exists()
+            resolved_path.exists()
         ):
 
             pixmap = QPixmap(
-                cover_path
+                str(resolved_path)
             )
 
             self.label.setPixmap(
