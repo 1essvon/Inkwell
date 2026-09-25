@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -402,6 +404,9 @@ class SettingsView(QWidget):
         if not destination:
             return
 
+        if Path(destination).suffix.lower() != ".zip":
+            destination = f"{destination}.zip"
+
         try:
             success = BackupService.export_database(
                 destination
@@ -440,6 +445,14 @@ class SettingsView(QWidget):
         )
 
         if not source:
+            return
+
+        if Path(source).suffix.lower() != ".zip":
+            QMessageBox.critical(
+                self,
+                "Invalid Backup",
+                "Choose an Inkwell ZIP backup file (.zip).",
+            )
             return
 
         reply = QMessageBox.question(

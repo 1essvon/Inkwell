@@ -2,6 +2,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import os
 import shutil
 import sqlite3
+import stat
 import tempfile
 import zipfile
 
@@ -14,6 +15,30 @@ class BackupService:
 
     DATABASE_MEMBER = "inkwell.db"
     COVERS_MEMBER = "data/covers/"
+    REQUIRED_TABLE_COLUMNS = {
+        "books": {
+            "id", "title", "author", "isbn", "publisher", "published_year",
+            "genre", "description", "page_count", "cover_path", "current_page",
+            "status", "rating", "date_added", "updated_at",
+        },
+        "notes": {
+            "id", "book_id", "page", "title", "content", "created_at", "updated_at",
+        },
+        "quotes": {
+            "id", "book_id", "content", "page", "note", "tags", "created_at", "updated_at",
+        },
+        "reading_sessions": {
+            "id", "book_id", "start_page", "end_page", "duration_minutes",
+            "started_at", "ended_at",
+        },
+        "scratchpad_entries": {
+            "id", "title", "content", "created_at", "updated_at",
+        },
+        "app_settings": {
+            "id", "theme", "autosave_scratchpad", "confirm_before_clear",
+            "updated_at", "reading_goal_books", "reading_goal_pages",
+        },
+    }
 
     @staticmethod
     def export_database(destination: str) -> bool:
@@ -35,9 +60,13 @@ class BackupService:
             if destination_path.resolve() in protected_paths:
                 raise ValueError("The backup destination must not replace the active database or a referenced cover.")
             destination_path.parent.mkdir(parents=True, exist_ok=True)
-            archive_tmp = destination_path.with_name(
-                f".{destination_path.name}.tmp"
+            descriptor, archive_tmp_name = tempfile.mkstemp(
+                prefix=f".{destination_path.name}.",
+                suffix=".tmp",
+                dir=destination_path.parent,
             )
+            os.close(descriptor)
+            archive_tmp = Path(archive_tmp_name)
             try:
                 with zipfile.ZipFile(archive_tmp, "w", zipfile.ZIP_DEFLATED) as archive:
                     archive.write(staged_db, BackupService.DATABASE_MEMBER)
@@ -166,8 +195,25 @@ class BackupService:
             tables = {row[0] for row in connection.execute(
                 "SELECT name FROM sqlite_master WHERE type='table'"
             )}
-            if "books" not in tables:
-                raise ValueError("The SQLite database does not contain the books table.")
+            missing_tables = set(BackupService.REQUIRED_TABLE_COLUMNS) - tables
+            if missing_tables:
+                raise ValueError(
+                    "The SQLite database is missing required Inkwell tables: "
+                    + ", ".join(sorted(missing_tables))
+                )
+            for table, required_columns in BackupService.REQUIRED_TABLE_COLUMNS.items():
+                actual_columns = {
+                    row[1] for row in connection.execute(f'PRAGMA table_info("{table}")')
+                }
+                missing_columns = required_columns - actual_columns
+                if missing_columns:
+                    raise ValueError(
+                        f"The SQLite database table {table} is missing required columns: "
+                        + ", ".join(sorted(missing_columns))
+                    )
+            foreign_key_errors = connection.execute("PRAGMA foreign_key_check").fetchall()
+            if foreign_key_errors:
+                raise ValueError("The SQLite database contains broken foreign key references.")
             paths = connection.execute(
                 "SELECT id, cover_path FROM books WHERE cover_path IS NOT NULL"
             ).fetchall()
@@ -216,25 +262,43 @@ class BackupService:
                     name = member.filename
                     if name in names:
                         raise ValueError(f"Backup contains a duplicate path: {name}")
-                    names.add(name)
                     path = PurePosixPath(name)
                     windows_path = PureWindowsPath(name)
+                    raw_parts = name.split("/")
+                    if member.is_dir() and raw_parts[-1] == "":
+                        raw_parts = raw_parts[:-1]
                     if (
                         "\\" in name
                         or path.is_absolute()
                         or windows_path.is_absolute()
                         or windows_path.drive
-                        or any(part in ("..", "") for part in path.parts)
+                        or any(part in (".", "..", "") for part in raw_parts)
                         or any(part == ".." for part in windows_path.parts)
                     ):
                         raise ValueError(f"Backup contains an unsafe path: {name}")
-                    if name != BackupService.DATABASE_MEMBER and not name.startswith(BackupService.COVERS_MEMBER):
+                    canonical_name = "/".join(raw_parts)
+                    if canonical_name in names:
+                        raise ValueError(f"Backup contains a duplicate path: {name}")
+                    names.add(canonical_name)
+                    if member.is_dir():
+                        if canonical_name != "data/covers" and not canonical_name.startswith("data/covers/"):
+                            raise ValueError(f"Unexpected backup directory: {name}")
+                    elif canonical_name != BackupService.DATABASE_MEMBER and not canonical_name.startswith(BackupService.COVERS_MEMBER):
                         raise ValueError(f"Unexpected backup entry: {name}")
                     mode = member.external_attr >> 16
-                    if mode and (mode & 0o170000) == 0o120000:
-                        raise ValueError(f"Backup contains a symbolic link: {name}")
+                    file_type = stat.S_IFMT(mode)
+                    expected_type = stat.S_IFDIR if member.is_dir() else stat.S_IFREG
+                    if file_type and file_type != expected_type:
+                        raise ValueError(f"Backup contains a symlink or special file: {name}")
                 if BackupService.DATABASE_MEMBER not in names:
                     raise ValueError("Backup does not contain inkwell.db.")
+                expanded_size = sum(
+                    member.file_size for member in members if not member.is_dir()
+                )
+                if expanded_size > shutil.disk_usage(staging).free:
+                    raise ValueError(
+                        "Backup contents exceed the available space for safe extraction."
+                    )
                 for member in members:
                     if member.is_dir():
                         continue
