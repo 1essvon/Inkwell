@@ -100,7 +100,7 @@ class EmptyState(QWidget):
             )
 
             self.button.setObjectName(
-                "emptyButton"
+                "emptyAction"
             )
 
             if button_callback:

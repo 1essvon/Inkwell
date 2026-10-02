@@ -57,6 +57,7 @@ class SearchBar(QWidget):
         )
 
         self.input = QLineEdit()
+        self.input.setObjectName("searchInput")
 
         self.input.setPlaceholderText(
             "Search books..."
