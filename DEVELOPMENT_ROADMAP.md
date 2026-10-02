@@ -1,6 +1,6 @@
 # The Inkwell Development Roadmap
 
-**Version:** 1.0
+**Version:** 1.0.0
 
 > Dokumen ini menjadi patokan utama development Inkwell.
 > Codex/development agent harus mengikuti urutan phase dan checkpoint di dokumen ini.
@@ -291,7 +291,7 @@ Menghasilkan:
 
 # MVP Completion Checklist
 
-Versi 1.0 dianggap selesai ketika pengguna dapat:
+Versi 1.0.0 dianggap selesai ketika pengguna dapat:
 
 1. Add Book
 2. Search Book Online

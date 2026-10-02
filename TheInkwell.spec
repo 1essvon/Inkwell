@@ -1,11 +1,21 @@
 """PyInstaller one-folder build for the Inkwell desktop application."""
 
 from pathlib import Path
+import os
 import sys
 
 
 ROOT = Path(SPECPATH).resolve()
 sys.path.insert(0, str(ROOT))
+
+version_info_file = os.environ.get("INKWELL_VERSION_INFO")
+if sys.platform == "win32":
+    if not version_info_file or not Path(version_info_file).is_file():
+        raise FileNotFoundError(
+            "Windows builds require the version resource generated from VERSION."
+        )
+elif version_info_file is not None:
+    raise RuntimeError("INKWELL_VERSION_INFO is only supported for Windows builds.")
 
 from app.styles.load_styles import BASE_STYLE_FILES, THEME_STYLE_FILES
 
@@ -68,6 +78,7 @@ exe = EXE(
     strip=False,
     upx=False,
     console=False,
+    version=version_info_file,
 )
 coll = COLLECT(
     exe,
