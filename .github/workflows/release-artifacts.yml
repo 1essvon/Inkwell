@@ -86,6 +86,12 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libegl1 libgl1 libxkbcommon-x11-0 libpulse0 
+          sudo ldconfig
+
+          echo "Checking PulseAudio runtime library..."
+          ldconfig -p | grep 'libpulse.so.0'
+          test -e /usr/lib/x86_64-linux-gnu/libpulse.so.0
+          
       - name: Build AppImage
         shell: bash
         env:
