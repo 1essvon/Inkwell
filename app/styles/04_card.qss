@@ -77,13 +77,15 @@ QFrame#divider {
 }
 
 /* ==========================================
-   Note Card
-   Structure and border only.
-   Font sizes → 01_typography.qss (H3: noteCardTitle, sm: noteCardBook).
+   Journal Cards
+   Structure and selected-state borders only.
+   Typography → 01_typography.qss.
    Colors → 12_paper_theme.qss.
 ========================================== */
 
-#noteCard {
+#noteCard,
+QFrame#quoteCard,
+QFrame#scratchpadCard {
 
     background: #2B2B2B;
 
@@ -93,19 +95,25 @@ QFrame#divider {
 
 }
 
-#noteCard:hover {
+#noteCard:hover,
+QFrame#quoteCard:hover,
+QFrame#scratchpadCard:hover {
 
     border: 1px solid #565656;
 
 }
 
-#noteCard[selected="true"] {
+#noteCard[selected="true"],
+QFrame#quoteCard[selected="true"],
+QFrame#scratchpadCard[selected="true"] {
 
     border: 1px solid #EAEAEA;
 
 }
 
-#noteIndicator {
+#noteIndicator,
+#quoteIndicator,
+#scratchpadIndicator {
 
     background: transparent;
 
@@ -113,7 +121,9 @@ QFrame#divider {
 
 }
 
-#noteCard[selected="true"] #noteIndicator {
+#noteCard[selected="true"] #noteIndicator,
+QFrame#quoteCard[selected="true"] #quoteIndicator,
+QFrame#scratchpadCard[selected="true"] #scratchpadIndicator {
 
     background: #F5F5F5;
 

@@ -5,6 +5,11 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+from app.ui.components.icon_provider import (
+    SIZE_INLINE,
+    pixmap,
+)
+
 
 class QuoteCard(QFrame):
 
@@ -71,15 +76,43 @@ class QuoteCard(QFrame):
             "quoteCardPage"
         )
 
+        self.quote_icon = QLabel()
+
+        self.quote_icon.setObjectName(
+            "quoteIcon"
+        )
+
+        self.quote_icon.setProperty(
+            "inkwell_icon_name",
+            "quote",
+        )
+
+        self.quote_icon.setProperty(
+            "inkwell_icon_size",
+            SIZE_INLINE,
+        )
+
+        self.quote_icon.setPixmap(
+            pixmap(
+                "quote",
+                size=SIZE_INLINE,
+            )
+        )
+
+        page_layout = QHBoxLayout()
+        page_layout.setContentsMargins(0, 0, 0, 0)
+        page_layout.setSpacing(8)
+        page_layout.addWidget(self.quote_icon)
+        page_layout.addWidget(self.page)
+        page_layout.addStretch()
+
         self.book = QLabel()
 
         self.book.setObjectName(
             "quoteCardBook"
         )
 
-        content_layout.addWidget(
-            self.page
-        )
+        content_layout.addLayout(page_layout)
 
         content_layout.addWidget(
             self.book
@@ -100,13 +133,13 @@ class QuoteCard(QFrame):
         if quote.page:
 
             self.page.setText(
-                f"❝  Page {quote.page}"
+                f"Page {quote.page}"
             )
 
         else:
 
             self.page.setText(
-                "❝  No Page"
+                "No Page"
             )
 
         self.book.setText(

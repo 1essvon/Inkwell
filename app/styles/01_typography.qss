@@ -60,7 +60,9 @@ QLabel#emptyTitle {
 ========================================================== */
 
 QLabel#toolbarTitle,
-QLabel#noteCardTitle {
+QLabel#noteCardTitle,
+QLabel#sectionTitle,
+QLabel#scratchpadCardTitle {
 
     font-size: 17px;
 
@@ -91,6 +93,18 @@ QLabel#bookTitle {
     font-weight: 600;
 
     color: #FFFFFF;
+}
+
+QLabel#quoteCardBook {
+
+    font-size: 13px;
+
+}
+
+QLabel#scratchpadCardUpdated {
+
+    font-size: 12px;
+
 }
 
 

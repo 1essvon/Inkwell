@@ -160,7 +160,7 @@ class QuotesView(QWidget):
 
         self.empty_state = EmptyState(
 
-            icon="❝",
+            icon="quote",
 
             title="No Quotes Yet",
 

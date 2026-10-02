@@ -151,7 +151,7 @@ class ScratchpadView(QWidget):
 
         self.empty_state = EmptyState(
 
-            icon="▤",
+            icon="journal",
 
             title="No Scratchpads Yet",
 

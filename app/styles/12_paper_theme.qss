@@ -27,13 +27,17 @@ QLabel {
 QWidget#baseCard,
 QWidget#toolbar,
 QWidget#noteCard,
+QFrame#quoteCard,
+QFrame#scratchpadCard,
 QWidget#infoCard {
     background-color: #FFFCF6;
     border-color: #D9CEBC;
 }
 
 QWidget#baseCard:hover,
-QWidget#noteCard:hover {
+QWidget#noteCard:hover,
+QFrame#quoteCard:hover,
+QFrame#scratchpadCard:hover {
     background-color: #F8F1E5;
     border-color: #C8B79F;
 }
@@ -57,6 +61,8 @@ QLineEdit#pageTitleEditor {
 
 /* H3 headings — sans-serif, primary ink color */
 QLabel#noteCardTitle,
+QLabel#sectionTitle,
+QLabel#scratchpadCardTitle,
 QLabel#toolbarTitle {
     color: #302B25;
 }
@@ -74,6 +80,8 @@ QLabel#metricSubtitle,
 QLabel#noteCardBook,
 QLabel#noteCardPreview,
 QLabel#noteCardDate,
+QLabel#quoteCardBook,
+QLabel#scratchpadCardUpdated,
 QLabel#emptySubtitle {
     color: #746B5F;
 }
@@ -98,6 +106,17 @@ QLabel#bookStatus {
     color: #805638;
 }
 
+QWidget#noteCard[selected="true"],
+QFrame#quoteCard[selected="true"],
+QFrame#scratchpadCard[selected="true"] {
+    border-color: #8A6242;
+}
+
+#noteCard[selected="true"] #noteIndicator,
+QFrame#quoteCard[selected="true"] #quoteIndicator,
+QFrame#scratchpadCard[selected="true"] #scratchpadIndicator {
+    background-color: #8A6242;
+}
 
 QPushButton {
     background-color: #EAE1D2;
