@@ -38,17 +38,30 @@ QWidget#noteCard:hover {
     border-color: #C8B79F;
 }
 
+/* H1 / H2 headings — serif, primary ink color */
 QLabel#pageTitle,
 QLabel#dashboardGreeting,
 QLabel#dialogTitle,
 QLabel#detailTitle,
 QLabel#emptyTitle,
-QLabel#noteCardTitle,
 QLineEdit#pageTitleEditor {
     color: #302B25;
     font-family: "Georgia", "Times New Roman", serif;
 }
 
+/* pageTitleEditor: match H1 sizing so it feels continuous with pageTitle */
+QLineEdit#pageTitleEditor {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* H3 headings — sans-serif, primary ink color */
+QLabel#noteCardTitle,
+QLabel#toolbarTitle {
+    color: #302B25;
+}
+
+/* Muted / secondary text */
 QLabel#pageSubtitle,
 QLabel#dashboardSubtitle,
 QLabel#bookAuthor,
@@ -61,11 +74,17 @@ QLabel#metricSubtitle,
 QLabel#noteCardBook,
 QLabel#noteCardPreview,
 QLabel#noteCardDate,
-QLabel#emptySubtitle,
-QLabel#toolbarTitle {
+QLabel#emptySubtitle {
     color: #746B5F;
 }
 
+/* Editorial micro-labels — warm accent */
+QLabel#sectionLabel,
+QLabel#eyebrowText {
+    color: #8A6242;
+}
+
+/* Primary value labels */
 QLabel#cardValue,
 QLabel#metricValue,
 QLabel#bookTitle,
@@ -78,6 +97,7 @@ QLabel#bookProgress,
 QLabel#bookStatus {
     color: #805638;
 }
+
 
 QPushButton {
     background-color: #EAE1D2;

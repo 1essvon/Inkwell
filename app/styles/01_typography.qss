@@ -2,17 +2,33 @@
    INKWELL DESIGN SYSTEM
    01_typography.qss
 
-   Typography only.
+   Typography hierarchy only.
+   Color fallbacks here are for non-paper themes (dark).
+   Ink & Paper color overrides live in 12_paper_theme.qss.
+
+   Scale:
+     H1  — 30px / 700 / serif   → pageTitle, dashboardGreeting, dialogTitle
+     H2  — 22px / 700 / serif   → detailTitle, emptyTitle
+     H3  — 17px / 600 / sans    → toolbarTitle, noteCardTitle
+     H4  — 15px / 600 / sans    → cardTitle, bookTitle
+     body— 14px / 400 / sans    → (inherited from QWidget)
+     sm  — 13px / 400 / sans    → pageSubtitle, bookAuthor, secondary text
+     xs  — 12px / 400 / sans    → caption, muted, badge
 ========================================================== */
 
 
 /* ==========================================================
-   PAGE
+   H1 — PAGE & DIALOG TITLES
+   Serif for editorial weight.
 ========================================================== */
 
-QLabel#pageTitle {
+QLabel#pageTitle,
+QLabel#dashboardGreeting,
+QLabel#dialogTitle {
 
-    font-size: 28px;
+    font-family: "Georgia", "Times New Roman", serif;
+
+    font-size: 30px;
 
     font-weight: 700;
 
@@ -21,29 +37,42 @@ QLabel#pageTitle {
 
 
 /* ==========================================================
-   DASHBOARD
+   H2 — SECTION & DETAIL TITLES
+   Serif, slightly smaller.
 ========================================================== */
 
-QLabel#dashboardGreeting {
+QLabel#detailTitle,
+QLabel#emptyTitle {
 
-    font-size: 28px;
+    font-family: "Georgia", "Times New Roman", serif;
+
+    font-size: 22px;
 
     font-weight: 700;
 
     color: #FFFFFF;
 }
 
-QLabel#pageSubtitle,
-QLabel#dashboardSubtitle {
 
-    font-size: 15px;
+/* ==========================================================
+   H3 — TOOLBAR / CARD SECTION TITLES
+   Sans-serif, medium weight.
+========================================================== */
 
-    color: #9D9D9D;
+QLabel#toolbarTitle,
+QLabel#noteCardTitle {
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    color: #FFFFFF;
 }
 
 
 /* ==========================================================
-   CARD
+   H4 — CARD LABELS & BOOK TITLES
+   Sans-serif, semi-bold.
 ========================================================== */
 
 QLabel#cardTitle {
@@ -55,7 +84,24 @@ QLabel#cardTitle {
     color: #B8B8B8;
 }
 
+QLabel#bookTitle {
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    color: #FFFFFF;
+}
+
+
+/* ==========================================================
+   CARD VALUE — Metric / stat numbers
+   Serif for warmth; large, bold.
+========================================================== */
+
 QLabel#cardValue {
+
+    font-family: "Georgia", "Times New Roman", serif;
 
     font-size: 28px;
 
@@ -71,17 +117,52 @@ QLabel#cardIcon {
 
 
 /* ==========================================================
-   BOOK
+   PAGE / DASHBOARD SUBTITLE
+   Small body, muted.
 ========================================================== */
 
-QLabel#bookTitle {
+QLabel#pageSubtitle,
+QLabel#dashboardSubtitle {
 
-    font-size: 16px;
+    font-size: 13px;
+
+    color: #9D9D9D;
+}
+
+
+/* ==========================================================
+   SECTION LABEL
+   All-caps, spaced, small — editorial section dividers.
+========================================================== */
+
+QLabel#sectionLabel {
+
+    font-size: 11px;
 
     font-weight: 700;
 
-    color: #FFFFFF;
+    color: #8A8A8A;
 }
+
+
+/* ==========================================================
+   EYEBROW TEXT
+   Micro label above a heading — editorial accent.
+========================================================== */
+
+QLabel#eyebrowText {
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    color: #8A8A8A;
+}
+
+
+/* ==========================================================
+   BOOK METADATA
+========================================================== */
 
 QLabel#bookAuthor {
 
@@ -108,12 +189,12 @@ QLabel#bookStatus {
 
 
 /* ==========================================================
-   COMMON TEXT
+   SECONDARY & CAPTION TEXT
 ========================================================== */
 
 QLabel#secondaryText {
 
-    font-size: 12px;
+    font-size: 13px;
 
     color: #B8B8B8;
 }

@@ -18,13 +18,16 @@ QMainWindow {
 
 /* ==========================================================
    GLOBAL WIDGET
+   Body text: sans-serif, comfortable reading size.
+   Per-hierarchy serif overrides are in 01_typography.qss.
+   Theme-specific color overrides are in 12_paper_theme.qss.
 ========================================================== */
 
 QWidget {
 
     color: #FFFFFF;
 
-    font-size: 13px;
+    font-size: 14px;
 
     font-family: "Inter", "Segoe UI", sans-serif;
 }
