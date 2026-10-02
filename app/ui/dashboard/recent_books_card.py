@@ -46,7 +46,7 @@ class RecentBooksCard(BaseCard):
 
         self.empty = EmptyState(
 
-            icon="▤",
+            icon="library",
 
             title="No recent books",
 

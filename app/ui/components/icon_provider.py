@@ -3,7 +3,14 @@
 from PySide6.QtCore import QByteArray, QSize, Qt
 from PySide6.QtGui import QIcon, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QAbstractButton, QApplication
+
+
+# Standard icon size hierarchy across the application:
+SIZE_NAV = 18       # Sidebar navigation buttons
+SIZE_ACTION = 24    # Quick actions buttons
+SIZE_INLINE = 16    # Toolbars, inline buttons, status rows
+SIZE_DISPLAY = 40   # Empty state illustrations
 
 
 _ICON_PATHS = {
@@ -18,29 +25,67 @@ _ICON_PATHS = {
     "add_book": '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H17v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M7 8h6M7 11h6M19 7v7M15.5 10.5h7"/>',
     "play": '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
     "note": '<path d="M5 3h14v18H5zM8 7h8M8 11h8M8 15h5"/><path d="M17 3v4h2"/>',
+    "book": '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M6 6h10M6 10h10"/>',
+    "quote": '<path d="M3 13h4a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v4a6 6 0 0 0 6 6M15 13h4a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4a6 6 0 0 0 6 6"/>',
+    "bookmark": '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+    "check": '<path d="M20 6 9 17l-5-5"/>',
+    "pause": '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+    "cross": '<path d="M18 6 6 18M6 6l12 12"/>',
 }
 
 
-def icon(name: str, size: int = 20, color: str | None = None) -> QIcon:
-    """Render a 24px stroke SVG as a QIcon at the requested size."""
-    if color is None:
-        application = QApplication.instance()
-        color = (
-            application.property("inkwell_icon_color")
-            if application is not None
-            else None
-        ) or "#111111"
+def has_icon(name: str) -> bool:
+    """Check if an icon name is registered in the provider."""
+    return name in _ICON_PATHS
 
+
+def _get_active_color(color: str | None = None) -> str:
+    """Resolve the active theme icon color or fallback."""
+    if color is not None:
+        return color
+    application = QApplication.instance()
+    resolved = (
+        application.property("inkwell_icon_color")
+        if application is not None
+        else None
+    )
+    return resolved or "#111111"
+
+
+def pixmap(name: str, size: int = 20, color: str | None = None) -> QPixmap:
+    """Render a 24px stroke SVG as a QPixmap at the requested size."""
+    if name not in _ICON_PATHS:
+        raise KeyError(f"Unknown icon '{name}'")
+
+    stroke_color = _get_active_color(color)
     svg = (
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" '
-        f'viewBox="0 0 24 24" fill="none" stroke="{color}" '
+        f'viewBox="0 0 24 24" fill="none" stroke="{stroke_color}" '
         'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'
         f"{_ICON_PATHS[name]}</svg>"
     )
     renderer = QSvgRenderer(QByteArray(svg.encode("utf-8")))
-    pixmap = QPixmap(QSize(size, size))
-    pixmap.fill(Qt.GlobalColor.transparent)
-    painter = QPainter(pixmap)
+    px = QPixmap(QSize(size, size))
+    px.fill(Qt.GlobalColor.transparent)
+    painter = QPainter(px)
     renderer.render(painter)
     painter.end()
-    return QIcon(pixmap)
+    return px
+
+
+def icon(name: str, size: int = 20, color: str | None = None) -> QIcon:
+    """Render a 24px stroke SVG as a QIcon at the requested size."""
+    return QIcon(pixmap(name, size=size, color=color))
+
+
+def set_button_icon(
+    button: QAbstractButton,
+    name: str,
+    size: int = SIZE_NAV,
+    color: str | None = None,
+) -> None:
+    """Convenience helper to set a theme-aware icon on a button consistently."""
+    button.setProperty("inkwell_icon_name", name)
+    button.setIcon(icon(name, size=size, color=color))
+    button.setIconSize(QSize(size, size))
+

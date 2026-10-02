@@ -76,9 +76,9 @@ class ThemeService:
 
         palette = ThemeService.palette_for(selected_theme)
         app.setProperty("inkwell_icon_color", palette["icon"])
-        from app.ui.components.icon_provider import icon
+        from app.ui.components.icon_provider import icon, pixmap
         from app.ui.components.circular_progress import CircularProgress
-        from PySide6.QtWidgets import QApplication, QAbstractButton
+        from PySide6.QtWidgets import QApplication, QAbstractButton, QLabel
 
         for widget in QApplication.allWidgets():
             if isinstance(widget, QAbstractButton):
@@ -92,5 +92,18 @@ class ThemeService:
                         )
                     )
 
+            elif isinstance(widget, QLabel):
+                icon_name = widget.property("inkwell_icon_name")
+                if icon_name:
+                    icon_size = widget.property("inkwell_icon_size") or 40
+                    widget.setPixmap(
+                        pixmap(
+                            icon_name,
+                            size=icon_size,
+                            color=palette["icon"],
+                        )
+                    )
+
             if isinstance(widget, CircularProgress):
                 widget.set_theme_palette(palette)
+

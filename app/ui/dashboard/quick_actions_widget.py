@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
 )
 
 from app.ui.components.base_card import BaseCard
-from app.ui.components.icon_provider import icon
+from app.ui.components.icon_provider import set_button_icon, SIZE_ACTION
 
 
 class QuickActionsWidget(BaseCard):
@@ -82,9 +82,7 @@ class QuickActionsWidget(BaseCard):
     ):
 
         button = QPushButton(text)
-        button.setProperty("inkwell_icon_name", icon_name)
-        button.setIcon(icon(icon_name, size=24))
-        button.setIconSize(QSize(24, 24))
+        set_button_icon(button, icon_name, size=SIZE_ACTION)
 
         button.setMinimumHeight(
             self.CARD_HEIGHT

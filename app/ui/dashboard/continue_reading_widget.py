@@ -45,7 +45,7 @@ class ContinueReadingWidget(BaseCard):
 
         self.empty = EmptyState(
 
-            icon="▤",
+            icon="reading",
 
             title="No active book",
 

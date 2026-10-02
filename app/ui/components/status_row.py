@@ -6,6 +6,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.ui.components.icon_provider import (
+    SIZE_INLINE,
+    has_icon,
+    pixmap,
+)
+
 
 class StatusRow(QWidget):
 
@@ -50,9 +56,7 @@ class StatusRow(QWidget):
         # Icon
         #
 
-        self.icon = QLabel(
-            icon
-        )
+        self.icon = QLabel()
 
         self.icon.setAlignment(
             Qt.AlignmentFlag.AlignCenter
@@ -61,6 +65,13 @@ class StatusRow(QWidget):
         self.icon.setFixedWidth(
             22
         )
+
+        if has_icon(icon):
+            self.icon.setProperty("inkwell_icon_name", icon)
+            self.icon.setProperty("inkwell_icon_size", SIZE_INLINE)
+            self.icon.setPixmap(pixmap(icon, size=SIZE_INLINE))
+        else:
+            self.icon.setText(icon)
 
         layout.addWidget(
             self.icon

@@ -44,7 +44,7 @@ class ReadingGoalCard(BaseCard):
 
         self.empty = EmptyState(
 
-            icon="◎",
+            icon="focus",
 
             title="No reading goal",
 

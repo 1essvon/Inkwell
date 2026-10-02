@@ -177,7 +177,7 @@ class NotesView(QWidget):
 
         self.empty_state = EmptyState(
 
-            icon="▤",
+            icon="note",
 
             title="No Notes Yet",
 

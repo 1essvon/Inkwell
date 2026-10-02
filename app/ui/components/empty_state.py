@@ -9,6 +9,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.ui.components.icon_provider import (
+    SIZE_DISPLAY,
+    has_icon,
+    pixmap,
+)
+
 
 class EmptyState(QWidget):
 
@@ -30,7 +36,7 @@ class EmptyState(QWidget):
 
         layout.setSpacing(12)
 
-        self.icon = QLabel(icon)
+        self.icon = QLabel()
 
         self.icon.setObjectName(
             "emptyIcon"
@@ -39,6 +45,13 @@ class EmptyState(QWidget):
         self.icon.setAlignment(
             Qt.AlignmentFlag.AlignCenter
         )
+
+        if has_icon(icon):
+            self.icon.setProperty("inkwell_icon_name", icon)
+            self.icon.setProperty("inkwell_icon_size", SIZE_DISPLAY)
+            self.icon.setPixmap(pixmap(icon, size=SIZE_DISPLAY))
+        else:
+            self.icon.setText(icon)
 
         self.title = QLabel(title)
 

@@ -43,7 +43,7 @@ class ReadingStreakCard(BaseCard):
 
         self.empty = EmptyState(
 
-            icon="◆",
+            icon="statistics",
 
             title="No reading streak",
 

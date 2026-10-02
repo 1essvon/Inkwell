@@ -53,7 +53,7 @@ from app.services.note_service import (
 from app.services.quote_service import (
     QuoteService
 )
-from app.ui.components.icon_provider import icon
+from app.ui.components.icon_provider import set_button_icon, SIZE_NAV
 
 class MainWindow(QMainWindow):
 
@@ -157,9 +157,7 @@ class MainWindow(QMainWindow):
             (self.settings_button, "settings"),
         )
         for button, icon_name in navigation_icons:
-            button.setProperty("inkwell_icon_name", icon_name)
-            button.setIcon(icon(icon_name))
-            button.setIconSize(QSize(18, 18))
+            set_button_icon(button, icon_name, size=SIZE_NAV)
 
         sidebar.addWidget(
             self.dashboard_button
