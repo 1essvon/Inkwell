@@ -77,6 +77,9 @@ QFrame#divider {
 
 /* ==========================================
    Note Card
+   Structure and border only.
+   Font sizes → 01_typography.qss (H3: noteCardTitle, sm: noteCardBook).
+   Colors → 12_paper_theme.qss.
 ========================================== */
 
 #noteCard {
@@ -112,24 +115,6 @@ QFrame#divider {
 #noteCard[selected="true"] #noteIndicator {
 
     background: #F5F5F5;
-
-}
-
-#noteCardTitle {
-
-    color: #FFFFFF;
-
-    font-size: 16px;
-
-    font-weight: 700;
-
-}
-
-#noteCardBook {
-
-    color: #B8B8B8;
-
-    font-size: 13px;
 
 }
 

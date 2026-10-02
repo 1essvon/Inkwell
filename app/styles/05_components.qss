@@ -77,82 +77,18 @@ QLabel#badgeDefault {
     background-color: #444444;
 }
 
-/* =========================
-   Note Card
-========================= */
-
-#noteCard {
-
-    background: #262626;
-
-    border: 1px solid #3a3a3a;
-
-    border-radius: 14px;
-
-}
-
-#noteCard:hover {
-
-    background: #2d2d2d;
-
-}
-
-#noteCard[selected="true"] {
-
-    border-left: 4px solid white;
-
-}
-
-#noteCardTitle {
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 700;
-
-}
-
-#noteCardBook {
-
-    color: #bdbdbd;
-
-    font-size: 13px;
-
-}
-
-#noteCardPreview {
-
-    color: #909090;
-
-    font-size: 13px;
-
-}
-
-#noteCardDate {
-
-    color: #7a7a7a;
-
-    font-size: 12px;
-
-}
-
 /* ==========================================================
    Book Cover
+   Structure only — colors in 12_paper_theme.qss.
    ========================================================== */
 
 #bookCover {
-
-    background: #353535;
-
-    border: 1px solid #4A4A4A;
 
     border-radius: 8px;
 
 }
 
 #divider {
-    background: #3b3b3b;
     min-height: 1px;
     max-height: 1px;
     border: none;

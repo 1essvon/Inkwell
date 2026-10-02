@@ -44,7 +44,7 @@ class BaseCard(QWidget):
         )
 
         self.layout.setSpacing(
-            16
+            12
         )
 
     # ==================================================

@@ -21,7 +21,7 @@ class StatCard(BaseCard):
 
         super().__init__()
 
-        self.layout.setSpacing(10)
+        self.layout.setSpacing(8)
 
         if icon:
 

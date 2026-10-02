@@ -27,10 +27,10 @@ class NoteCard(QFrame):
         root_layout = QHBoxLayout(self)
 
         root_layout.setContentsMargins(
-            14,
-            10,
-            14,
-            10,
+            16,
+            12,
+            16,
+            12,
         )
 
         root_layout.setSpacing(
