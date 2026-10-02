@@ -7,6 +7,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $RepositoryRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$VersionFile = Join-Path $RepositoryRoot "VERSION"
 $SpecPath = Join-Path $RepositoryRoot "TheInkwell.spec"
 $BuildRequirements = Join-Path $RepositoryRoot "requirements-build-windows.txt"
 $WorkPath = Join-Path $RepositoryRoot "build\windows"
@@ -24,6 +25,14 @@ if (-not (Test-Path -LiteralPath $SpecPath -PathType Leaf)) {
 }
 if (-not (Test-Path -LiteralPath $BuildRequirements -PathType Leaf)) {
     throw "Build dependency file was not found: $BuildRequirements"
+}
+if (-not (Test-Path -LiteralPath $VersionFile -PathType Leaf)) {
+    throw "Release version file was not found: $VersionFile"
+}
+
+$ReleaseVersion = (Get-Content -LiteralPath $VersionFile -Raw).Trim()
+if ($ReleaseVersion -notmatch '^\d+\.\d+\.\d+$') {
+    throw "Release version must use MAJOR.MINOR.PATCH format: $ReleaseVersion"
 }
 
 Push-Location $RepositoryRoot
@@ -60,7 +69,10 @@ try {
             throw "Inno Setup compiler was not found. Install Inno Setup 6 or pass its ISCC.exe path with -InnoSetupCompiler."
         }
 
-        & $CompilerCommand.Source "/DRepoRoot=$RepositoryRoot" $InstallerScript
+        & $CompilerCommand.Source `
+            "/DRepoRoot=$RepositoryRoot" `
+            "/DAppVersion=$ReleaseVersion" `
+            $InstallerScript
         if ($LASTEXITCODE -ne 0) {
             throw "Inno Setup failed with exit code $LASTEXITCODE."
         }

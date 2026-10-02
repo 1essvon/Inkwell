@@ -1,11 +1,14 @@
 #ifndef RepoRoot
   #define RepoRoot "."
 #endif
+#ifndef AppVersion
+  #error AppVersion must be supplied by build_windows.ps1
+#endif
 
 [Setup]
 AppId={{38C5F10C-49F6-481B-9C5A-27FA198D9A4A}
 AppName=The Inkwell
-AppVersion=1.0
+AppVersion={#AppVersion}
 DefaultDirName={autopf}\The Inkwell
 DefaultGroupName=The Inkwell
 UninstallDisplayName=The Inkwell
