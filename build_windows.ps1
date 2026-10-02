@@ -1,5 +1,7 @@
 param(
-    [string]$Python = "python"
+    [string]$Python = "python",
+    [switch]$CreateInstaller,
+    [string]$InnoSetupCompiler = "ISCC.exe"
 )
 
 $ErrorActionPreference = "Stop"
@@ -10,6 +12,8 @@ $BuildRequirements = Join-Path $RepositoryRoot "requirements-build-windows.txt"
 $WorkPath = Join-Path $RepositoryRoot "build\windows"
 $DistPath = Join-Path $RepositoryRoot "dist\windows"
 $ApplicationPath = Join-Path $DistPath "TheInkwell\TheInkwell.exe"
+$InstallerScript = Join-Path $RepositoryRoot "packaging\windows\TheInkwell.iss"
+$InstallerPath = Join-Path $DistPath "TheInkwellSetup.exe"
 
 if ($env:OS -ne "Windows_NT") {
     throw "Windows build must run on Windows; PyInstaller does not cross-compile."
@@ -43,6 +47,30 @@ try {
     }
 
     Write-Host "Windows application bundle created: $ApplicationPath"
+
+    if ($CreateInstaller) {
+        if (-not (Test-Path -LiteralPath $InstallerScript -PathType Leaf)) {
+            throw "Inno Setup script was not found: $InstallerScript"
+        }
+
+        $CompilerCommand = Get-Command -Name $InnoSetupCompiler `
+            -CommandType Application `
+            -ErrorAction SilentlyContinue
+        if (-not $CompilerCommand) {
+            throw "Inno Setup compiler was not found. Install Inno Setup 6 or pass its ISCC.exe path with -InnoSetupCompiler."
+        }
+
+        & $CompilerCommand.Source "/DRepoRoot=$RepositoryRoot" $InstallerScript
+        if ($LASTEXITCODE -ne 0) {
+            throw "Inno Setup failed with exit code $LASTEXITCODE."
+        }
+
+        if (-not (Test-Path -LiteralPath $InstallerPath -PathType Leaf)) {
+            throw "Installer build completed without the expected executable: $InstallerPath"
+        }
+
+        Write-Host "Windows installer created: $InstallerPath"
+    }
 }
 catch {
     [Console]::Error.WriteLine("Windows build failed: {0}", $_.Exception.Message)
