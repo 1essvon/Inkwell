@@ -2,12 +2,14 @@ from datetime import datetime, timezone
 
 from PySide6.QtWidgets import (
     QLabel,
+    QHBoxLayout,
 )
 
 from app.models.book import Book
 from app.models.reading_session import ReadingSession
 
 from app.ui.components.base_card import BaseCard
+from app.ui.components.icon_provider import SIZE_INLINE, pixmap
 
 
 class HistoryCard(BaseCard):
@@ -60,17 +62,23 @@ class HistoryCard(BaseCard):
             self.session.start_page
         )
 
-        title = QLabel(
-            f"▤ {self.book.title}"
-        )
+        title_layout = QHBoxLayout()
+        title_layout.setSpacing(8)
+
+        book_icon = QLabel()
+        book_icon.setProperty("inkwell_icon_name", "book")
+        book_icon.setProperty("inkwell_icon_size", SIZE_INLINE)
+        book_icon.setPixmap(pixmap("book", size=SIZE_INLINE))
+        title_layout.addWidget(book_icon)
+
+        title = QLabel(self.book.title)
 
         title.setObjectName(
             "bookTitle"
         )
 
-        self.layout.addWidget(
-            title
-        )
+        title_layout.addWidget(title)
+        self.layout.addLayout(title_layout)
 
         author = QLabel(
             self.book.author

@@ -2,9 +2,11 @@ from PySide6.QtWidgets import (
     QDialog,
     QLabel,
     QPushButton,
+    QHBoxLayout,
     QVBoxLayout
 )
 from PySide6.QtCore import Qt
+from app.ui.components.icon_provider import SIZE_INLINE, set_button_icon, pixmap
 
 class SessionCompleteDialog(QDialog):
 
@@ -80,17 +82,27 @@ class SessionCompleteDialog(QDialog):
 
         layout.addWidget(book_label)
 
+        pages_row = QHBoxLayout()
+        pages_row.setSpacing(8)
+        pages_row.addStretch()
+
+        pages_icon = QLabel()
+        pages_icon.setProperty("inkwell_icon_name", "reading")
+        pages_icon.setProperty("inkwell_icon_size", SIZE_INLINE)
+        pages_icon.setPixmap(pixmap("reading", size=SIZE_INLINE))
+        pages_row.addWidget(pages_icon)
+
         pages_label = QLabel(
-            f"▤ {pages} Pages Read"
+            f"{pages} Pages Read"
         )
 
         pages_label.setAlignment(
             Qt.AlignCenter
         )
 
-        layout.addWidget(
-            pages_label
-        )
+        pages_row.addWidget(pages_label)
+        pages_row.addStretch()
+        layout.addLayout(pages_row)
 
         duration_label = QLabel(
             f"{duration} Minute{'s' if duration > 1 else ''}"
@@ -107,8 +119,9 @@ class SessionCompleteDialog(QDialog):
         layout.addSpacing(10)
 
         note_button = QPushButton(
-            "▤ Add Note"
+            "Add Note"
         )
+        set_button_icon(note_button, "note", size=SIZE_INLINE)
 
         note_button.setToolTip(
             "Save your thoughts about this reading session."

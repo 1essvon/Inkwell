@@ -82,7 +82,7 @@ class ReadingHistoryView(QWidget):
 
         self.empty_state = EmptyState(
 
-            icon="▤",
+            icon="history",
 
             title="No Reading History",
 
