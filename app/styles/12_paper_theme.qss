@@ -42,6 +42,10 @@ QFrame#scratchpadCard:hover {
     border-color: #C8B79F;
 }
 
+QWidget#baseCard[selected="true"] {
+    border-color: #8A6242;
+}
+
 /* H1 / H2 headings — serif, primary ink color */
 QLabel#pageTitle,
 QLabel#dashboardGreeting,

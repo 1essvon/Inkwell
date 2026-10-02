@@ -1,12 +1,17 @@
 from PySide6.QtWidgets import (
     QLabel,
-    QProgressBar
+    QProgressBar,
+    QHBoxLayout,
 )
 
 from app.models.book import Book
 
 from app.ui.components.base_card import (
     BaseCard
+)
+from app.ui.components.icon_provider import (
+    SIZE_INLINE,
+    pixmap,
 )
 
 class ReadingBookCard(BaseCard):
@@ -39,17 +44,27 @@ class ReadingBookCard(BaseCard):
         # Title
         # ==========================
 
-        title = QLabel(
-            f"▤ {self.book.title}"
+        title_row = QHBoxLayout()
+        title_row.setContentsMargins(0, 0, 0, 0)
+        title_row.setSpacing(8)
+
+        book_icon = QLabel()
+        book_icon.setObjectName("cardIcon")
+        book_icon.setProperty("inkwell_icon_name", "book")
+        book_icon.setProperty("inkwell_icon_size", SIZE_INLINE)
+        book_icon.setPixmap(
+            pixmap("book", size=SIZE_INLINE)
         )
+
+        title = QLabel(self.book.title)
 
         title.setObjectName(
             "bookTitle"
         )
 
-        self.layout.addWidget(
-            title
-        )
+        title_row.addWidget(book_icon)
+        title_row.addWidget(title, 1)
+        self.layout.addLayout(title_row)
 
         # ==========================
         # Author
@@ -123,13 +138,33 @@ class ReadingBookCard(BaseCard):
         # ==========================
 
         status = QLabel(
-            f"● {self.book.status.title()}"
+            self.book.status.title()
         )
 
         status.setObjectName(
-            "summaryItem"
+            "bookStatus"
         )
 
         self.layout.addWidget(
             status
         )
+
+    def set_selected(
+        self,
+        selected: bool,
+    ):
+
+        self.setProperty(
+            "selected",
+            selected,
+        )
+
+        self.style().unpolish(
+            self
+        )
+
+        self.style().polish(
+            self
+        )
+
+        self.update()

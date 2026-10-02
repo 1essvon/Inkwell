@@ -69,6 +69,31 @@ class ReadingBookListWidget(QWidget):
             self.on_item_clicked
         )
 
+        self.list_widget.currentItemChanged.connect(
+            self.update_card_selection
+        )
+
+    def update_card_selection(
+        self,
+        current,
+        previous,
+    ):
+
+        for item, selected in (
+            (previous, False),
+            (current, True),
+        ):
+
+            if item is None:
+                continue
+
+            card = self.list_widget.itemWidget(
+                item
+            )
+
+            if card is not None:
+                card.set_selected(selected)
+
     def refresh(
         self,
         selected_id=None
