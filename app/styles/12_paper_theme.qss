@@ -110,6 +110,11 @@ QLabel#bookStatus {
     color: #805638;
 }
 
+QLabel#audioError {
+    color: #9A5147;
+    font-weight: 600;
+}
+
 QWidget#noteCard[selected="true"],
 QFrame#quoteCard[selected="true"],
 QFrame#scratchpadCard[selected="true"] {

@@ -75,7 +75,7 @@ class SessionCompleteDialog(QDialog):
         )
 
         book_label.setObjectName(
-            "dialogBook"
+            "bookTitle"
         )
 
         layout.addWidget(book_label)

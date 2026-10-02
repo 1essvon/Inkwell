@@ -127,7 +127,7 @@ class HistoryCard(BaseCard):
         )
 
         date.setObjectName(
-            "summaryItem"
+            "captionText"
         )
 
         self.layout.addWidget(
