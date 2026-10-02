@@ -278,6 +278,7 @@ Menyiapkan distribusi.
 - Windows bundle: install `requirements-build-windows.txt` and run `build_windows.ps1`.
 - Windows installer: set the canonical MAJOR.MINOR.PATCH version in `VERSION`, install Inno Setup 6, then run `build_windows.ps1 -CreateInstaller` (or pass a custom `ISCC.exe` path with `-InnoSetupCompiler`).
 - Linux: install `requirements-build-linux.txt`, make `appimagetool` available on `PATH` (or set `APPIMAGETOOL`), then run `./build_linux.sh`.
+- CI artifacts: run the `Release artifacts` workflow manually or push a `v<version>` tag matching `VERSION`; it uploads platform artifacts without publishing a GitHub Release.
 
 ### Definition of Done
 Menghasilkan:
