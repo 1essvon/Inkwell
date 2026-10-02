@@ -82,6 +82,10 @@ jobs:
           echo "b90f4a8b18967545fda78a445b27680a1642f1ef9488ced28b65398f2be7add2  $tool" | sha256sum --check
           chmod +x "$tool"
           APPIMAGE_EXTRACT_AND_RUN=1 "$tool" --version
+      - name: Install Linux Qt runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1 libxkbcommon-x11-0
       - name: Build AppImage
         shell: bash
         env:
