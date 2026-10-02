@@ -104,6 +104,7 @@ class ReadingStreakCard(BaseCard):
             divider.setFrameShape(
                 QFrame.Shape.HLine
             )
+            divider.setObjectName("divider")
 
             content_layout.addWidget(
                 divider

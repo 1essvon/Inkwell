@@ -82,6 +82,7 @@ class QuickActionsWidget(BaseCard):
     ):
 
         button = QPushButton(text)
+        button.setObjectName("quickAction")
         set_button_icon(button, icon_name, size=SIZE_ACTION)
 
         button.setMinimumHeight(

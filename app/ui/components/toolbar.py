@@ -10,6 +10,7 @@ class Toolbar(QWidget):
     def __init__(self):
 
         super().__init__()
+        self.setObjectName("toolbar")
 
         self.layout = QHBoxLayout()
 

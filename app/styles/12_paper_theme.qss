@@ -229,6 +229,10 @@ QTreeWidget::item:selected {
     color: #302B25;
 }
 
+QListWidget::item:selected {
+    border-left: 3px solid #8A6242;
+}
+
 QProgressBar {
     background-color: #E4DACB;
 }
