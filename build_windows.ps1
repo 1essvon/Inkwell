@@ -24,7 +24,7 @@ if (-not (Test-Path -LiteralPath $BuildRequirements -PathType Leaf)) {
 
 Push-Location $RepositoryRoot
 try {
-    $VersionCheck = "from importlib.metadata import version; assert version('PyInstaller') == '6.22.3'; assert version('pyinstaller-hooks-contrib') == '2026.6'"
+    $VersionCheck = "from importlib.metadata import version; assert version('PyInstaller') == '6.22.3'; assert version('pyinstaller-hooks-contrib') == '2026.7'"
     & $Python -c $VersionCheck
     if ($LASTEXITCODE -ne 0) {
         throw "Required build tools are missing or have the wrong versions. Install requirements.txt and requirements-build-windows.txt first."

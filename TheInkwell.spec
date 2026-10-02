@@ -7,7 +7,9 @@ import sys
 ROOT = Path(SPECPATH).resolve()
 sys.path.insert(0, str(ROOT))
 
-from app.styles.load_styles import STYLE_FILES
+from app.styles.load_styles import BASE_STYLE_FILES, THEME_STYLE_FILES
+
+STYLE_FILES = [*BASE_STYLE_FILES, *THEME_STYLE_FILES.values()]
 
 
 datas = []

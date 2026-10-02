@@ -6,3 +6,5 @@ __pycache__/
 data/covers/
 /build/windows/
 /dist/windows/
+/build/linux/
+/dist/linux/

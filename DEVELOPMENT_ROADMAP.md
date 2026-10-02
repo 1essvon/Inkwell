@@ -236,7 +236,7 @@ Menyelesaikan kebutuhan sistem.
 User dapat mem-backup seluruh data.
 
 ### Current Status
-**NEXT**
+**COMPLETED**
 
 ---
 
@@ -257,7 +257,7 @@ Membuat aplikasi terasa selesai.
 Aplikasi terlihat seperti The Inkwell.
 
 ### Current Status
-**PENDING**
+**COMPLETED**
 
 ---
 
@@ -274,13 +274,17 @@ Menyiapkan distribusi.
 - Linux Build.
 - Installer.
 
+### Build Commands
+- Windows: install `requirements-build-windows.txt` and run `build_windows.ps1`.
+- Linux: install `requirements-build-linux.txt`, make `appimagetool` available on `PATH` (or set `APPIMAGETOOL`), then run `./build_linux.sh`.
+
 ### Definition of Done
 Menghasilkan:
 - `TheInkwell.AppImage`
 - `TheInkwellSetup.exe`
 
 ### Current Status
-**PENDING**
+**NEXT**
 
 ---
 
@@ -357,8 +361,8 @@ Jika checkpoint berikutnya tidak tersedia di dokumen ini, STOP dan laporkan. Jan
 - Phase 8 — COMPLETED
 - Phase 9 — COMPLETED
 - Phase 10 — COMPLETED
-- Phase 11 — NEXT
-- Phase 12 — PENDING
-- Phase 13 — PENDING
+- Phase 11 — COMPLETED
+- Phase 12 — COMPLETED
+- Phase 13 — NEXT
 
-**Next Phase: Phase 11 — Settings & Backup**
+**Next Phase: Phase 13 — Release Preparation**
