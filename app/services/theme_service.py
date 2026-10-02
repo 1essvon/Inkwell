@@ -3,7 +3,7 @@ from app.styles.load_styles import load_styles
 
 
 class ThemeService:
-    DEFAULT_THEME = "black_on_white"
+    DEFAULT_THEME = "ink_and_paper"
     THEMES = {
         "white_on_black": {
             "icon": "#F2F2F2",
