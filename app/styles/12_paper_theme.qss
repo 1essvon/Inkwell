@@ -271,7 +271,19 @@ QFrame#toolbarDivider {
 }
 
 QGroupBox {
+    background-color: #FFFCF6;
+    border: 1px solid #D9CEBC;
+    border-radius: 10px;
     color: #302B25;
+    margin-top: 12px;
+    padding: 12px;
+    font-weight: 600;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 8px;
 }
 
 QLabel#emptyIcon,

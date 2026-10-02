@@ -46,7 +46,7 @@ class StatisticsView(QWidget):
             0
         )
 
-        root_layout.setSpacing(12)
+        root_layout.setSpacing(16)
 
         root_layout.addWidget(
 
@@ -63,6 +63,7 @@ class StatisticsView(QWidget):
         content = QWidget()
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
 
         layout.setSpacing(16)
 
