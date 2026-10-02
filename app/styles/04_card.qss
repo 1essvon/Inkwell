@@ -41,6 +41,7 @@ QWidget#infoCard {
    BOOK COVER
 ========================================================== */
 
+QFrame#bookCover,
 QLabel#bookCover {
 
     background-color: #2E2E2E;

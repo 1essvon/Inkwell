@@ -223,11 +223,19 @@ QLabel#badgeWaiting { background-color: #E9E1D5; }
 QLabel#badgeDanger { background-color: #EBD5CF; }
 QLabel#badgeDefault { background-color: #E9E1D5; }
 
+QFrame#bookCover,
 QLabel#bookCover {
     background-color: #EFE7D9;
     color: #877966;
     border-color: #D3C6B3;
 }
+
+QFrame#badgeReading { background-color: #D9E2D0; }
+QFrame#badgeCompleted { background-color: #D4E1D0; }
+QFrame#badgeWaiting { background-color: #E9E1D5; }
+QFrame#badgePaused { background-color: #E9E1D5; }
+QFrame#badgeDropped { background-color: #EBD5CF; }
+QFrame#badgeDefault { background-color: #E9E1D5; }
 
 QFrame#divider,
 QFrame#toolbarDivider {

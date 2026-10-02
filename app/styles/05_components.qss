@@ -77,6 +77,28 @@ QLabel#badgeDefault {
     background-color: #444444;
 }
 
+QFrame#badgeReading,
+QFrame#badgeCompleted,
+QFrame#badgeWaiting,
+QFrame#badgePaused,
+QFrame#badgeDropped,
+QFrame#badgeDefault {
+
+    border-radius: 8px;
+}
+
+QFrame#badgeReading QLabel,
+QFrame#badgeCompleted QLabel,
+QFrame#badgeWaiting QLabel,
+QFrame#badgePaused QLabel,
+QFrame#badgeDropped QLabel,
+QFrame#badgeDefault QLabel {
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
 /* ==========================================================
    Book Cover
    Structure only — colors in 12_paper_theme.qss.
