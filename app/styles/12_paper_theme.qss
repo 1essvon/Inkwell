@@ -265,6 +265,10 @@ QFrame#toolbarDivider {
     background-color: #D9CEBC;
 }
 
+QGroupBox {
+    color: #302B25;
+}
+
 QLabel#emptyIcon,
 QLabel#cardIcon,
 QLabel#quoteIcon {
