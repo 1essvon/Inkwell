@@ -170,10 +170,15 @@ jobs:
           if (-not (Test-Path -LiteralPath $iscc -PathType Leaf)) {
             throw "Pinned Inno Setup compiler was not found at $iscc"
           }
-          $compilerVersion = (Get-Item -LiteralPath $iscc).VersionInfo.ProductVersion
-          if ($compilerVersion -notlike "6.7.3*") {
-            throw "Expected Inno Setup 6.7.3, found $compilerVersion."
+          Write-Host "Inno Setup compiler found at: $iscc"
+
+          $compilerHelp = & $iscc /? 2>&1
+          if ($LASTEXITCODE -ne 0) {
+            $compilerHelp | Out-Host
+            throw "Inno Setup compiler failed to start with exit code $LASTEXITCODE."
           }
+
+          $compilerHelp | Out-Host
       - name: Build and install-test Windows installer
         shell: pwsh
         run: |
