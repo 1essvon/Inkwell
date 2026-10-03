@@ -172,13 +172,12 @@ jobs:
           }
           Write-Host "Inno Setup compiler found at: $iscc"
 
-          $compilerHelp = & $iscc /? 2>&1
-          if ($LASTEXITCODE -ne 0) {
-            $compilerHelp | Out-Host
-            throw "Inno Setup compiler failed to start with exit code $LASTEXITCODE."
-          }
-
+          $compilerHelp = (& $iscc /? 2>&1 | Out-String)
           $compilerHelp | Out-Host
+
+          if ($compilerHelp -notmatch "Inno Setup 6 Command-Line Compiler") {
+              throw "Inno Setup compiler validation failed: expected Inno Setup 6 help output."
+          }
       - name: Build and install-test Windows installer
         shell: pwsh
         run: |
