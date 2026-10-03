@@ -189,8 +189,15 @@ jobs:
           if ((Get-Item -LiteralPath $installer).Length -le 0) {
             throw "Windows installer is empty: $installer"
           }
-          if ((Get-Item -LiteralPath $installer).VersionInfo.ProductVersion -ne $version) {
-            throw "Installer version does not match VERSION $version."
+          $installerVersion = (Get-Item -LiteralPath $installer).VersionInfo.ProductVersion
+          $expectedVersion = [version]$version
+          $actualVersion = [version]$installerVersion
+
+          Write-Host "Installer ProductVersion: $installerVersion"
+          Write-Host "Expected VERSION: $version"
+
+          if ($actualVersion -ne $expectedVersion) {
+            throw "Installer version '$installerVersion' does not match VERSION '$version'."
           }
 
           $installDirectory = Join-Path $env:RUNNER_TEMP "TheInkwell-install"

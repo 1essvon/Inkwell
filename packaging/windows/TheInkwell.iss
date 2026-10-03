@@ -9,6 +9,8 @@
 AppId={{38C5F10C-49F6-481B-9C5A-27FA198D9A4A}
 AppName=The Inkwell
 AppVersion={#AppVersion}
+VersionInfoVersion={#AppVersion}
+VersionInfoProductVersion={#AppVersion}
 DefaultDirName={autopf}\The Inkwell
 DefaultGroupName=The Inkwell
 UninstallDisplayName=The Inkwell
