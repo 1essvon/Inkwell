@@ -10,3 +10,10 @@ data/covers/
 /dist/linux/
 
 .vscode/
+
+# Local packaging tools
+.tools/
+
+# PyInstaller build artifacts
+build/
+dist/

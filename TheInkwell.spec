@@ -57,7 +57,10 @@ a = Analysis(
     datas=datas,
     # The pinned PyInstaller Qt hooks collect Qt Multimedia backend plugins;
     # keep the module explicit because playback is a runtime-only feature.
-    hiddenimports=["PySide6.QtMultimedia"],
+    hiddenimports=[
+        "PySide6.QtMultimedia",
+        "logging.config",
+        ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
