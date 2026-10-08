@@ -277,7 +277,7 @@ jobs:
               }
             }
           )
-          Write-Host "Uninstall registry information for AppId $appId:"
+          Write-Host "Uninstall registry information for AppId ${appId}:"
           if ($uninstallEntries.Count -eq 0) {
             Write-Host "No matching uninstall registry entries were found."
           }
