@@ -200,120 +200,58 @@ jobs:
             throw "Installer version '$installerVersion' does not match VERSION '$version'."
           }
 
-          $installDirectory = Join-Path $env:RUNNER_TEMP "TheInkwell-install"
-          $installerLog = Join-Path $env:RUNNER_TEMP "TheInkwell-install.log"
-          & $installer /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- "/DIR=$installDirectory" "/LOG=$installerLog"
-          $installerExitCode = $LASTEXITCODE
-          Write-Host "Installer exit code: $installerExitCode"
-          $installDirectoryExists = Test-Path -LiteralPath $installDirectory -PathType Container
-          Write-Host "Install directory exists: $installDirectoryExists ($installDirectory)"
-          if ($installDirectoryExists) {
-            Write-Host "Recursive install directory contents:"
-            Get-ChildItem -LiteralPath $installDirectory -Recurse -Force -ErrorAction Continue |
-              ForEach-Object { Write-Host $_.FullName }
+          $applicationBundleExecutable = Join-Path $PWD "dist\windows\TheInkwell\TheInkwell.exe"
+          if (-not (Test-Path -LiteralPath $applicationBundleExecutable -PathType Leaf)) {
+            throw "PyInstaller bundle executable was not created: $applicationBundleExecutable"
           }
 
-          $searchRoots = @(
-            $installDirectory
-            $env:RUNNER_TEMP
-            ${env:ProgramFiles}
-            ${env:ProgramFiles(x86)}
-          ) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) } |
-            Select-Object -Unique
-          $foundExecutables = @(
-            foreach ($root in $searchRoots) {
-              Write-Host "Searching for TheInkwell.exe under: $root"
-              Get-ChildItem -LiteralPath $root -Recurse -Filter "TheInkwell.exe" -File -ErrorAction Continue
-            }
-          ) | Sort-Object -Property FullName -Unique
-
-          if ($foundExecutables.Count -eq 0) {
-            Write-Host "No TheInkwell.exe files were found in the requested search roots."
-          }
-          else {
-            Write-Host "TheInkwell.exe search results:"
-            foreach ($executable in $foundExecutables) {
-              $fileVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($executable.FullName)
-              [pscustomobject]@{
-                Path           = $executable.FullName
-                Size           = $executable.Length
-                ProductVersion = $fileVersion.ProductVersion
-              } | Format-List | Out-Host
-            }
-          }
-
-          Write-Host "Inno Setup installer logs:"
-          $logRoots = @($env:RUNNER_TEMP, $env:TEMP, (Join-Path $env:windir "Temp")) |
-            Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) } |
-            Select-Object -Unique
-          $installerLogs = @(
-            foreach ($root in $logRoots) {
-              Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue |
-                Where-Object { $_.Name -match '(?i)(inno|theinkwell|setup).*\.log$' }
-            }
-          ) | Sort-Object -Property FullName -Unique
-          if ($installerLogs.Count -eq 0) {
-            Write-Host "No Inno Setup log files were found."
-          }
-          else {
-            foreach ($log in $installerLogs) {
-              Write-Host "Installer log: $($log.FullName)"
-              Get-Content -LiteralPath $log.FullName -Tail 200 | Out-Host
-            }
-          }
-
+          $installDirectory = Join-Path $PWD "dist\windows\smoke-install-$env:GITHUB_RUN_ID"
           $appId = "{38C5F10C-49F6-481B-9C5A-27FA198D9A4A}"
-          $uninstallRoots = @(
-            "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall"
-            "HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
-            "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall"
+          $uninstallRegistryPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\${appId}_is1"
+          if (Test-Path -LiteralPath $uninstallRegistryPath) {
+            throw "A stale Windows installer uninstall entry exists: $uninstallRegistryPath"
+          }
+
+          $installArguments = @(
+            "/VERYSILENT"
+            "/SUPPRESSMSGBOXES"
+            "/NORESTART"
+            "/SP-"
+            "/DIR=`"$installDirectory`""
           )
-          $uninstallEntries = @(
-            foreach ($root in $uninstallRoots) {
-              if (Test-Path -LiteralPath $root) {
-                Get-ChildItem -LiteralPath $root -ErrorAction SilentlyContinue |
-                  Where-Object { $_.PSChildName -like "*$appId*" } |
-                  ForEach-Object { Get-ItemProperty -LiteralPath $_.PSPath }
-              }
-            }
+          $install = Start-Process -FilePath $installer -ArgumentList $installArguments -Wait -PassThru
+          if ($install.ExitCode -ne 0) {
+            throw "Windows installer smoke test failed with exit code $($install.ExitCode)."
+          }
+
+          if (-not (Test-Path -LiteralPath $uninstallRegistryPath)) {
+            throw "Windows installer did not create its uninstall entry: $uninstallRegistryPath"
+          }
+          $uninstallInfo = Get-ItemProperty -LiteralPath $uninstallRegistryPath
+          if ([string]::IsNullOrWhiteSpace($uninstallInfo.InstallLocation)) {
+            throw "Windows installer did not register an installation location."
+          }
+          $actualInstallDirectory = [System.IO.Path]::GetFullPath($uninstallInfo.InstallLocation)
+          Write-Host "Requested install directory: $installDirectory"
+          Write-Host "Registered install directory: $actualInstallDirectory"
+
+          if (-not (Test-Path -LiteralPath $actualInstallDirectory -PathType Container)) {
+            throw "The registered installation directory does not exist: $actualInstallDirectory"
+          }
+          $installedExecutables = @(
+            Get-ChildItem -LiteralPath $actualInstallDirectory -Recurse -Filter "TheInkwell.exe" -File
           )
-          Write-Host "Uninstall registry information for AppId ${appId}:"
-          if ($uninstallEntries.Count -eq 0) {
-            Write-Host "No matching uninstall registry entries were found."
+          if ($installedExecutables.Count -ne 1) {
+            throw "Expected exactly one installed TheInkwell.exe under '$actualInstallDirectory'; found $($installedExecutables.Count)."
           }
-          else {
-            $uninstallEntries |
-              Select-Object PSPath, DisplayName, DisplayVersion, InstallLocation, UninstallString, QuietUninstallString |
-              Format-List |
-              Out-Host
-          }
-
-          if ($installerExitCode -ne 0) {
-            throw "Windows installer smoke test failed with exit code $installerExitCode."
-          }
-
-          if (-not $installDirectoryExists) {
-            throw "Installer did not create installation directory: $installDirectory"
-          }
-
-          $installedExecutable = Join-Path $installDirectory "TheInkwell.exe"
-
-          if (-not (Test-Path -LiteralPath $installedExecutable -PathType Leaf)) {
-            $foundExecutables = Get-ChildItem -LiteralPath $installDirectory -Recurse -Filter "TheInkwell.exe" -File -ErrorAction SilentlyContinue
-
-            if ($foundExecutables) {
-              Write-Host "TheInkwell.exe was found at unexpected location(s):"
-              $foundExecutables | Select-Object -ExpandProperty FullName | Out-Host
-            }
-
-            throw "The installer did not install TheInkwell.exe at expected path: $installedExecutable"
-          }
+          $installedExecutable = $installedExecutables[0].FullName
+          Write-Host "Installed executable: $installedExecutable"
           $versionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($installedExecutable)
           if ($versionInfo.ProductVersion -ne $version) {
             throw "Installed product version '$($versionInfo.ProductVersion)' does not match VERSION '$version'."
           }
 
-          $uninstaller = Join-Path $installDirectory "unins000.exe"
+          $uninstaller = Join-Path $actualInstallDirectory "unins000.exe"
           if (-not (Test-Path -LiteralPath $uninstaller -PathType Leaf)) {
             throw "Windows uninstaller was not created: $uninstaller"
           }
@@ -325,6 +263,18 @@ jobs:
           }
           if (Test-Path -LiteralPath $installedExecutable -PathType Leaf) {
             throw "Windows installer uninstall left the application executable behind: $installedExecutable"
+          }
+          if (Test-Path -LiteralPath $uninstaller -PathType Leaf) {
+            throw "Windows installer uninstall left the uninstaller behind: $uninstaller"
+          }
+          if (Test-Path -LiteralPath $uninstallRegistryPath) {
+            throw "Windows installer uninstall left its registry entry behind: $uninstallRegistryPath"
+          }
+          if (Test-Path -LiteralPath $actualInstallDirectory -PathType Container) {
+            $remainingFiles = @(Get-ChildItem -LiteralPath $actualInstallDirectory -Recurse -File -Force)
+            if ($remainingFiles.Count -gt 0) {
+              throw "Windows installer uninstall left files under '$actualInstallDirectory'."
+            }
           }
       - name: Upload Windows installer artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
